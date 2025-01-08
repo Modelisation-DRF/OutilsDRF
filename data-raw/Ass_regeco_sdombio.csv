@@ -1,0 +1,63 @@
+reg_eco;sdom_bio;dom_bio;
+1a;1;1;Plaine du bas Outaouais et de l'archipel de Montréal
+2a;2O;2;Basse Gatineau
+2b;2E;2;Plaine du Saint-Laurent
+2c;2E;2;Estrie
+3a;3O;3;Outaouais et Témiscamingue
+3b;3O;3;Lac Nominingue
+3c;3E;3;Bas Saint-Maurice
+3d;3E;3;Basses Appalaches
+4a;4O;4;Lac Simard
+4b;4O;4;Réservoir Cabonga
+4c;4O;4;Moyen Saint-Maurice
+4d;4E;4;Charlevoix et fjord du Saguenay
+4e;4E;4;Plaine du lac Saint-Jean et de la rivière Saguenay
+4f;4E;4;Moyennes Appalaches
+4g;4E;4;Côte de la baie des Chaleurs
+4h;4E;4;Côte gaspésienne
+5a;5O;5;Plaine de l'Abitibi
+5b;5O;5;Réservoir Gouin
+5c;5O;5;Haut Saint-Maurice
+5d;5O;5;Collines ceinturant le lac Saint-Jean
+5e;5E;5;Massif du lac Jacques-Cartier
+5f;5E;5;Massif des monts Valin
+5g;5E;5;Baie-Comeau et Sept-Îles
+5h;5E;5;Massif gaspésien
+5i;5E;5;Haut massif gaspésien
+5j;5E;5;Île d'Anticosti et îles de Mingan
+5k;5E;5;Îles-de-la-Madeleine
+6a;6O;6;Plaine du lac Matagami
+6b;6O;6;Plaine de la baie de Rupert
+6c;6O;6;Lac Opémisca
+6d;6O;6;Rivières Assinica et Rupert
+6e;6O;6;Rivière Nestaocano
+6f;6O;6;Lac Mistassini
+6g;6O;6;Lac Manouane
+6h;6E;6;Lac Péribonka
+6i;6E;6;Rivière Manicouagan
+6j;6E;6;Lac Manitou
+6k;6E;6;Lacs Plétipi et Pécaudy
+6l;6E;6;Île René-Levasseur et Grand lac Germain
+6m;6E;6;Havre-Saint-Pierre et Natashquan
+6n;6E;6;Lac Musquaro
+6o;6E;6;Lac Fonteneau
+6p;6E;6;Lac Fournier
+6q;6E;6;Lac Séchelles
+6r;6E;6;Massif des monts Groulx
+6s;6E;6;Massif des montagnes Blanches
+7a;7O;7;Plaine de la baie James
+7b;7O;7;Réservoir Robert-Bourassa
+7c;7O;7;Lac Julian
+7d;7O;7;Rivières Eastmain et Sakami
+7e;7O;7;Grande rivière de la Baleine
+7f;7O;7;Lac Naococane
+7g;7O;7;Lac Bienville
+7h;7E;7;Lac Indicateur
+7i;7E;7;Massif des monts Otish
+7j;7E;7;Lac Mistinic
+7k;7E;7;Lac Opiscotéo
+7l;7E;7;Lac Montviel
+7m;7E;7;Réservoir de Caniapiscau
+7n;7E;7;Lacs Opocopa et Brûlé
+7o;7E;7;Basses terres de la fosse du Labrador
+7p;7E;7;Lac Jeannin

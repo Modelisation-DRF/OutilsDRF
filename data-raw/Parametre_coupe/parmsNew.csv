@@ -1,0 +1,739 @@
+nom_trt;code_trt;num_trt;estimate;effect;essence;effect_capsis;Source
+Coupe d'amélioration;CA;0;-4.07981285;b0;;Intercept;inconnu
+Coupe d'amélioration;CA;0;-0.38454181;b1_s;BOJ;Species;inconnu
+Coupe d'amélioration;CA;0;0.14761969;b1_s;BOP;Species;inconnu
+Coupe d'amélioration;CA;0;-0.08789846;b1_s;EPX;Species;inconnu
+Coupe d'amélioration;CA;0;0.65441906;b1_s;ERR;Species;inconnu
+Coupe d'amélioration;CA;0;0.2531542;b1_s;ERS;Species;inconnu
+Coupe d'amélioration;CA;0;-0.92652624;b1_s;FEU;Species;inconnu
+Coupe d'amélioration;CA;0;0.7056787;b1_s;HEG;Species;inconnu
+Coupe d'amélioration;CA;0;1.15816688;b1_s;PEU;Species;inconnu
+Coupe d'amélioration;CA;0;-0.77159932;b1_s;PIN;Species;inconnu
+Coupe d'amélioration;CA;0;-0.26255009;b1_s;RES;Species;inconnu
+Coupe d'amélioration;CA;0;1.76342067;b1_s;SAB;Species;inconnu
+Coupe d'amélioration;CA;0;0;b1_s;THO;Species;inconnu
+Coupe d'amélioration;CA;0;0.12659685;b2_s;BOJ;SpeciesXOffsetDbh;inconnu
+Coupe d'amélioration;CA;0;0.19279858;b2_s;BOP;SpeciesXOffsetDbh;inconnu
+Coupe d'amélioration;CA;0;0.20430811;b2_s;EPX;SpeciesXOffsetDbh;inconnu
+Coupe d'amélioration;CA;0;0.10541344;b2_s;ERR;SpeciesXOffsetDbh;inconnu
+Coupe d'amélioration;CA;0;0.11507142;b2_s;ERS;SpeciesXOffsetDbh;inconnu
+Coupe d'amélioration;CA;0;0.14658704;b2_s;FEU;SpeciesXOffsetDbh;inconnu
+Coupe d'amélioration;CA;0;0.09600565;b2_s;HEG;SpeciesXOffsetDbh;inconnu
+Coupe d'amélioration;CA;0;0.14120861;b2_s;PEU;SpeciesXOffsetDbh;inconnu
+Coupe d'amélioration;CA;0;0.12331747;b2_s;PIN;SpeciesXOffsetDbh;inconnu
+Coupe d'amélioration;CA;0;0.05277728;b2_s;RES;SpeciesXOffsetDbh;inconnu
+Coupe d'amélioration;CA;0;0.25141567;b2_s;SAB;SpeciesXOffsetDbh;inconnu
+Coupe d'amélioration;CA;0;0.09104417;b2_s;THO;SpeciesXOffsetDbh;inconnu
+Coupe d'amélioration;CA;0;0.01304075;b4;;OffsetDbhXOffsetDbh;inconnu
+Coupe d'amélioration;CA;0;-0.01468161;b5;;OffsetDbhXOffsetDbhXDummyDbh;inconnu
+Coupe d'amélioration;CA;0;0.33607563;b6;;LogNbHa;inconnu
+Coupe d'éclaircie;CE;1;-3.01765957;b0;;Intercept;inconnu
+Coupe d'éclaircie;CE;1;-0.57761846;b1_s;BOJ;Species;inconnu
+Coupe d'éclaircie;CE;1;-0.09409833;b1_s;BOP;Species;inconnu
+Coupe d'éclaircie;CE;1;0.25011439;b1_s;EPX;Species;inconnu
+Coupe d'éclaircie;CE;1;0.17663351;b1_s;ERR;Species;inconnu
+Coupe d'éclaircie;CE;1;-0.26657118;b1_s;ERS;Species;inconnu
+Coupe d'éclaircie;CE;1;-0.60001456;b1_s;FEU;Species;inconnu
+Coupe d'éclaircie;CE;1;-0.07306395;b1_s;HEG;Species;inconnu
+Coupe d'éclaircie;CE;1;0.23687182;b1_s;PEU;Species;inconnu
+Coupe d'éclaircie;CE;1;-0.09053446;b1_s;PIN;Species;inconnu
+Coupe d'éclaircie;CE;1;-0.67638835;b1_s;RES;Species;inconnu
+Coupe d'éclaircie;CE;1;1.95930787;b1_s;SAB;Species;inconnu
+Coupe d'éclaircie;CE;1;0;b1_s;THO;Species;inconnu
+Coupe d'éclaircie;CE;1;0.168118;b2_s;BOJ;SpeciesXOffsetDbh;inconnu
+Coupe d'éclaircie;CE;1;0.21738747;b2_s;BOP;SpeciesXOffsetDbh;inconnu
+Coupe d'éclaircie;CE;1;0.20192344;b2_s;EPX;SpeciesXOffsetDbh;inconnu
+Coupe d'éclaircie;CE;1;0.16230343;b2_s;ERR;SpeciesXOffsetDbh;inconnu
+Coupe d'éclaircie;CE;1;0.16436011;b2_s;ERS;SpeciesXOffsetDbh;inconnu
+Coupe d'éclaircie;CE;1;0.15572674;b2_s;FEU;SpeciesXOffsetDbh;inconnu
+Coupe d'éclaircie;CE;1;0.18404745;b2_s;HEG;SpeciesXOffsetDbh;inconnu
+Coupe d'éclaircie;CE;1;0.23043614;b2_s;PEU;SpeciesXOffsetDbh;inconnu
+Coupe d'éclaircie;CE;1;0.09561076;b2_s;PIN;SpeciesXOffsetDbh;inconnu
+Coupe d'éclaircie;CE;1;0.17080053;b2_s;RES;SpeciesXOffsetDbh;inconnu
+Coupe d'éclaircie;CE;1;0.28183701;b2_s;SAB;SpeciesXOffsetDbh;inconnu
+Coupe d'éclaircie;CE;1;0.13112106;b2_s;THO;SpeciesXOffsetDbh;inconnu
+Coupe d'éclaircie;CE;1;0.01614717;b4_s;BOJ;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe d'éclaircie;CE;1;0.0150247;b4_s;BOP;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe d'éclaircie;CE;1;0.01533315;b4_s;EPX;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe d'éclaircie;CE;1;0.01574447;b4_s;ERR;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe d'éclaircie;CE;1;0.01621968;b4_s;ERS;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe d'éclaircie;CE;1;0.01640853;b4_s;FEU;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe d'éclaircie;CE;1;0.01520691;b4_s;HEG;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe d'éclaircie;CE;1;0.01444011;b4_s;PEU;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe d'éclaircie;CE;1;0.01728876;b4_s;PIN;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe d'éclaircie;CE;1;0.01565504;b4_s;RES;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe d'éclaircie;CE;1;0.01089096;b4_s;SAB;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe d'éclaircie;CE;1;0.01626038;b4_s;THO;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe d'éclaircie;CE;1;-0.06140286;b3;;OffsetDbhXDummyDbh;inconnu
+Coupe d'éclaircie;CE;1;-0.01745495;b5;;OffsetDbhXOffsetDbhXDummyDbh;inconnu
+Coupe d'éclaircie;CE;1;0.23031714;b6;;LogNbHa;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;-3.25100318;b0;;Intercept;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;-0.98636535;b1_s;BOJ;Species;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;-0.19953622;b1_s;BOP;Species;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0.16943847;b1_s;EPX;Species;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0.27596917;b1_s;ERR;Species;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;-0.3800622;b1_s;ERS;Species;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;-0.64851267;b1_s;FEU;Species;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;-0.18600869;b1_s;HEG;Species;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;-0.28650185;b1_s;PEU;Species;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0.11244046;b1_s;PIN;Species;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;-0.90014623;b1_s;RES;Species;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;1.76682148;b1_s;SAB;Species;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0;b1_s;THO;Species;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;-0.06810929;b2_s;BOJ;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0.09255466;b2_s;BOP;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0.13822324;b2_s;EPX;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0.21620198;b2_s;ERR;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0.1057426;b2_s;ERS;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0.00239479;b2_s;FEU;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;-0.01023655;b2_s;HEG;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;-0.0086716;b2_s;PEU;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0.14203119;b2_s;PIN;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0.14271367;b2_s;RES;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0.33359723;b2_s;SAB;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;-0.10506808;b2_s;THO;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;-0.0004089;b4_s;BOJ;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0.01359978;b4_s;BOP;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0.01134997;b4_s;EPX;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0.02043539;b4_s;ERR;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0.01285339;b4_s;ERS;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0.00632826;b4_s;FEU;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0.00082634;b4_s;HEG;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0.01450865;b4_s;PEU;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0.01368035;b4_s;PIN;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0.02258762;b4_s;RES;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0.01737874;b4_s;SAB;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;-0.00286601;b4_s;THO;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0.19949803;b3_s;BOJ;SpeciesXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0.077801;b3_s;BOP;SpeciesXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;-0.01615599;b3_s;EPX;SpeciesXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;-0.14707325;b3_s;ERR;SpeciesXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0.00036278;b3_s;ERS;SpeciesXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0.10293522;b3_s;FEU;SpeciesXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0.1213552;b3_s;HEG;SpeciesXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0.20264815;b3_s;PEU;SpeciesXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;-0.0783714;b3_s;PIN;SpeciesXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;-0.07181092;b3_s;RES;SpeciesXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;-0.1569735;b3_s;SAB;SpeciesXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0.10838192;b3_s;THO;SpeciesXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;-0.00110996;b5_s;BOJ;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;-0.01664213;b5_s;BOP;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;-0.01258367;b5_s;EPX;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;-0.0209107;b5_s;ERR;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;-0.01393068;b5_s;ERS;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;-0.00726516;b5_s;FEU;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;-0.00258012;b5_s;HEG;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;-0.01850033;b5_s;PEU;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;-0.01412281;b5_s;PIN;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;-0.02366016;b5_s;RES;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;-0.01966448;b5_s;SAB;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0.00294881;b5_s;THO;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage avant 1997;CJ_1997;2;0.26522409;b6;;LogNbHa;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;-2.16007399;b0;;Intercept;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;-0.7228586;b1_s;BOJ;Species;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;-0.83576928;b1_s;BOP;Species;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;-0.23225142;b1_s;EPX;Species;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;0.35389821;b1_s;ERR;Species;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;-0.31545227;b1_s;ERS;Species;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;-0.5030163;b1_s;FEU;Species;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;0.00506861;b1_s;HEG;Species;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;-0.23813099;b1_s;PEU;Species;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;-0.39371525;b1_s;PIN;Species;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;-0.37411015;b1_s;RES;Species;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;2.25679262;b1_s;SAB;Species;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;0;b1_s;THO;Species;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;-0.01091808;b2_s;BOJ;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;-0.01782794;b2_s;BOP;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;0.02200671;b2_s;EPX;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;0.02167588;b2_s;ERR;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;0.0201802;b2_s;ERS;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;0.00123962;b2_s;FEU;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;0.03266923;b2_s;HEG;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;-0.1378783;b2_s;PEU;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;0.56501129;b2_s;PIN;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;-0.07369997;b2_s;RES;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;0.37507367;b2_s;SAB;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;0.01378496;b2_s;THO;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;-0.00048043;b4_s;BOJ;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;-0.00343217;b4_s;BOP;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;0.00012478;b4_s;EPX;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;-0.00023442;b4_s;ERR;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;-0.00078867;b4_s;ERS;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;-0.00021446;b4_s;FEU;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;-0.00169466;b4_s;HEG;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;-0.00217216;b4_s;PEU;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;-0.00073292;b4_s;PIN;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;-0.00060878;b4_s;RES;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;0.01603397;b4_s;SAB;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;0.0011316;b4_s;THO;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;0.08696912;b3_s;BOJ;SpeciesXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;0.21794419;b3_s;BOP;SpeciesXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;0.02067906;b3_s;EPX;SpeciesXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;0.03573548;b3_s;ERR;SpeciesXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;0.05583416;b3_s;ERS;SpeciesXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;0.03923281;b3_s;FEU;SpeciesXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;0.04960167;b3_s;HEG;SpeciesXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;0.27776173;b3_s;PEU;SpeciesXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;-0.51238738;b3_s;PIN;SpeciesXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;0.10934795;b3_s;RES;SpeciesXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;-0.47506593;b3_s;SAB;SpeciesXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;-0.07607492;b3_s;THO;SpeciesXOffsetDbhXDummyDbh;inconnu
+Coupe de jardinage 1997-2004 Cerf;CJ_2004CERF;3;0.14236569;b6;;LogNbHa;inconnu
+Coupe de jardinage 1997-2004;CJ_2004;4;-2.41128011;b0;;Intercept;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;-0.98051836;b1_s;BOJ;Species;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;-0.67521725;b1_s;BOP;Species;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;-0.23371764;b1_s;EPX;Species;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;-0.04924577;b1_s;ERR;Species;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;-0.47180858;b1_s;ERS;Species;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;-0.80411997;b1_s;FEU;Species;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;-0.05962348;b1_s;HEG;Species;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.23620098;b1_s;PEU;Species;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;-0.27762817;b1_s;PIN;Species;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;-0.77406573;b1_s;RES;Species;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;1.924018;b1_s;SAB;Species;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0;b1_s;THO;Species;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.13275467;b2_s;BOJ;SpeciesXOffsetDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.05775953;b2_s;BOP;SpeciesXOffsetDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.08343759;b2_s;EPX;SpeciesXOffsetDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.0664397;b2_s;ERR;SpeciesXOffsetDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.08205679;b2_s;ERS;SpeciesXOffsetDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;-0.01495015;b2_s;FEU;SpeciesXOffsetDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.14316943;b2_s;HEG;SpeciesXOffsetDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.22068925;b2_s;PEU;SpeciesXOffsetDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.1711604;b2_s;PIN;SpeciesXOffsetDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.10943963;b2_s;RES;SpeciesXOffsetDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.34180568;b2_s;SAB;SpeciesXOffsetDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.03535856;b2_s;THO;SpeciesXOffsetDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.01486458;b4_s;BOJ;SpeciesXOffsetDbhXOffsetDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.00611273;b4_s;BOP;SpeciesXOffsetDbhXOffsetDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.00689218;b4_s;EPX;SpeciesXOffsetDbhXOffsetDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.00623249;b4_s;ERR;SpeciesXOffsetDbhXOffsetDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.00893143;b4_s;ERS;SpeciesXOffsetDbhXOffsetDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.00367289;b4_s;FEU;SpeciesXOffsetDbhXOffsetDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.01193441;b4_s;HEG;SpeciesXOffsetDbhXOffsetDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.01577869;b4_s;PEU;SpeciesXOffsetDbhXOffsetDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.01606638;b4_s;PIN;SpeciesXOffsetDbhXOffsetDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.01220185;b4_s;RES;SpeciesXOffsetDbhXOffsetDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.01491293;b4_s;SAB;SpeciesXOffsetDbhXOffsetDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.00231455;b4_s;THO;SpeciesXOffsetDbhXOffsetDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;-0.03292128;b3_s;BOJ;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.11459531;b3_s;BOP;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.02247668;b3_s;EPX;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.03062398;b3_s;ERR;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.01724855;b3_s;ERS;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.08549774;b3_s;FEU;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;-0.06087503;b3_s;HEG;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;-0.12918603;b3_s;PEU;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;-0.13715138;b3_s;PIN;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;-0.03461489;b3_s;RES;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;-0.20920635;b3_s;SAB;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.01696877;b3_s;THO;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;-0.01609135;b5_s;BOJ;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;-0.00901235;b5_s;BOP;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;-0.00804711;b5_s;EPX;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;-0.00785768;b5_s;ERR;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;-0.01023902;b5_s;ERS;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;-0.0043543;b5_s;FEU;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;-0.01330638;b5_s;HEG;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;-0.01715631;b5_s;PEU;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;-0.01638123;b5_s;PIN;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;-0.01336935;b5_s;RES;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;-0.01833942;b5_s;SAB;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;-0.00335327;b5_s;THO;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;Fortin 2014 tableau 4
+Coupe de jardinage 1997-2004;CJ_2004;4;0.18527765;b6;;LogNbHa;Fortin 2014 tableau 4
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;-1.46554116;b0;;Intercept;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;-1.35451144;b1_s;BOJ;Species;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;-0.71594172;b1_s;BOP;Species;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;-1.88707345;b1_s;EPX;Species;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;-0.5855727;b1_s;ERR;Species;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;-1.25143404;b1_s;ERS;Species;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;-1.94499287;b1_s;FEU;Species;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;-0.49174314;b1_s;HEG;Species;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;0.28663718;b1_s;PEU;Species;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;-2.93052401;b1_s;PIN;Species;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;-7.99207997;b1_s;RES;Species;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;2.52084021;b1_s;SAB;Species;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;0;b1_s;THO;Species;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;0.00245155;b2_s;BOJ;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;0.11038454;b2_s;BOP;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;0.02033496;b2_s;EPX;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;0.04548073;b2_s;ERR;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;0.03051404;b2_s;ERS;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;-0.01845654;b2_s;FEU;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;0.0530172;b2_s;HEG;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;0.07451117;b2_s;PEU;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;0.23617985;b2_s;PIN;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;0.51836403;b2_s;RES;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;0.21127776;b2_s;SAB;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;0.08479244;b2_s;THO;SpeciesXOffsetDbh;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;0.00101041;b4_s;BOJ;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;0.00400811;b4_s;BOP;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;-0.00171663;b4_s;EPX;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;-0.00031746;b4_s;ERR;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;0.00037051;b4_s;ERS;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;0.00233415;b4_s;FEU;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;0.00023876;b4_s;HEG;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;0.00059931;b4_s;PEU;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;-0.00546933;b4_s;PIN;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;-0.00856467;b4_s;RES;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;-0.00524073;b4_s;SAB;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;-0.00203883;b4_s;THO;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe de jardinage après 2004 Cerf;CJMSCRCERF;5;0.20511239;b6;;LogNbHa;inconnu
+Coupe de jardinage après 2004;CJMSCR;6;-1.60126041;b0;;Intercept;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;-1.50331957;b1_s;BOJ;Species;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;-1.06082582;b1_s;BOP;Species;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;-1.22358831;b1_s;EPX;Species;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;-0.57698168;b1_s;ERR;Species;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;-0.67320523;b1_s;ERS;Species;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;-1.5881925;b1_s;FEU;Species;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;-0.36910231;b1_s;HEG;Species;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;-0.03928873;b1_s;PEU;Species;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;-0.923306;b1_s;PIN;Species;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;-1.83609171;b1_s;RES;Species;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;3.44317161;b1_s;SAB;Species;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;0;b1_s;THO;Species;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;-0.01807532;b2_s;BOJ;SpeciesXOffsetDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;0.08218499;b2_s;BOP;SpeciesXOffsetDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;0.03603334;b2_s;EPX;SpeciesXOffsetDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;0.1373488;b2_s;ERR;SpeciesXOffsetDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;0.19552245;b2_s;ERS;SpeciesXOffsetDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;-0.09558009;b2_s;FEU;SpeciesXOffsetDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;0.23491031;b2_s;HEG;SpeciesXOffsetDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;0.21510789;b2_s;PEU;SpeciesXOffsetDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;0.11538493;b2_s;PIN;SpeciesXOffsetDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;0.02895954;b2_s;RES;SpeciesXOffsetDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;0.43454134;b2_s;SAB;SpeciesXOffsetDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;0.20632631;b2_s;THO;SpeciesXOffsetDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;0.00302088;b4_s;BOJ;SpeciesXOffsetDbhXOffsetDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;0.01302688;b4_s;BOP;SpeciesXOffsetDbhXOffsetDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;0.00302235;b4_s;EPX;SpeciesXOffsetDbhXOffsetDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;0.01307701;b4_s;ERR;SpeciesXOffsetDbhXOffsetDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;0.01812008;b4_s;ERS;SpeciesXOffsetDbhXOffsetDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;-0.00044353;b4_s;FEU;SpeciesXOffsetDbhXOffsetDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;0.02020069;b4_s;HEG;SpeciesXOffsetDbhXOffsetDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;0.02190771;b4_s;PEU;SpeciesXOffsetDbhXOffsetDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;0.02132264;b4_s;PIN;SpeciesXOffsetDbhXOffsetDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;0.01051965;b4_s;RES;SpeciesXOffsetDbhXOffsetDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;0.01107644;b4_s;SAB;SpeciesXOffsetDbhXOffsetDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;0.01505604;b4_s;THO;SpeciesXOffsetDbhXOffsetDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;0.11767455;b3_s;BOJ;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;0.12211782;b3_s;BOP;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;-0.01897884;b3_s;EPX;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;0.00220385;b3_s;ERR;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;-0.1294465;b3_s;ERS;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;0.16927361;b3_s;FEU;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;-0.11712368;b3_s;HEG;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;0.013969;b3_s;PEU;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;-0.09953486;b3_s;PIN;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;0.07801266;b3_s;RES;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;-0.45418024;b3_s;SAB;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;-0.15423025;b3_s;THO;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;-0.00381585;b5_s;BOJ;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;-0.01565495;b5_s;BOP;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;-0.0021771;b5_s;EPX;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;-0.01536664;b5_s;ERR;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;-0.0183154;b5_s;ERS;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;0.0000335;b5_s;FEU;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;-0.02176471;b5_s;HEG;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;-0.02528596;b5_s;PEU;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;-0.02159408;b5_s;PIN;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;-0.01156073;b5_s;RES;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;-0.01054364;b5_s;SAB;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;-0.01559031;b5_s;THO;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;Fortin 2014 tableau 5
+Coupe de jardinage après 2004;CJMSCR;6;0.09289424;b6;;LogNbHa;Fortin 2014 tableau 5
+Coupe progressive;CP;7;-2.13536914;b0;;Intercept;inconnu
+Coupe progressive;CP;7;-0.57476664;b1_s;BOJ;Species;inconnu
+Coupe progressive;CP;7;0.2846875;b1_s;BOP;Species;inconnu
+Coupe progressive;CP;7;0.37912386;b1_s;EPX;Species;inconnu
+Coupe progressive;CP;7;0.54811982;b1_s;ERR;Species;inconnu
+Coupe progressive;CP;7;-0.27293052;b1_s;ERS;Species;inconnu
+Coupe progressive;CP;7;-0.44343804;b1_s;FEU;Species;inconnu
+Coupe progressive;CP;7;0.66447012;b1_s;HEG;Species;inconnu
+Coupe progressive;CP;7;0.87414057;b1_s;PEU;Species;inconnu
+Coupe progressive;CP;7;0.10854603;b1_s;PIN;Species;inconnu
+Coupe progressive;CP;7;-0.19032553;b1_s;RES;Species;inconnu
+Coupe progressive;CP;7;2.50733941;b1_s;SAB;Species;inconnu
+Coupe progressive;CP;7;0;b1_s;THO;Species;inconnu
+Coupe progressive;CP;7;0.08816008;b2_s;BOJ;SpeciesXOffsetDbh;inconnu
+Coupe progressive;CP;7;0.11315072;b2_s;BOP;SpeciesXOffsetDbh;inconnu
+Coupe progressive;CP;7;0.05341853;b2_s;EPX;SpeciesXOffsetDbh;inconnu
+Coupe progressive;CP;7;0.05958703;b2_s;ERR;SpeciesXOffsetDbh;inconnu
+Coupe progressive;CP;7;0.07472701;b2_s;ERS;SpeciesXOffsetDbh;inconnu
+Coupe progressive;CP;7;0.07122947;b2_s;FEU;SpeciesXOffsetDbh;inconnu
+Coupe progressive;CP;7;0.09969717;b2_s;HEG;SpeciesXOffsetDbh;inconnu
+Coupe progressive;CP;7;0.10992087;b2_s;PEU;SpeciesXOffsetDbh;inconnu
+Coupe progressive;CP;7;0.0192046;b2_s;PIN;SpeciesXOffsetDbh;inconnu
+Coupe progressive;CP;7;0.06162453;b2_s;RES;SpeciesXOffsetDbh;inconnu
+Coupe progressive;CP;7;0.18745535;b2_s;SAB;SpeciesXOffsetDbh;inconnu
+Coupe progressive;CP;7;0.07920512;b2_s;THO;SpeciesXOffsetDbh;inconnu
+Coupe progressive;CP;7;0.00643593;b4_s;BOJ;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe progressive;CP;7;0.00639423;b4_s;BOP;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe progressive;CP;7;0.007262;b4_s;EPX;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe progressive;CP;7;0.00661747;b4_s;ERR;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe progressive;CP;7;0.00691698;b4_s;ERS;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe progressive;CP;7;0.00644363;b4_s;FEU;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe progressive;CP;7;0.00514969;b4_s;HEG;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe progressive;CP;7;0.00513567;b4_s;PEU;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe progressive;CP;7;0.00729668;b4_s;PIN;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe progressive;CP;7;0.00626559;b4_s;RES;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe progressive;CP;7;0.00162135;b4_s;SAB;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe progressive;CP;7;0.00616769;b4_s;THO;SpeciesXOffsetDbhXOffsetDbh;inconnu
+Coupe progressive;CP;7;-0.00742899;b5;;OffsetDbhXOffsetDbhXDummyDbh;inconnu
+Coupe progressive;CP;7;0.1450978;b6;;LogNbHa;inconnu
+Éclaircie commerciale;EC;8;-0.94582889;b0;;Intercept;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;-1.30860167;b1_s;BOJ;Species;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;-0.83930615;b1_s;BOP;Species;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;-0.26454757;b1_s;EPX;Species;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;-0.32569792;b1_s;ERR;Species;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;-0.48997813;b1_s;ERS;Species;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;-0.53157358;b1_s;FEU;Species;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;-0.50609789;b1_s;HEG;Species;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;0.4035988;b1_s;PEU;Species;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;-0.23062955;b1_s;PIN;Species;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;0.44887511;b1_s;RES;Species;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;3.34165661;b1_s;SAB;Species;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;0;b1_s;THO;Species;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;-0.02466765;b2_s;BOJ;SpeciesXOffsetDbh;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;-0.0169965;b2_s;BOP;SpeciesXOffsetDbh;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;-0.00257995;b2_s;EPX;SpeciesXOffsetDbh;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;-0.04468478;b2_s;ERR;SpeciesXOffsetDbh;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;-0.00791082;b2_s;ERS;SpeciesXOffsetDbh;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;-0.00930882;b2_s;FEU;SpeciesXOffsetDbh;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;-0.01580063;b2_s;HEG;SpeciesXOffsetDbh;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;0.05410976;b2_s;PEU;SpeciesXOffsetDbh;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;0.0300061;b2_s;PIN;SpeciesXOffsetDbh;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;0.11206607;b2_s;RES;SpeciesXOffsetDbh;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;0.25998962;b2_s;SAB;SpeciesXOffsetDbh;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;0.0305854;b2_s;THO;SpeciesXOffsetDbh;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;0.08164092;b3_s;BOJ;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;0.18180243;b3_s;BOP;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;0.07768773;b3_s;EPX;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;0.11041603;b3_s;ERR;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;0.05606433;b3_s;ERS;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;0.06834732;b3_s;FEU;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;0.06573231;b3_s;HEG;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;-0.00614908;b3_s;PEU;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;-0.01378015;b3_s;PIN;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;-0.10235694;b3_s;RES;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;-0.21169407;b3_s;SAB;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 6
+Éclaircie commerciale;EC;8;-0.00453007;b3_s;THO;SpeciesXOffsetDbhXDummyDbh;Fortin 2014 tableau 6
+Éclaircie sélective;ES;9;-0.8301865;b0;;Intercept;inconnu
+Éclaircie sélective;ES;9;-1.34389146;b1_s;BOJ;Species;inconnu
+Éclaircie sélective;ES;9;-0.30184024;b1_s;BOP;Species;inconnu
+Éclaircie sélective;ES;9;-0.84713112;b1_s;EPX;Species;inconnu
+Éclaircie sélective;ES;9;-0.44740596;b1_s;ERR;Species;inconnu
+Éclaircie sélective;ES;9;-0.84194339;b1_s;ERS;Species;inconnu
+Éclaircie sélective;ES;9;-1.98398454;b1_s;FEU;Species;inconnu
+Éclaircie sélective;ES;9;-0.6622137;b1_s;HEG;Species;inconnu
+Éclaircie sélective;ES;9;-1.08803913;b1_s;PEU;Species;inconnu
+Éclaircie sélective;ES;9;-2.26596192;b1_s;PIN;Species;inconnu
+Éclaircie sélective;ES;9;-1.16194001;b1_s;RES;Species;inconnu
+Éclaircie sélective;ES;9;2.17366831;b1_s;SAB;Species;inconnu
+Éclaircie sélective;ES;9;0;b1_s;THO;Species;inconnu
+Éclaircie sélective;ES;9;0.07166619;b2;;OffsetDbh;inconnu
+Éclaircie sélective;ES;9;-0.00043415;b4;;OffsetDbhXOffsetDbh;inconnu
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;-3.8026018;b0;;Intercept;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;-1.94346144;b1_s;BOJ;Species;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;-4.19403359;b1_s;BOP;Species;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;-1.87945123;b1_s;EPX;Species;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;-2.0949387;b1_s;ERR;Species;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;-2.60462202;b1_s;ERS;Species;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;-2.30132187;b1_s;FEU;Species;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;-0.64336876;b1_s;HEG;Species;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;-1.10964883;b1_s;PEU;Species;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;-0.04518827;b1_s;RES;Species;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;1.31270923;b1_s;SAB;Species;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;0;b1_s;THO;Species;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;-0.19253796;b2;;OffsetDbh;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;0.48121613;b3_s;BOJ;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;0.57215573;b3_s;BOP;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;0.51628804;b3_s;EPX;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;0.63817103;b3_s;ERR;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;0.52606498;b3_s;ERS;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;0.44319331;b3_s;FEU;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;0.3877629;b3_s;HEG;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;0.58550352;b3_s;PEU;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;0.24362256;b3_s;RES;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;0.64672249;b3_s;SAB;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;0.2080001;b3_s;THO;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;-0.0035289;b4_s;BOJ;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;0.00677553;b4_s;BOP;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;-0.00557219;b4_s;EPX;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;-0.00862651;b4_s;ERR;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;-0.00338185;b4_s;ERS;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;-0.00229595;b4_s;FEU;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;-0.00216931;b4_s;HEG;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;-0.00580328;b4_s;PEU;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;-0.01314238;b4_s;RES;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;-0.02840593;b4_s;SAB;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;0.00014124;b4_s;THO;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 35% chantier forêt feuillue R-06;CP_35;10;0.2762934;b6;;LogNbHa;AT SSRF-7 Annexe 3 eq1
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;-3.55859193;b0;;Intercept;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;-3.994938;b1_s;BOJ;Species;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;-4.0323751;b1_s;BOP;Species;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;-0.11774298;b1_s;EPX;Species;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;-3.48524316;b1_s;ERR;Species;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;-2.78765099;b1_s;ERS;Species;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;-1.85042043;b1_s;FEU;Species;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;-3.11110201;b1_s;HEG;Species;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;0.94929198;b1_s;SAB;Species;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;0;b1_s;THO;Species;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;-0.08055226;b2_s;BOJ;SpeciesXOffsetDbh;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;-0.01085203;b2_s;BOP;SpeciesXOffsetDbh;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;0.43069164;b2_s;EPX;SpeciesXOffsetDbh;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;-0.10160983;b2_s;ERR;SpeciesXOffsetDbh;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;-0.04910337;b2_s;ERS;SpeciesXOffsetDbh;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;-0.00072316;b2_s;FEU;SpeciesXOffsetDbh;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;-0.14950032;b2_s;HEG;SpeciesXOffsetDbh;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;0.36389172;b2_s;SAB;SpeciesXOffsetDbh;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;1.83330101;b2_s;THO;SpeciesXOffsetDbh;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;0.32153647;b3_s;BOJ;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;0.44203083;b3_s;BOP;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;-0.66280873;b3_s;EPX;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;0.27599002;b3_s;ERR;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;0.21614789;b3_s;ERS;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;0.1586999;b3_s;FEU;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;0.57768037;b3_s;HEG;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;-0.07458616;b3_s;SAB;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;-1.83212638;b3_s;THO;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;-0.00270596;b5_s;BOJ;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;-0.00725033;b5_s;BOP;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;0.02247208;b5_s;EPX;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;-0.00026639;b5_s;ERR;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;-0.00106987;b5_s;ERS;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;-0.00333589;b5_s;FEU;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;-0.02082777;b5_s;HEG;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;-0.01157106;b5_s;SAB;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;-0.00061536;b5_s;THO;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq2
+Coupe partielle 45% chantier forêt feuillue R-06;CP_45;11;0.67521827;b6;;LogNbHa;AT SSRF-7 Annexe 3 eq2
+CPI_CP Outaouais;CPI_CP;12;-2.35301475;b0;;Intercept;inconnu
+CPI_CP Outaouais;CPI_CP;12;0.03439946;b2_s;BOJ;SpeciesXOffsetDbh;inconnu
+CPI_CP Outaouais;CPI_CP;12;-0.1016383;b2_s;ERR;SpeciesXOffsetDbh;inconnu
+CPI_CP Outaouais;CPI_CP;12;0.01955186;b2_s;ERS;SpeciesXOffsetDbh;inconnu
+CPI_CP Outaouais;CPI_CP;12;-0.0843887;b2_s;FEU;SpeciesXOffsetDbh;inconnu
+CPI_CP Outaouais;CPI_CP;12;-0.12625061;b2_s;HEG;SpeciesXOffsetDbh;inconnu
+CPI_CP Outaouais;CPI_CP;12;0.12254247;b2_s;RES;SpeciesXOffsetDbh;inconnu
+CPI_CP Outaouais;CPI_CP;12;0.17663055;b2_s;SAB;SpeciesXOffsetDbh;inconnu
+CPI_CP Outaouais;CPI_CP;12;0.08006515;b3_s;BOJ;SpeciesXOffsetDbhXDummyDbh;inconnu
+CPI_CP Outaouais;CPI_CP;12;0.35901982;b3_s;ERR;SpeciesXOffsetDbhXDummyDbh;inconnu
+CPI_CP Outaouais;CPI_CP;12;0.07996454;b3_s;ERS;SpeciesXOffsetDbhXDummyDbh;inconnu
+CPI_CP Outaouais;CPI_CP;12;0.23074016;b3_s;FEU;SpeciesXOffsetDbhXDummyDbh;inconnu
+CPI_CP Outaouais;CPI_CP;12;0.25484702;b3_s;HEG;SpeciesXOffsetDbhXDummyDbh;inconnu
+CPI_CP Outaouais;CPI_CP;12;-0.13283388;b3_s;RES;SpeciesXOffsetDbhXDummyDbh;inconnu
+CPI_CP Outaouais;CPI_CP;12;-0.23456383;b3_s;SAB;SpeciesXOffsetDbhXDummyDbh;inconnu
+CPI_CP Outaouais;CPI_CP;12;-0.00103975;b4_s;BOJ;SpeciesXOffsetDbhXOffsetDbh;inconnu
+CPI_CP Outaouais;CPI_CP;12;-0.00456797;b4_s;ERR;SpeciesXOffsetDbhXOffsetDbh;inconnu
+CPI_CP Outaouais;CPI_CP;12;-0.00070092;b4_s;ERS;SpeciesXOffsetDbhXOffsetDbh;inconnu
+CPI_CP Outaouais;CPI_CP;12;-0.00197809;b4_s;FEU;SpeciesXOffsetDbhXOffsetDbh;inconnu
+CPI_CP Outaouais;CPI_CP;12;-0.004236;b4_s;HEG;SpeciesXOffsetDbhXOffsetDbh;inconnu
+CPI_CP Outaouais;CPI_CP;12;0.00066931;b4_s;RES;SpeciesXOffsetDbhXOffsetDbh;inconnu
+CPI_CP Outaouais;CPI_CP;12;0.00069426;b4_s;SAB;SpeciesXOffsetDbhXOffsetDbh;inconnu
+CPI_CP Outaouais;CPI_CP;12;-0.03921084;b6_s;BOJ;SpeciesXLogNbHa;inconnu
+CPI_CP Outaouais;CPI_CP;12;0.00186909;b6_s;ERR;SpeciesXLogNbHa;inconnu
+CPI_CP Outaouais;CPI_CP;12;0.01513311;b6_s;ERS;SpeciesXLogNbHa;inconnu
+CPI_CP Outaouais;CPI_CP;12;-0.0302881;b6_s;FEU;SpeciesXLogNbHa;inconnu
+CPI_CP Outaouais;CPI_CP;12;0.6069964;b6_s;HEG;SpeciesXLogNbHa;inconnu
+CPI_CP Outaouais;CPI_CP;12;0.03574136;b6_s;RES;SpeciesXLogNbHa;inconnu
+CPI_CP Outaouais;CPI_CP;12;0.48703407;b6_s;SAB;SpeciesXLogNbHa;inconnu
+CPI_RL Outaouais;CPI_RL;13;-3.97849196;b0;;Intercept;inconnu
+CPI_RL Outaouais;CPI_RL;13;1.14596242;b1_s;AUT;Species;inconnu
+CPI_RL Outaouais;CPI_RL;13;1.84543013;b1_s;BOJ;Species;inconnu
+CPI_RL Outaouais;CPI_RL;13;1.87210695;b1_s;ERR;Species;inconnu
+CPI_RL Outaouais;CPI_RL;13;0.86198108;b1_s;ERS;Species;inconnu
+CPI_RL Outaouais;CPI_RL;13;5.72094139;b1_s;HEG;Species;inconnu
+CPI_RL Outaouais;CPI_RL;13;3.88712623;b1_s;SAB;Species;inconnu
+CPI_RL Outaouais;CPI_RL;13;0;b1_s;TIL;Species;inconnu
+CPI_RL Outaouais;CPI_RL;13;0.11973834;b2_s;AUT;SpeciesXOffsetDbh;inconnu
+CPI_RL Outaouais;CPI_RL;13;0.16227716;b2_s;BOJ;SpeciesXOffsetDbh;inconnu
+CPI_RL Outaouais;CPI_RL;13;0.17249138;b2_s;ERR;SpeciesXOffsetDbh;inconnu
+CPI_RL Outaouais;CPI_RL;13;0.13829802;b2_s;ERS;SpeciesXOffsetDbh;inconnu
+CPI_RL Outaouais;CPI_RL;13;0.07488048;b2_s;HEG;SpeciesXOffsetDbh;inconnu
+CPI_RL Outaouais;CPI_RL;13;0.35262328;b2_s;SAB;SpeciesXOffsetDbh;inconnu
+CPI_RL Outaouais;CPI_RL;13;0.17907829;b2_s;TIL;SpeciesXOffsetDbh;inconnu
+CPI_RL Outaouais;CPI_RL;13;0.01318725;b4_s;AUT;SpeciesXOffsetDbhXOffsetDbh;inconnu
+CPI_RL Outaouais;CPI_RL;13;0.02147732;b4_s;BOJ;SpeciesXOffsetDbhXOffsetDbh;inconnu
+CPI_RL Outaouais;CPI_RL;13;0.01519632;b4_s;ERR;SpeciesXOffsetDbhXOffsetDbh;inconnu
+CPI_RL Outaouais;CPI_RL;13;0.01160485;b4_s;ERS;SpeciesXOffsetDbhXOffsetDbh;inconnu
+CPI_RL Outaouais;CPI_RL;13;0.01104021;b4_s;HEG;SpeciesXOffsetDbhXOffsetDbh;inconnu
+CPI_RL Outaouais;CPI_RL;13;-0.00222749;b4_s;SAB;SpeciesXOffsetDbhXOffsetDbh;inconnu
+CPI_RL Outaouais;CPI_RL;13;0.01885718;b4_s;TIL;SpeciesXOffsetDbhXOffsetDbh;inconnu
+CPI_RL Outaouais;CPI_RL;13;-0.01476013;b5_s;AUT;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;inconnu
+CPI_RL Outaouais;CPI_RL;13;-0.02421596;b5_s;BOJ;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;inconnu
+CPI_RL Outaouais;CPI_RL;13;-0.01666505;b5_s;ERR;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;inconnu
+CPI_RL Outaouais;CPI_RL;13;-0.01329403;b5_s;ERS;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;inconnu
+CPI_RL Outaouais;CPI_RL;13;-0.01439581;b5_s;HEG;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;inconnu
+CPI_RL Outaouais;CPI_RL;13;-0.08944709;b5_s;SAB;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;inconnu
+CPI_RL Outaouais;CPI_RL;13;-0.02085521;b5_s;TIL;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;inconnu
+CPI_RL Outaouais;CPI_RL;13;0.01047049;b7_s;AUT;SpeciesXBasalAreaHa;inconnu
+CPI_RL Outaouais;CPI_RL;13;-0.01728941;b7_s;BOJ;SpeciesXBasalAreaHa;inconnu
+CPI_RL Outaouais;CPI_RL;13;-0.00633438;b7_s;ERR;SpeciesXBasalAreaHa;inconnu
+CPI_RL Outaouais;CPI_RL;13;0.04387896;b7_s;ERS;SpeciesXBasalAreaHa;inconnu
+CPI_RL Outaouais;CPI_RL;13;0.00685105;b7_s;HEG;SpeciesXBasalAreaHa;inconnu
+CPI_RL Outaouais;CPI_RL;13;0.12782788;b7_s;SAB;SpeciesXBasalAreaHa;inconnu
+CPI_RL Outaouais;CPI_RL;13;0.03923056;b7_s;TIL;SpeciesXBasalAreaHa;inconnu
+CRS Outaouais;CRS;14;3.09487472;b0;;Intercept;inconnu
+CRS Outaouais;CRS;14;0.14173102;b2_s;AUT;SpeciesXOffsetDbh;inconnu
+CRS Outaouais;CRS;14;0.2093959;b2_s;ERS;SpeciesXOffsetDbh;inconnu
+CRS Outaouais;CRS;14;0.09216328;b2_s;HEG;SpeciesXOffsetDbh;inconnu
+CRS Outaouais;CRS;14;-0.12380141;b3;;OffsetDbhXDummyDbh;inconnu
+CRS Outaouais;CRS;14;-0.30954089;b6_s;AUT;SpeciesXLogNbHa;inconnu
+CRS Outaouais;CRS;14;-0.66842222;b6_s;ERS;SpeciesXLogNbHa;inconnu
+CRS Outaouais;CRS;14;-0.05070238;b6_s;HEG;SpeciesXLogNbHa;inconnu
+Coupe jardinage CIMOTFF;CJP;15;0.28804198;b0;;Intercept;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;-2.32552076;b1_s;BOJ;Species;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;-2.84950942;b1_s;BOP;Species;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;-2.53718825;b1_s;EPX;Species;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;-1.73322646;b1_s;ERR;Species;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;-1.88493886;b1_s;ERS;Species;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;-1.62877683;b1_s;FEU;Species;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;-1.5841169;b1_s;HEG;Species;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;-2.25356903;b1_s;PEU;Species;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;-4.07898365;b1_s;RES;Species;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;1.10455503;b1_s;SAB;Species;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;0;b1_s;THO;Species;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;-0.07279981;b2;;OffsetDbh;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;0.18900835;b3_s;BOJ;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;0.36728682;b3_s;BOP;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;-0.05635906;b3_s;EPX;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;0.26613327;b3_s;ERR;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;0.20501183;b3_s;ERS;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;0.11433744;b3_s;FEU;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;0.19917589;b3_s;HEG;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;0.41937432;b3_s;PEU;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;0.19220862;b3_s;RES;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;0.82267349;b3_s;SAB;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;0.00602513;b3_s;THO;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;-0.00114366;b4_s;BOJ;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;-0.00250788;b4_s;BOP;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;0.00991623;b4_s;EPX;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;-0.0015614;b4_s;ERR;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;-0.00126963;b4_s;ERS;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;0.00001792;b4_s;FEU;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;-0.00219069;b4_s;HEG;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;-0.00374507;b4_s;PEU;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;-0.00182306;b4_s;RES;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;-0.01862277;b4_s;SAB;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;0.00221255;b4_s;THO;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq3
+Coupe jardinage CIMOTFF;CJP;15;-0.05455247;b6;;LogNbHa;AT SSRF-7 Annexe 3 eq3
+Coupe de jardinage par groupe d'arbres CIMOTFF;CJPG_QM;16;-0.2519;b0;;Intercept;AT SSRF-7 Annexe 3 eq4
+Coupe de jardinage par groupe d'arbres CIMOTFF;CJPG_QM;16;-1.6816;b1_s;ERS;Species;AT SSRF-7 Annexe 3 eq4
+Coupe de jardinage par groupe d'arbres CIMOTFF;CJPG_QM;16;-2.0636;b1_s;FEU;Species;AT SSRF-7 Annexe 3 eq4
+Coupe de jardinage par groupe d'arbres CIMOTFF;CJPG_QM;16;-0.1899;b1_s;HEG;Species;AT SSRF-7 Annexe 3 eq4
+Coupe de jardinage par groupe d'arbres CIMOTFF;CJPG_QM;16;0;b1_s;RES;Species;AT SSRF-7 Annexe 3 eq4
+Coupe de jardinage par groupe d'arbres CIMOTFF;CJPG_QM;16;-0.0861;b2_s;ERS;SpeciesXOffsetDbh;AT SSRF-7 Annexe 3 eq4
+Coupe de jardinage par groupe d'arbres CIMOTFF;CJPG_QM;16;-0.1479;b2_s;FEU;SpeciesXOffsetDbh;AT SSRF-7 Annexe 3 eq4
+Coupe de jardinage par groupe d'arbres CIMOTFF;CJPG_QM;16;0.0182;b2_s;HEG;SpeciesXOffsetDbh;AT SSRF-7 Annexe 3 eq4
+Coupe de jardinage par groupe d'arbres CIMOTFF;CJPG_QM;16;0.00995;b2_s;RES;SpeciesXOffsetDbh;AT SSRF-7 Annexe 3 eq4
+Coupe de jardinage par groupe d'arbres CIMOTFF;CJPG_QM;16;0.1911;b3_s;ERS;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq4
+Coupe de jardinage par groupe d'arbres CIMOTFF;CJPG_QM;16;0.2974;b3_s;FEU;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq4
+Coupe de jardinage par groupe d'arbres CIMOTFF;CJPG_QM;16;0.1675;b3_s;HEG;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq4
+Coupe de jardinage par groupe d'arbres CIMOTFF;CJPG_QM;16;-0.0515;b3_s;RES;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq4
+Coupe de jardinage par groupe d'arbres CIMOTFF;CJPG_QM;16;-0.00079;b4_s;ERS;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq4
+Coupe de jardinage par groupe d'arbres CIMOTFF;CJPG_QM;16;-0.00213;b4_s;FEU;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq4
+Coupe de jardinage par groupe d'arbres CIMOTFF;CJPG_QM;16;-0.00418;b4_s;HEG;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq4
+Coupe de jardinage par groupe d'arbres CIMOTFF;CJPG_QM;16;0.000828;b4_s;RES;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq4
+Coupe de jardinage par groupe d'arbres CIMOTFF;CJPG_QM;16;-0.0657;b6;;LogNbHa;AT SSRF-7 Annexe 3 eq4
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;-1.2306;b0;;Intercept;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;-0.1331;b1_s;BOJ;Species;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;0.8879;b1_s;BOP;Species;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;-0.1082;b1_s;EPX;Species;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;0.3411;b1_s;ERR;Species;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;0.2175;b1_s;ERS;Species;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;0.0569;b1_s;FEU;Species;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;1.4062;b1_s;HEG;Species;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;0.5432;b1_s;PEU;Species;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;-1.2737;b1_s;RES;Species;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;4.0956;b1_s;SAB;Species;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;0;b1_s;THO;Species;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;0.2264;b2_s;BOJ;SpeciesXOffsetDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;0.1729;b2_s;BOP;SpeciesXOffsetDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;0.234;b2_s;EPX;SpeciesXOffsetDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;-0.0467;b2_s;ERR;SpeciesXOffsetDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;0.1961;b2_s;ERS;SpeciesXOffsetDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;0.0197;b2_s;FEU;SpeciesXOffsetDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;0.1906;b2_s;HEG;SpeciesXOffsetDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;0.8569;b2_s;PEU;SpeciesXOffsetDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;-0.0584;b2_s;RES;SpeciesXOffsetDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;0.2764;b2_s;SAB;SpeciesXOffsetDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;-0.217;b2_s;THO;SpeciesXOffsetDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;-0.1402;b3_s;BOJ;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;-0.0142;b3_s;BOP;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;-0.2028;b3_s;EPX;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;0.2237;b3_s;ERR;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;-0.1237;b3_s;ERS;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;0.0343;b3_s;FEU;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;-0.1013;b3_s;HEG;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;-0.5919;b3_s;PEU;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;0.1491;b3_s;RES;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;-0.3282;b3_s;SAB;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;0.24;b3_s;THO;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;0.0225;b4_s;BOJ;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;0.0114;b4_s;BOP;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;0.0258;b4_s;EPX;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;-0.00222;b4_s;ERR;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;0.0177;b4_s;ERS;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;0.00509;b4_s;FEU;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;0.0133;b4_s;HEG;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;0.0642;b4_s;PEU;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;0.00456;b4_s;RES;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;0.00206;b4_s;SAB;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;-0.0231;b4_s;THO;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;-0.0232;b5_s;BOJ;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;-0.013;b5_s;BOP;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;-0.0227;b5_s;EPX;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;-0.00053;b5_s;ERR;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;-0.0178;b5_s;ERS;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;-0.0051;b5_s;FEU;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;-0.0157;b5_s;HEG;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;-0.069;b5_s;PEU;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;-0.00577;b5_s;RES;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;-0.00177;b5_s;SAB;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;0.0235;b5_s;THO;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière couvert parmanent CIMOTFF;CPI_CP_CIMOTF;17;-0.0867;b6;;LogNbHa;AT SSRF-7 Annexe 3 eq5
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;-6.3042;b0;;Intercept;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;-0.2325;b1_s;BOJ;Species;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;1.665;b1_s;BOP;Species;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;0.6628;b1_s;EPX;Species;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;0.5957;b1_s;ERR;Species;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;0.5281;b1_s;ERS;Species;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;0.2895;b1_s;FEU;Species;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;3.0982;b1_s;HEG;Species;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;1.3876;b1_s;PEU;Species;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;-0.112;b1_s;RES;Species;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;3.1611;b1_s;SAB;Species;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;0;b1_s;THO;Species;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;0.0933;b2;;OffsetDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;-0.0149;b3_s;BOJ;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;-0.0135;b3_s;BOP;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;-0.0713;b3_s;EPX;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;0.0363;b3_s;ERR;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;0.0436;b3_s;ERS;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;-0.0929;b3_s;FEU;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;-0.0805;b3_s;HEG;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;0.0386;b3_s;PEU;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;-0.1053;b3_s;RES;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;0.0383;b3_s;SAB;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;-0.0223;b3_s;THO;SpeciesXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;0.00964;b4_s;BOJ;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;-0.00089;b4_s;BOP;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;0.00687;b4_s;EPX;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;0.0131;b4_s;ERR;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;0.00808;b4_s;ERS;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;0.012;b4_s;FEU;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;-0.00148;b4_s;HEG;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;0.00496;b4_s;PEU;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;0.0103;b4_s;RES;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;-0.00615;b4_s;SAB;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;-0.00041;b4_s;THO;SpeciesXOffsetDbhXOffsetDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;-0.0106;b5_s;BOJ;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;-0.00384;b5_s;BOP;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;-0.00465;b5_s;EPX;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;-0.0133;b5_s;ERR;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;-0.00938;b5_s;ERS;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;-0.0113;b5_s;FEU;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;0.00239;b5_s;HEG;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;-0.00689;b5_s;PEU;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;-0.00986;b5_s;RES;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;0.00326;b5_s;SAB;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;0;b5_s;THO;SpeciesXOffsetDbhXOffsetDbhXDummyDbh;AT SSRF-7 Annexe 3 eq6
+Coupe progressive irrégulière à régénération lente CIMOTFF;CPI_RL_CIMOTF;18;0.739;b6;;LogNbHa;AT SSRF-7 Annexe 3 eq6

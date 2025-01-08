@@ -1,0 +1,27 @@
+Package: OutilsDRF
+Type: Package
+Title: Un package contenant plusieurs outils de prédictions pour les simulateur de croissance forestière de la DRF
+Version: 2.0.0
+Authors@R: c(
+    person("Isabelle", "Auger", email = "isabelle.auger@mrnf.gouv.qc.ca", role = c("aut", "cre")))
+Description: Le package contient plusieurs outils de prédiction:
+- relations hauteur-diamètre pour estimer la hauteur totale en mètre d'un arbre
+- tarif de cubage pour estimer le volume marchand brut en dm3 d'un arbre
+- simulateur de coupe pour estimer la probabilité d'un arbre d'être coupé lors d'un traitement de récolte
+- billonage à partir d'équations de défilement pour estimer le volume des billons dans un arbre
+License: LGPL-3 + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.3.2
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+VignetteBuilder: knitr
+Imports:
+    rockchalk
+Depends: 
+    tidyverse,
+    data.table,
+    R (>= 2.10)

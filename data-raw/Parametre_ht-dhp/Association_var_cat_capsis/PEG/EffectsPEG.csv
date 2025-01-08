@@ -1,0 +1,8 @@
+Effect;NumDF;DenDF;FValue;ProbF
+ldhp;1;870;16.22;<.0001
+ldhp2;1;1390;254.67;<.0001
+ldhp*st;1;1388;100.20;<.0001
+ldhp*rdhp;1;1407;98.88;<.0001
+ldhp*milieu;2;579;27.17;<.0001
+ldhp*vp;6;567;6.97;<.0001
+ldhp*ptot;1;588;16.98;<.0001

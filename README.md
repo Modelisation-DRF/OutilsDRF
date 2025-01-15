@@ -1,7 +1,7 @@
 [![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0) [![R-CMD-check](https://github.com/Modelisation-DRF/RNatura2014/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Modelisation-DRF/RNatura2014/actions/workflows/R-CMD-check.yaml)
 ## Le package OutilsDRF
 
-Un package contenant plusieurs outils de prédictions pour les simulateur de croissance forestière de la DRF
+Un package contenant plusieurs outils de prédiction pour les simulateurs de croissance forestière de la DRF
 
 Auteurs: Isabelle Auger - Ministère des Ressources Naturelles et des Forêts du Québec
 
@@ -9,10 +9,10 @@ Courriel: isabelle.auger@mrnf.gouv.qc.ca
 
 ## Introduction
 Le package contient plusieurs outils de prédiction:
-- relations hauteur-diamètre pour estimer la hauteur totale en mètre d'un arbre
-- tarif de cubage pour estimer le volume marchand brut en dm3 d'un arbre
-- simulateur de coupe pour estimer la probabilité d'un arbre d'être coupé lors d'un traitement de récolte
-- billonage à partir d'équations de défilement pour estimer le volume des billons dans un arbre
+Relations hauteur-diamètre pour estimer la hauteur totale en mètre d'un arbre
+Tarif de cubage pour estimer le volume marchand brut en dm3 d'un arbre
+Simulateur de coupe pour estimer la probabilité d'un arbre d'être coupé lors d'un traitement de récolte
+Billonage à partir d'équations de défilement pour estimer le volume des billes dans un arbre
 
 
 ## Documentation et références

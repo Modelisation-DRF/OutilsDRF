@@ -5,16 +5,11 @@
 
 #### Équations de coupe ####
 
-# fichier association des essences pour le modèle coupe
-coupe_ass_ess <- read_delim("data-raw/Parametre_coupe/species.csv", delim = ';')
-# dans la liste des essences, il faut ajouter les essences individuelles des essences groupées d'artemis
-epx <- data.frame(essence=c('EPB','EPR','EPN','EPO'), essence_coupe='EPX')
-chx <- data.frame(essence=c('CHB','CHG','CHR','CHE'), essence_coupe='CHX')
-pin <- data.frame(essence=c('PIB','PIR'), essence_coupe='PIN')
-peu <- data.frame(essence=c('PEB','PED','PEG','PET'), essence_coupe='PEU')
 
-# autres groupes d'artémis: AUT, RES, FEU, F_0, F_1, F0R
-# groupe de samare
+
+
+########################################################
+
 
 # Fichier des paramètres du modèle de coupe
 param   <- read_delim("data-raw/Parametre_coupe/parmsNew.csv", delim = ';')
@@ -135,22 +130,49 @@ mat2[(num0+1):nb_param, (num0+1):nb_param] <- list_covb_0_d
 
 list_covb_modif[[19]] <- mat2
 
+####################################################################
+
+# fichier association des essences pour le modèle coupe
+# coupe_ass_ess <- read_delim("data-raw/Parametre_coupe/species.csv", delim = ';')
+# # dans la liste des essences, il faut ajouter les essences individuelles des essences groupées d'artemis
+# epx <- data.frame(essence=c('EPB','EPR','EPN','EPO'), essence_coupe='EPX')
+# chx <- data.frame(essence=c('CHB','CHG','CHR','CHE'), essence_coupe='CHX')
+# pin <- data.frame(essence=c('PIB','PIR'), essence_coupe='PIN')
+# peu <- data.frame(essence=c('PEB','PED','PEG','PET'), essence_coupe='PEU')
+# autres groupes d'artémis: AUT, RES, FEU, F_0, F_1, F0R
+# groupe de samare
+
+coupe_ess <- read_delim("data-raw/Parametre_coupe/Association-EspeceTot 20250113.csv", delim = ';')
+# une colonne par traitement, transposer le fichier pour avoir une colonne traitement
+coupe_ess2 <- coupe_ess %>% group_by(SpeciesName) %>% pivot_longer(cols = CA:CPI_RL_CIMOTF, names_to = 'code_trt', values_to = 'essence_coupe') %>% rename(essence=SpeciesName)
+# ajouter le numérode du trt
+list_trt <- param %>% select(num_trt, code_trt) %>% unique()
+coupe_ess3 <- left_join(coupe_ess2, list_trt) %>% select(num_trt, code_trt, essence, essence_coupe)
+
+
+############################################
+
+# renommer les objets
 coupe_param_covb <- list_covb_modif
 coupe_param <- param
+coupe_ass_ess <- coupe_ess3
 
+
+############################################
 
 # ajouter les nouveaux fichiers au sysdata existant
 # Créer un environnement temporaire
 temp_env <- new.env()
 # Charger le fichier sysdata.rda dans cet environnement
-load("R/sysdata - Copie.rda", envir = temp_env)
+load("R/sysdata.rda", envir = temp_env)
 # Vérifier les objets actuellement dans sysdata.rda
 ls(envir = temp_env)
 # Ajouter les nouveaux objets à l'environnement temporaire
 
-temp_env$coupe_param_covb <- coupe_param_covb
-temp_env$coupe_param <- coupe_param
+#temp_env$coupe_param_covb <- coupe_param_covb
+#temp_env$coupe_param <- coupe_param
 temp_env$coupe_ass_ess <- coupe_ass_ess
+view(temp_env$coupe_ass_ess)
 
 # Sauvegarder tous les objets présents dans l'environnement temporaire
 save(list = ls(envir = temp_env), file = "R/sysdata.rda", envir = temp_env)

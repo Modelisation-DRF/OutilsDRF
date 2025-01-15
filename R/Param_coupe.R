@@ -150,3 +150,5 @@ param_coupe <- function(trt_coupe, mode_simul='DET', nb_iter=1, seed_value=NULL)
   return(param_ess3)
 }
 
+
+

@@ -68,55 +68,88 @@ get_modele <- function(type_modele, essence) {
 
 get_diam <- function(fic) {
 
-  ### CHANGER CE CODE POUR DU DATA.TABLE AU LIEU DU DPLYR
-
+  #on s'assure que fic est une data.table
+  setDT(fic)
   # ne garder que les arbres dont l'essence a un modèle
-  data_filtre <- fic %>% filter(essence %in% defil_liste_ess) %>%
-    mutate(DIA_MM=0, # cette variable doit être dans le fichier mais ne sert pas
-           z = (HT_REELLE_M - HAUTEUR_M)/(HT_REELLE_M-1.3),
-           x = HAUTEUR_M/HT_REELLE_M)
+  data_filtre <- fic[essence %in% defil_liste_ess]
+  DIA_MM <- 0
+  z <- (data_filtre$HT_REELLE_M - data_filtre$HAUTEUR_M) / (data_filtre$HT_REELLE_M - 1.3)
+  x <- data_filtre$HAUTEUR_M / data_filtre$HT_REELLE_M
+  new_columns <- data.table(DIA_MM = DIA_MM, z = z, x = x)
 
+  #on ajoute les colonnes pour completer data_filtre
+  data_filtre <- cbind(data_filtre, new_columns)
+  setDT(data_filtre)
   # s'il y a au moins 1 obs à traiter
   if (nrow(data_filtre)>0) {
-
     # traite les arbres d'une essence à la fois
-    data_tous <- NULL
+    data_tous <- data.table()
     for (ess in defil_liste_ess){
       # ess='BOP'
-
-      data_ess <- data_filtre %>% filter(essence==ess)
-
+      print(defil_liste_ess)
+      data_ess <- data_filtre[essence == ess]
       # s'il y a des arbres de cette essence
       if (nrow(data_ess)>0) {
 
         # si l'ess n'est pas PIB, essayer le modèle complet (il n'y a pas de modèle complet pour PIB)
         if (ess != 'PIB') {
-
+          print(defil_liste_ess)
           # créer les groupes de veg_pot
-          if (!all(is.na(defil_group_vp[[ess]]))) { # si la colonne ess n'est pas vide, on fait l'association
-            group_temp <- defil_group_vp
-            group_temp$group.veg <- group_temp[[ess]]
-            data_ess <- left_join(data_ess,group_temp[,c('veg_pot','group.veg')], by='veg_pot')
+          if (any(!is.na(defil_group_vp[[ess]]))) { # si la colonne ess n'est pas vide, on fait l'association
+            #on s'assure que ce sont des data.table
+            setDT(defil_group_vp)
+            setDT(data_ess)
+            #on ajoute la colonne group.veg
+            #on copie pour ne pas modifier l'original defil_group
+            group_temp <- copy(defil_group_vp)
+            group_temp[, group.veg := get(ess)]
+            #on crée la nouvelle data.frame en reliant par veg_pot
+            data_ess <- data_ess[group_temp[, .(veg_pot, group.veg)], on = "veg_pot"]
+            #print(data_ess)
           }
+
           # créer les groupes de sous-domaine
-          if (!all(is.na(defil_group_sd[[ess]]))) { # si la colonne ess n'est pas vide, on fait l'association
-            group_temp <- defil_group_sd
-            group_temp$group.sDomBio <- group_temp[[ess]]
-            data_ess <- left_join(data_ess,group_temp[,c('sdom_bio','group.sDomBio')], by='sdom_bio')
+          if (any(!is.na(defil_group_sd[[ess]]))) { # si la colonne ess n'est pas vide, on fait l'association
+            #on s'assure que ce sont des data.table
+            setDT(defil_group_sd)
+            setDT(data_ess)
+            #on ajoute la colonne group.sDomBio
+            #on copie pour ne pas modifier l'original defil_group
+            group_temp <- copy(defil_group_sd)
+            group_temp[, group.sDomBio := get(ess)]
+            #on crée la nouvelle data.frame en reliant par sdom_bio
+            data_ess <- data_ess[group_temp[, .(sdom_bio, group.sDomBio)], on = "sdom_bio"]
+            #print(names(data_ess))
+            #print(names(group_temp))
+            #print(data_ess)
           }
+
           # créer les groupes de la classe de drainage
-          if (!all(is.na(defil_group_dr[[ess]]))) { # si la colonne ess n'est pas vide, on fait l'association
-            group_temp <- defil_group_dr
-            group_temp$group.drainage <- group_temp[[ess]]
-            data_ess <- left_join(data_ess,group_temp[,c('cl_drai','group.drainage')], by='cl_drai')
+          if (any(!is.na(defil_group_dr[[ess]]))) { # si la colonne ess n'est pas vide, on fait l'association
+            #on s'assure que ce sont des data.table
+            setDT(defil_group_dr)
+            setDT(data_ess)
+            #on ajoute la colonne group.drainage
+            #on copie pour ne pas modifier l'original defil_group
+            group_temp <- copy(defil_group_dr)
+            group_temp[, group.drainage := get(ess)]
+            #on crée la nouvelle data.frame en reliant par cl_drai
+            data_ess <- data_ess[group_temp[, .(cl_drai, group.drainage)], on = "cl_drai"]
+            #print(data_ess)
           }
 
           # on essaie de prédire avec le modèle complet
           # aussitot qu'il y a une ligne avec une variable nécessaire au modèle mais avec un NA, ça ne fonctionne pour aucune ligne
           # il faut donc séparer le fichier en deux, ceux avec des NA et ceux sans NA
-          data_ess_non_na <- data_ess %>% filter(complete.cases(.))
-          data_ess_na <- data_ess %>% filter(!complete.cases(.))
+          data_ess_non_na <- na.omit(data_ess)
+          data_ess_na <- data_ess[!complete.cases(data_ess)]
 
+          #on s'assure que ce sont des data.table
+          setDT(data_ess_non_na)
+          setDT(data_ess_na)
+
+          #print(data_ess_non_na)
+          #print(data_ess_na)
           if (nrow(data_ess_non_na)>0) {
 
             # aller chercher le modele de l'essence traitée
@@ -128,7 +161,6 @@ get_diam <- function(fic) {
             # ajouter correction de biais d'une prediction modèle complet
             data_ess_non_na <- correction_biais(type_modele='complet', fic=data_ess_non_na, essence=ess)
           }
-
         }
 
         if (nrow(data_ess_na)>0 | ess=='PIB') { # si le modèle complet ne peut pas fonctionner pour certaines lignes ou si ess=PIB, utiliser le modèle arbre
@@ -148,13 +180,14 @@ get_diam <- function(fic) {
         data_ess <- bind_rows(data_ess_na, data_ess_non_na)
 
         # on accumule les ess
-        data_tous <- bind_rows(data_tous,data_ess) %>% select(-contains("group."))
+        data_tous <- rbind(data_tous, data_ess)
+        data_tous <- data_tous[, !grepl("group\\.", names(data_tous)), with = FALSE]
       }
 
     }
 
   } else {
-    data_tous <- NULL
+    data_tous <- data.table()
   }
 
   return(data_tous)
@@ -164,5 +197,6 @@ get_diam <- function(fic) {
 
 ##################################################
 
-# data_diam1 <- get_diam(fic=data_diam1)
-# data_diam2 <- get_diam(fic=data_diam2)
+#test_data_diam1 <- get_diam(fic=data_diam1)
+#data_diam2 <- get_diam(fic=data_diam2)
+#get_diam(data_diam1)

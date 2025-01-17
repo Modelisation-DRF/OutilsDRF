@@ -71,29 +71,29 @@ get_diam <- function(fic) {
   #on s'assure que fic est une data.table
   setDT(fic)
   # ne garder que les arbres dont l'essence a un modèle
-  data_filtre <- fic[essence %in% defil_liste_ess]
+  data_filtre_temp <- fic[essence %in% defil_liste_ess]
   DIA_MM <- 0
-  z <- (data_filtre$HT_REELLE_M - data_filtre$HAUTEUR_M) / (data_filtre$HT_REELLE_M - 1.3)
-  x <- data_filtre$HAUTEUR_M / data_filtre$HT_REELLE_M
+  z <- (data_filtre_temp$HT_REELLE_M - data_filtre_temp$HAUTEUR_M) / (data_filtre_temp$HT_REELLE_M - 1.3)
+  x <- data_filtre_temp$HAUTEUR_M / data_filtre_temp$HT_REELLE_M
   new_columns <- data.table(DIA_MM = DIA_MM, z = z, x = x)
 
   #on ajoute les colonnes pour completer data_filtre
-  data_filtre <- cbind(data_filtre, new_columns)
+  data_filtre <- cbind(data_filtre_temp, new_columns)
   setDT(data_filtre)
+  print(data_filtre)
   # s'il y a au moins 1 obs à traiter
   if (nrow(data_filtre)>0) {
     # traite les arbres d'une essence à la fois
     data_tous <- data.table()
     for (ess in defil_liste_ess){
       # ess='BOP'
-      print(defil_liste_ess)
       data_ess <- data_filtre[essence == ess]
+      print(data_ess)
       # s'il y a des arbres de cette essence
       if (nrow(data_ess)>0) {
 
         # si l'ess n'est pas PIB, essayer le modèle complet (il n'y a pas de modèle complet pour PIB)
         if (ess != 'PIB') {
-          print(defil_liste_ess)
           # créer les groupes de veg_pot
           if (any(!is.na(defil_group_vp[[ess]]))) { # si la colonne ess n'est pas vide, on fait l'association
             #on s'assure que ce sont des data.table
@@ -121,7 +121,7 @@ get_diam <- function(fic) {
             data_ess <- data_ess[group_temp[, .(sdom_bio, group.sDomBio)], on = "sdom_bio"]
             #print(names(data_ess))
             #print(names(group_temp))
-            #print(data_ess)
+            print(data_ess)
           }
 
           # créer les groupes de la classe de drainage
@@ -181,7 +181,7 @@ get_diam <- function(fic) {
 
         # on accumule les ess
         data_tous <- rbind(data_tous, data_ess)
-        data_tous <- data_tous[, !grepl("group\\.", names(data_tous)), with = FALSE]
+        #data_tous <- data_tous[, !grepl("group\\.", names(data_tous)), with = FALSE]
       }
 
     }
@@ -199,4 +199,4 @@ get_diam <- function(fic) {
 
 #test_data_diam1 <- get_diam(fic=data_diam1)
 #data_diam2 <- get_diam(fic=data_diam2)
-#get_diam(data_diam1)
+get_diam(data_diam2)

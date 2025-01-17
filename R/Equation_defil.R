@@ -80,7 +80,6 @@ get_diam <- function(fic) {
   #on ajoute les colonnes pour completer data_filtre
   data_filtre <- cbind(data_filtre_temp, new_columns)
   setDT(data_filtre)
-  print(data_filtre)
   # s'il y a au moins 1 obs à traiter
   if (nrow(data_filtre)>0) {
     # traite les arbres d'une essence à la fois
@@ -88,7 +87,7 @@ get_diam <- function(fic) {
     for (ess in defil_liste_ess){
       # ess='BOP'
       data_ess <- data_filtre[essence == ess]
-      print(data_ess)
+      #print(data_ess)
       # s'il y a des arbres de cette essence
       if (nrow(data_ess)>0) {
 
@@ -97,7 +96,7 @@ get_diam <- function(fic) {
           # créer les groupes de veg_pot
           if (any(!is.na(defil_group_vp[[ess]]))) { # si la colonne ess n'est pas vide, on fait l'association
             #on s'assure que ce sont des data.table
-            setDT(defil_group_vp)
+            #setDT(defil_group_vp)
             setDT(data_ess)
             #on ajoute la colonne group.veg
             #on copie pour ne pas modifier l'original defil_group
@@ -117,11 +116,12 @@ get_diam <- function(fic) {
             #on copie pour ne pas modifier l'original defil_group
             group_temp <- copy(defil_group_sd)
             group_temp[, group.sDomBio := get(ess)]
+            print(group_temp)
             #on crée la nouvelle data.frame en reliant par sdom_bio
             data_ess <- data_ess[group_temp[, .(sdom_bio, group.sDomBio)], on = "sdom_bio"]
             #print(names(data_ess))
             #print(names(group_temp))
-            print(data_ess)
+            #print(data_ess)
           }
 
           # créer les groupes de la classe de drainage
@@ -197,4 +197,4 @@ get_diam <- function(fic) {
 
 #test_data_diam1 <- get_diam(fic=data_diam1)
 #data_diam2 <- get_diam(fic=data_diam2)
-get_diam(data_diam2)
+get_diam(data_diam1)

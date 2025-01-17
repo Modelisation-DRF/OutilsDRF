@@ -103,7 +103,7 @@ get_diam <- function(fic) {
             group_temp <- copy(defil_group_vp)
             group_temp[, group.veg := get(ess)]
             #on crée la nouvelle data.frame en reliant par veg_pot
-            data_ess <- data_ess[group_temp[, .(veg_pot, group.veg)], on = "veg_pot"]
+            data_ess <- data_ess[group_temp[, .(veg_pot, group.veg)], on = "veg_pot", nomatch = 0]
             #print(data_ess)
           }
 
@@ -116,12 +116,12 @@ get_diam <- function(fic) {
             #on copie pour ne pas modifier l'original defil_group
             group_temp <- copy(defil_group_sd)
             group_temp[, group.sDomBio := get(ess)]
-            print(group_temp)
+            #print(group_temp)
             #on crée la nouvelle data.frame en reliant par sdom_bio
-            data_ess <- data_ess[group_temp[, .(sdom_bio, group.sDomBio)], on = "sdom_bio"]
+            data_ess <- data_ess[group_temp[, .(sdom_bio, group.sDomBio)], on = "sdom_bio", nomatch = 0]
             #print(names(data_ess))
             #print(names(group_temp))
-            #print(data_ess)
+            print(data_ess)
           }
 
           # créer les groupes de la classe de drainage
@@ -134,7 +134,7 @@ get_diam <- function(fic) {
             group_temp <- copy(defil_group_dr)
             group_temp[, group.drainage := get(ess)]
             #on crée la nouvelle data.frame en reliant par cl_drai
-            data_ess <- data_ess[group_temp[, .(cl_drai, group.drainage)], on = "cl_drai"]
+            data_ess <- data_ess[group_temp[, .(cl_drai, group.drainage)], on = "cl_drai", nomatch = 0]
             #print(data_ess)
           }
 
@@ -180,7 +180,7 @@ get_diam <- function(fic) {
         data_ess <- bind_rows(data_ess_na, data_ess_non_na)
 
         # on accumule les ess
-        data_tous <- rbind(data_tous, data_ess)
+        data_tous <- rbind(data_tous, data_ess, fill = T)
         data_tous <- data_tous[, !grepl("group\\.", names(data_tous)), with = FALSE]
       }
 
@@ -197,4 +197,4 @@ get_diam <- function(fic) {
 
 #test_data_diam1 <- get_diam(fic=data_diam1)
 #data_diam2 <- get_diam(fic=data_diam2)
-get_diam(data_diam1)
+get_diam(data_diam2)

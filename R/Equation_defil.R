@@ -19,19 +19,19 @@ correction_biais <- function(type_modele, fic, essence) {
   corr_plot <- as.numeric(random_plot[2,1]/(sigma_plot1*sigma_plot2))
   if (is.na(corr_plot)) {corr_plot <- 0}
 
+  setDT(fic)
+  a12 <- -fic$pred_mm2/alpha*log(fic$HAUTEUR_M/1.3)
+  a21 <- a12
+  a22 <- fic$pred_mm2 * (log(fic$HAUTEUR_M/1.3))^2
+  correction <- 0.5 * (a12*corr_plot*sigma_plot1*sigma_plot2 + a21*corr_plot*sigma_plot1*sigma_plot2 + a22*sigma_plot2^2)
+  + 0.5 * (a12*corr_arbre*sigma_arbre1*sigma_arbre2 + a21*corr_arbre*sigma_arbre1*sigma_arbre2 + a22*sigma_arbre2^2)
+  pred_mm2_corr <- fic$pred_mm2+correction
 
-  fic_biais <- fic %>%
-    mutate(
-      a12 = -pred_mm2/alpha*log(HAUTEUR_M/1.3),
-      a21 = a12,
-      a22 = pred_mm2 * (log(HAUTEUR_M/1.3))^2,
-      correction = 0.5 * (a12*corr_plot*sigma_plot1*sigma_plot2 + a21*corr_plot*sigma_plot1*sigma_plot2 + a22*sigma_plot2^2)
-                 + 0.5 * (a12*corr_arbre*sigma_arbre1*sigma_arbre2 + a21*corr_arbre*sigma_arbre1*sigma_arbre2 + a22*sigma_arbre2^2),
-      pred_mm2_corr = pred_mm2+correction) %>%
-    select(-a12, -a21, -a22)
+  new_columns1 <- data.table(correction = correction, pred_mm2_corr = pred_mm2_corr)
+
+  fic_biais <- cbind(fic, new_columns1)
 
   return(fic_biais)
-
 }
 #correction_biais(type_modele='arbre', fic=data_ess_na, essence='PIG')
 
@@ -141,7 +141,7 @@ get_diam <- function(fic) {
           # on essaie de prédire avec le modèle complet
           # aussitot qu'il y a une ligne avec une variable nécessaire au modèle mais avec un NA, ça ne fonctionne pour aucune ligne
           # il faut donc séparer le fichier en deux, ceux avec des NA et ceux sans NA
-          data_ess_non_na <- na.omit(data_ess)
+          data_ess_non_na <- data_ess[complete.cases(data_ess)]
           data_ess_na <- data_ess[!complete.cases(data_ess)]
 
           #on s'assure que ce sont des data.table
@@ -159,7 +159,7 @@ get_diam <- function(fic) {
             data_ess_non_na$pred_mm2 <- predict(modele, newdata = data_ess_non_na, level=0)
 
             # ajouter correction de biais d'une prediction modèle complet
-            data_ess_non_na <- correction_biais(type_modele='complet', fic=data_ess_non_na, essence=ess)
+            data_ess_non_na <- correction_biais(type_modele='complet', data_ess_non_na, essence=ess)
           }
         }
 
@@ -181,7 +181,7 @@ get_diam <- function(fic) {
 
         # on accumule les ess
         data_tous <- rbind(data_tous, data_ess)
-        #data_tous <- data_tous[, !grepl("group\\.", names(data_tous)), with = FALSE]
+        data_tous <- data_tous[, !grepl("group\\.", names(data_tous)), with = FALSE]
       }
 
     }
@@ -192,8 +192,6 @@ get_diam <- function(fic) {
 
   return(data_tous)
 }
-
-
 
 ##################################################
 

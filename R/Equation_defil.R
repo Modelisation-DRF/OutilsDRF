@@ -38,7 +38,8 @@ correction_biais <- function(type_modele, fic, essence) {
 
 # fonction pour loader le modele de l'essence traitée et du modele désiré
 # type_modele = 'standAndTree' ou 'treeOnly'
-# essence = code d'essence en majuscule
+# essence = code d'essence en
+
 get_modele <- function(type_modele, essence) {
   # type_modele = 'treeOnly'; essence='PIG';
 
@@ -46,11 +47,7 @@ get_modele <- function(type_modele, essence) {
   modele <- get(paste0("defil_", type_modele, '.', tolower(essence)))
 
   return(modele)
-
 }
-
-
-
 
 # fonction pour passer chacune des essences d'un fichier, ne traite que les essences avec un modele de défilement, élimine les autres, donc garder les autres arbres dans un autre fichier
 # fic = data avec les variables nécessaires pour l'utilisation d'un modèle de défilement, une ligne par iter/placette/arbre/hauteur
@@ -70,7 +67,7 @@ get_diam <- function(fic) {
 
   #on s'assure que fic est une data.table
   setDT(fic)
-  # ne garder que les arbres dont l'essence a un modèle
+  # ne garder que les arbres dont l'essence a un modèle(autre fichier?)
   data_filtre_temp <- fic[essence %in% defil_liste_ess]
   DIA_MM <- 0
   z <- (data_filtre_temp$HT_REELLE_M - data_filtre_temp$HAUTEUR_M) / (data_filtre_temp$HT_REELLE_M - 1.3)
@@ -86,8 +83,10 @@ get_diam <- function(fic) {
     data_tous <- data.table()
     for (ess in defil_liste_ess){
       # ess='BOP'
+      data_ess <- data.table()
+      data_ess_na <- data.table()
+      data_ess_non_na <- data.table()
       data_ess <- data_filtre[essence == ess]
-      #print(data_ess)
       # s'il y a des arbres de cette essence
       if (nrow(data_ess)>0) {
 
@@ -96,7 +95,7 @@ get_diam <- function(fic) {
           # créer les groupes de veg_pot
           if (any(!is.na(defil_group_vp[[ess]]))) { # si la colonne ess n'est pas vide, on fait l'association
             #on s'assure que ce sont des data.table
-            #setDT(defil_group_vp)
+            setDT(defil_group_vp)
             setDT(data_ess)
             #on ajoute la colonne group.veg
             #on copie pour ne pas modifier l'original defil_group
@@ -104,7 +103,6 @@ get_diam <- function(fic) {
             group_temp[, group.veg := get(ess)]
             #on crée la nouvelle data.frame en reliant par veg_pot
             data_ess <- data_ess[group_temp[, .(veg_pot, group.veg)], on = "veg_pot", nomatch = 0]
-            #print(data_ess)
           }
 
           # créer les groupes de sous-domaine
@@ -116,12 +114,8 @@ get_diam <- function(fic) {
             #on copie pour ne pas modifier l'original defil_group
             group_temp <- copy(defil_group_sd)
             group_temp[, group.sDomBio := get(ess)]
-            #print(group_temp)
             #on crée la nouvelle data.frame en reliant par sdom_bio
             data_ess <- data_ess[group_temp[, .(sdom_bio, group.sDomBio)], on = "sdom_bio", nomatch = 0]
-            #print(names(data_ess))
-            #print(names(group_temp))
-            print(data_ess)
           }
 
           # créer les groupes de la classe de drainage
@@ -135,21 +129,17 @@ get_diam <- function(fic) {
             group_temp[, group.drainage := get(ess)]
             #on crée la nouvelle data.frame en reliant par cl_drai
             data_ess <- data_ess[group_temp[, .(cl_drai, group.drainage)], on = "cl_drai", nomatch = 0]
-            #print(data_ess)
           }
-
+          #petit fix pour calcul_volume_bille qui crée une colonne pour aucune raison?
+          #data_ess <- data_ess[is.na(`column name`)]
           # on essaie de prédire avec le modèle complet
           # aussitot qu'il y a une ligne avec une variable nécessaire au modèle mais avec un NA, ça ne fonctionne pour aucune ligne
           # il faut donc séparer le fichier en deux, ceux avec des NA et ceux sans NA
           data_ess_non_na <- data_ess[complete.cases(data_ess)]
           data_ess_na <- data_ess[!complete.cases(data_ess)]
-
           #on s'assure que ce sont des data.table
           setDT(data_ess_non_na)
           setDT(data_ess_na)
-
-          #print(data_ess_non_na)
-          #print(data_ess_na)
           if (nrow(data_ess_non_na)>0) {
 
             # aller chercher le modele de l'essence traitée
@@ -172,8 +162,7 @@ get_diam <- function(fic) {
           data_ess_na$pred_mm2 <- predict(modele, newdata = data_ess_na, level=0)
 
           # ajouter correction de biais d'une prediction modèle arbre
-          data_ess_na <- correction_biais(type_modele='arbre', fic=data_ess_na, essence=ess)
-
+          data_ess_na <- correction_biais(type_modele='arbre', data_ess_na, essence=ess)
         }
 
         # remettre les 2 fichiers en un seul
@@ -186,15 +175,148 @@ get_diam <- function(fic) {
 
     }
 
-  } else {
+  }
+  else {
     data_tous <- data.table()
   }
-
   return(data_tous)
+}
+
+calcul_vol_bille <- function(fichier_billes) {
+  #Objet data.table, chaque fois que l'on initiera une data.table, nous utiliserons ce code
+  setDT(fichier_billes)
+  data_billes <- data.table()
+  #pour écrire les lignes dans le fichier
+  #ratios de tranformations en mètre(on travaille en mètre durant tout le processus, on rechange les valeurs à la sortie)
+  ratio_pouce_metre <- 39.3700787
+  ratio_cm_metre <- 100
+  ratio_mm_metre <- 1000
+  #valeur hauteur souche, en mètre
+  dhs <- 0.15
+  #On garde dans le fichier que les essences valides
+  data_filtre_temp <- fichier_billes[essence %in% defil_liste_ess]
+  setDT(data_filtre_temp)
+  if (nrow(data_filtre_temp) > 0) {
+    #la liste de datatable créée est consituée d'objet data.table
+    split_essence <- split(fichier_billes, by = "essence")
+    # traite les arbres une essence à la fois
+    for (ess in names(split_essence)) {
+      #On traverse toutes les data.table de split_essence(il y a d'autres manières, on verra
+      #si c'est optimal de procéder comme cela(future.apply apparemment très rapide))
+      data_filtre <- split_essence[[ess]]
+      setDT(data_filtre)
+      ##il faut vérifier si notre data.table contient des valeurs manquantes à certains endroits
+      ##et si oui mettre les valeurs par défaut.
+      ##demander s'il faut vérifier exemple si nom_grade = sciage court -> condition de longueur?
+      data_filtre[is.na(nom_grade1), column_name := "sciage court"]
+      data_filtre[is.na(long_grade1), column_name := 8]
+      data_filtre[is.na(diam_grade1), column_name := 20]
+      #data_filtre[is.na(nom_grade2), column_name := "pate"]
+      #data_filtre[is.na(long_grade2), column_name := 4]
+      #data_filtre[is.na(diam_grade2), column_name := 8]
+      #on s'assure que l'arbre en cours redevienne vide
+      arbre_en_cours <- data.table()
+      #On fait les manipulations en passant par chaque arbre pour la sortie dans le fichier csv
+      for(i in seq_len(nrow(data_filtre))) {
+        ##ce qui va être remis dans le nouveau fichier
+        arbre_en_cours <- data_filtre[i]
+        setDT(arbre_en_cours)
+        #arbre_en_cours <- arbre_en_cours[!is.na(`column_name`)]
+        #print(arbre_en_cours)
+        #type 1
+        nom_grade_1 <- arbre_en_cours$nom_grade1
+        long_grade_1 <- arbre_en_cours$long_grade1 * 12.25/ ratio_pouce_metre
+        diam_grade_1 <- arbre_en_cours$diam_grade1 / ratio_cm_metre
+        #faire vérif dans le fichier si type 2 est présent ou non pour l'arbre en question
+       #if (any(is.na(arbre_en_cours$nom_grade2)) && any(is.na(arbre_en_cours$long_grade2))
+       #    && any(is.na(arbre_en_cours$diam_grade2))) {
+       #  ##les valeurs du 2eme sont tous vides(voir s'il y a des cas particuliers)
+       #  ##on verra
+       #}
+       #else{
+       #  nom_grade_2 <- arbre_en_cours$nom_grade2
+       #  long_grade_2 <- arbre_en_cours$long_grade2 / ratio_pouce_metre
+       #  diam_grade_2 <- arbre_en_cours$diam_grade2 / ratio_cm_metre
+
+       #}
+       ##faire vérif dans le fichier si type 3 est présent ou non pour l'arbre en question
+       #if (any(is.na(arbre_en_cours$nom_grade3)) && any(is.na(arbre_en_cours$long_grade3))
+       #  && any(is.na(arbre_en_cours$diam_grade3))) {
+       #  ##les valeurs du 3eme sont tous vides(voir s'il y a des cas particuliers)
+       #  ##on verra
+       #}
+       #else{
+       #  nom_grade_3 <- arbre_en_cours$nom_grade3
+       #  long_grade_3 <- arbre_en_cours$long_grade3 / ratio_pouce_metre
+       #  diam_grade_3 <- arbre_en_cours$diam_grade3 / ratio_cm_metre
+       #}
+        #on crée une list pour stocker les lignes contenant la hauteur du diamètre en question, création d'index pour
+        #aider à changer l'élément de la liste
+        collection_sections <- data.table()
+        collection_list <- list()
+        index <- 1
+        #aucune conversion, on travaille en metre
+        hauteur_arbre_en_cours <- arbre_en_cours$HT_REELLE_M
+        #12 pouces * 2 + 0.5 pouce, qu'on divise par le ratio
+        section_en_metres <- 24.5 / ratio_pouce_metre
+        #on crée une data.table pour stocker les diamètres à hauteur h tout en pouces
+        ##collection_sections <- data.table(HAUTEUR_M = numeric(), DIAM_MM = numeric())
+        #on compte le nombre de sections, et on met les diamètres de chaques sections dans le dt
+        for (h in seq(dhs, hauteur_arbre_en_cours, by = section_en_metres)) {
+          ##comprendre comment ça marche, faut-il savoir de quel arbre on parle(leur attribuer un id?)!!
+          hauteur_en_calcul <- arbre_en_cours[, .(essence, id_pe, no_arbre, sdom_bio, cl_drai, veg_pot, DHP_Ae,
+                                                  HT_REELLE_M, HAUTEUR_M, nbTi_ha, st_ha, ALTITUDE)]
+          hauteur_en_calcul[, HAUTEUR_M := h]
+          setDT(hauteur_en_calcul)
+          #print(hauteur_en_calcul)
+          #on fait le calcul, ça retourne la valeur get_diam(pred_mm2_corr)
+          diametre_calcul <- get_diam(hauteur_en_calcul)
+          setDT(diametre_calcul)
+          #on met la ligne dans la liste et on incrémente l'index, en mettant la hauteur à la valeur de h, puis
+          #on transforme pred_mm2_corr en mètre pour le calcul plus tard
+          collection_list[[index]] <- diametre_calcul[, .(id_pe = id_pe, no_arbre = no_arbre,
+                                                      HAUTEUR_M = h, pred_mm2_corr = sqrt(pred_mm2_corr) / ratio_mm_metre)]
+          index <- index + 1
+        }
+        #on ramène toutes les lignes dans notre data.table que l'on veut avoir, avec toutes les hauteurs et diamètres
+        collection_sections <- rbindlist(collection_list)
+        if(nrow(collection_sections) > 0){
+          #on traverse les différentes sections de l'arbre en vérifiant les différentes conditions de billes
+          nom_grade <- nom_grade_1
+          log_length <- long_grade_1
+          diam_value <- diam_grade_1
+          current_hauteur <- dhs
+          hauteur_fin_bout <- current_hauteur + log_length
+          print(collection_sections)
+          #on crée la data.table où nous allons stocker les billes et leurs volumes
+          #on prend les diametres à la bonne hauteur(celle du bas, et celle à distance de la longueur voulue(log_length))
+          diam_hauteur_1 <- collection_sections[HAUTEUR_M == current_hauteur]$pred_mm2_corr
+          diam_hauteur_2 <- collection_sections[HAUTEUR_M == hauteur_fin_bout]$pred_mm2_corr
+          #on prend les valeurs de id_pe et no_arbre de l'arbre en cours
+          id_pe_value <- arbre_en_cours$id_pe[1]
+          no_arbre_value <- arbre_en_cours$no_arbre[1]
+          while ((hauteur_fin_bout < hauteur_arbre_en_cours) && (diam_value < diam_hauteur_2)){
+             volume <- pi * log_length * (diam_hauteur_1 * diam_hauteur_1 + diam_hauteur_2 * diam_hauteur_2)
+             data_billes <- rbind(data_billes, data.table(
+               id_pe = id_pe_value,
+               no_arbre = no_arbre_value,
+               grade = nom_grade,
+               volume = volume))
+            hauteur_fin_bout = hauteur_fin_bout + log_length
+            print(hauteur_fin_bout)
+            diam_hauteur_1 <- diam_hauteur_2
+            diam_hauteur_2 <- collection_sections[HAUTEUR_M == hauteur_fin_bout]$pred_mm2_corr
+          }
+        }
+      }#fin de for seqlen
+    }
+  }
+  fwrite(data_billes, "data_billes.csv", row.names = FALSE)
 }
 
 ##################################################
 
 #test_data_diam1 <- get_diam(fic=data_diam1)
 #data_diam2 <- get_diam(fic=data_diam2)
-get_diam(data_diam2)
+#get_diam(data_diam3)
+calcul_vol_bille(data_diam3)

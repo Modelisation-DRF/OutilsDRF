@@ -307,7 +307,7 @@ ls(temp_env)
 save(list = ls(envir = temp_env), file = "R/sysdata.rda", envir = temp_env)
 
 # supprimer l'environnement temporaire
-rm(temp_env)
+#rm(temp_env)
 
 
 ##################################################
@@ -345,7 +345,23 @@ data_diam2 <- data.frame(essence=rep('BOP',11),
                          st_ha = 15,
                          ALTITUDE = 200)
 
-usethis::use_data(data_diam1, data_diam2, defil_liste_ess,
+data_diam3 <- data.frame(essence=rep('BOP',9),
+                         id_pe = seq(1,9,1),
+                         no_arbre = rep(1,9),
+                         sdom_bio = c('2EST','3EST','3OUEST','4EST','4OUEST','5EST','5OUEST','6EST','6OUEST'),
+                         cl_drai = rep('2',9),
+                         veg_pot = rep('MS2',9),
+                         DHP_Ae = rep(150, 9),
+                         HT_REELLE_M = rep(10,9),
+                         HAUTEUR_M = rep(5, 9),
+                         nbTi_ha = 2000,
+                         st_ha = 15,
+                         ALTITUDE = 200,
+                         nom_grade1 = "sciage court",
+                         long_grade1 = 8,
+                         diam_grade1 = 10)
+
+usethis::use_data(data_diam1, data_diam2, data_diam3, defil_liste_ess,
                   overwrite = TRUE,
                   internal = FALSE)
 # ces fichiers seront sous data/ et toujours accessible quand le package est loadé

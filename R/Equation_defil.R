@@ -137,6 +137,10 @@ get_diam <- function(fic) {
           # il faut donc séparer le fichier en deux, ceux avec des NA et ceux sans NA
           data_ess_non_na <- data_ess[complete.cases(data_ess)]
           data_ess_na <- data_ess[!complete.cases(data_ess)]
+          print("data_ess_non_na")
+          print(data_ess_non_na)
+          print("data_ess_na")
+          print(data_ess_na)
           #on s'assure que ce sont des data.table
           setDT(data_ess_non_na)
           setDT(data_ess_na)
@@ -227,6 +231,12 @@ calcul_vol_bille <- function(fichier_billes) {
         nom_grade_1 <- arbre_en_cours$nom_grade1
         long_grade_1 <- arbre_en_cours$long_grade1 * 12.25/ ratio_pouce_metre
         diam_grade_1 <- arbre_en_cours$diam_grade1 / ratio_cm_metre
+        nom_grade_2 <- arbre_en_cours$nom_grade2
+        long_grade_2 <- arbre_en_cours$long_grade2 * 12.25/ ratio_pouce_metre
+        diam_grade_2 <- arbre_en_cours$diam_grade2 / ratio_cm_metre
+        nom_grade_3 <- arbre_en_cours$nom_grade3
+        long_grade_3 <- arbre_en_cours$long_grade3 * 12.25/ ratio_pouce_metre
+        diam_grade_3 <- arbre_en_cours$diam_grade3 / ratio_cm_metre
         #faire vérif dans le fichier si type 2 est présent ou non pour l'arbre en question
        #if (any(is.na(arbre_en_cours$nom_grade2)) && any(is.na(arbre_en_cours$long_grade2))
        #    && any(is.na(arbre_en_cours$diam_grade2))) {
@@ -237,7 +247,6 @@ calcul_vol_bille <- function(fichier_billes) {
        #  nom_grade_2 <- arbre_en_cours$nom_grade2
        #  long_grade_2 <- arbre_en_cours$long_grade2 / ratio_pouce_metre
        #  diam_grade_2 <- arbre_en_cours$diam_grade2 / ratio_cm_metre
-
        #}
        ##faire vérif dans le fichier si type 3 est présent ou non pour l'arbre en question
        #if (any(is.na(arbre_en_cours$nom_grade3)) && any(is.na(arbre_en_cours$long_grade3))
@@ -257,6 +266,7 @@ calcul_vol_bille <- function(fichier_billes) {
         index <- 1
         #aucune conversion, on travaille en metre
         hauteur_arbre_en_cours <- arbre_en_cours$HT_REELLE_M
+        print(hauteur_arbre_en_cours)
         #12 pouces * 2 + 0.5 pouce, qu'on divise par le ratio
         section_en_metres <- 24.5 / ratio_pouce_metre
         #on crée une data.table pour stocker les diamètres à hauteur h tout en pouces
@@ -282,30 +292,93 @@ calcul_vol_bille <- function(fichier_billes) {
         collection_sections <- rbindlist(collection_list)
         if(nrow(collection_sections) > 0){
           #on traverse les différentes sections de l'arbre en vérifiant les différentes conditions de billes
-          nom_grade <- nom_grade_1
-          log_length <- long_grade_1
-          diam_value <- diam_grade_1
+          nom_grade1 <- nom_grade_1
+          log_length1 <- long_grade_1
+          diam_value1 <- diam_grade_1
+          nom_grade2 <- nom_grade_2
+          log_length2 <- long_grade_2
+          diam_value2 <- diam_grade_2
+          nom_grade3 <- nom_grade_3
+          log_length3 <- long_grade_3
+          diam_value3 <- diam_grade_3
           current_hauteur <- dhs
-          hauteur_fin_bout <- current_hauteur + log_length
+          current_hauteur2 <- 0
+          current_hauteur3 <- 0
           print(collection_sections)
           #on crée la data.table où nous allons stocker les billes et leurs volumes
           #on prend les diametres à la bonne hauteur(celle du bas, et celle à distance de la longueur voulue(log_length))
           diam_hauteur_1 <- collection_sections[HAUTEUR_M == current_hauteur]$pred_mm2_corr
-          diam_hauteur_2 <- collection_sections[HAUTEUR_M == hauteur_fin_bout]$pred_mm2_corr
           #on prend les valeurs de id_pe et no_arbre de l'arbre en cours
           id_pe_value <- arbre_en_cours$id_pe[1]
           no_arbre_value <- arbre_en_cours$no_arbre[1]
-          while ((hauteur_fin_bout < hauteur_arbre_en_cours) && (diam_value < diam_hauteur_2)){
-             volume <- pi * log_length * (diam_hauteur_1 * diam_hauteur_1 + diam_hauteur_2 * diam_hauteur_2)
-             data_billes <- rbind(data_billes, data.table(
-               id_pe = id_pe_value,
-               no_arbre = no_arbre_value,
-               grade = nom_grade,
-               volume = volume))
-            hauteur_fin_bout = hauteur_fin_bout + log_length
-            print(hauteur_fin_bout)
-            diam_hauteur_1 <- diam_hauteur_2
-            diam_hauteur_2 <- collection_sections[HAUTEUR_M == hauteur_fin_bout]$pred_mm2_corr
+          for (current_hauteur in seq(current_hauteur, hauteur_arbre_en_cours, by = log_length1)) {
+            #on donne du jeu pour ne pas qu'il y ait aucun match alors que la différence est de 0.0000000001
+            diam_hauteur_2 <- collection_sections[abs(HAUTEUR_M - (current_hauteur + log_length1)) < 1e-6]$pred_mm2_corr
+            current_hauteur2 <- current_hauteur
+            if (!is.na(diam_value1) && !is.na(diam_hauteur_2)) {
+              #on regarde si le diamètre minimum est disponible, sinon on change
+              if (diam_value1 >= diam_hauteur_2) {
+                break
+              } else {
+              #calcul du volume du premier type
+              volume <- pi * log_length1 * (diam_hauteur_1 * diam_hauteur_1 + diam_hauteur_2 * diam_hauteur_2)
+              # Append to data_billes
+              data_billes <- rbind(data_billes, data.table(
+                id_pe = id_pe_value,
+                no_arbre = no_arbre_value,
+                grade = nom_grade1,
+                volume = volume
+              ))
+              # Update diam_hauteur_1 for the next iteration
+              diam_hauteur_1 <- diam_hauteur_2
+              }
+            }
+            else{break}
+          }
+          for (current_hauteur2 in seq(current_hauteur2, hauteur_arbre_en_cours, by = log_length2)) {
+            diam_hauteur_2 <- collection_sections[abs(HAUTEUR_M - (current_hauteur2 + log_length2)) < 1e-6]$pred_mm2_corr
+            current_hauteur3 <- current_hauteur2
+            if (!is.na(diam_value2) && !is.na(diam_hauteur_2)) {
+              #on regarde si le diamètre minimum est disponible, sinon on change
+              if (diam_value2 >= diam_hauteur_2) {
+                break
+              } else {
+                #calcul du volume du premier type
+                volume <- pi * log_length1 * (diam_hauteur_1 * diam_hauteur_1 + diam_hauteur_2 * diam_hauteur_2)
+                # Append to data_billes
+                data_billes <- rbind(data_billes, data.table(
+                  id_pe = id_pe_value,
+                  no_arbre = no_arbre_value,
+                  grade = nom_grade2,
+                  volume = volume
+                ))
+                # Update diam_hauteur_1 for the next iteration
+                diam_hauteur_1 <- diam_hauteur_2
+              }
+            }
+            else{break}
+          }
+          for (current_hauteur3 in seq(current_hauteur3, hauteur_arbre_en_cours, by = log_length3)) {
+            diam_hauteur_2 <- collection_sections[abs(HAUTEUR_M - (current_hauteur3 + log_length3)) < 1e-6]$pred_mm2_corr
+            if (!is.na(diam_value3) && !is.na(diam_hauteur_2)) {
+              #on regarde si le diamètre minimum est disponible, sinon on change
+              if (diam_value3 >= diam_hauteur_2) {
+                break
+              } else {
+                #calcul du volume du premier type
+                volume <- pi * log_length1 * (diam_hauteur_1 * diam_hauteur_1 + diam_hauteur_2 * diam_hauteur_2)
+                # Append to data_billes
+                data_billes <- rbind(data_billes, data.table(
+                  id_pe = id_pe_value,
+                  no_arbre = no_arbre_value,
+                  grade = nom_grade3,
+                  volume = volume
+                ))
+                # Update diam_hauteur_1 for the next iteration
+                diam_hauteur_1 <- diam_hauteur_2
+              }
+            }
+            else{break}
           }
         }
       }#fin de for seqlen
@@ -318,5 +391,5 @@ calcul_vol_bille <- function(fichier_billes) {
 
 #test_data_diam1 <- get_diam(fic=data_diam1)
 #data_diam2 <- get_diam(fic=data_diam2)
-#get_diam(data_diam3)
-calcul_vol_bille(data_diam3)
+get_diam(data_diam1)
+#calcul_vol_bille(data_diam4)

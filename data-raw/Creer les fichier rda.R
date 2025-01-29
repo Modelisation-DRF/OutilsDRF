@@ -128,6 +128,10 @@ usethis::use_data(ht_ass_ess, ht_liste_ess, ht_ass_pert, ht_ass_mil, ht_ass_sd, 
                   regeco_ass_sdom,
                   internal=TRUE, overwrite = TRUE)
 
+usethis::use_data(ht_ass_ess,
+                  tarif_ass_ess,
+                  internal=FALSE, overwrite = TRUE)
+
 
 
 #tar('TarifQC.tar.gz', compression = 'gzip', tar="tar")

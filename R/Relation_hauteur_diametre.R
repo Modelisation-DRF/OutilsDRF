@@ -47,18 +47,25 @@
 #'    \item t_ma: température annuelle moyenne sur la période 1980-2010 (Celcius)
 #'    \item altitude: altitude (m)
 #'    \item reg_eco: Optionnel. Code de la région écologique. Vous pouvez fournir la région au lieu du sous-domaine, alors mettre le paramètre \code{reg_eco=TRUE}
+#'    \item sum_st_ha: Optionel. Surface terrière marchande de la placette (m2/ha). Si non fournie, elle sera calculée à partir des arbres du fichier \code{fic_arbres}
+#'    \item dhp_moy: Optionel. Diamètre quadratique moyen des arbres marchands de la placette (cm). Si non fourni, il sera calculé à partir des arbres du fichier \code{fic_arbres}
 #'    \item iter: numéro de l'itération, seulement si mode stochastique, doit être numéroté de 1 à nb_iter
 #'    \item step: numéro de la step, seulement si mode stochastique, doit être numéroté de 1 à nb_step. Obligatoire même si le fichier n'est qu'une liste d'arbres à un moment donné.
 #' }
 #' @param mode_simul Mode de simulation : STO = stochastistique, DET = déterministe), par défaut "DET"
 #' @param grouping_vars Optionel. Si \code{mode_simul}='DET', les colonnes à ajouter comme variables de groupement, en plus de id_pe, pour calculer la surface terrière d'une placette.
-#' Par exemple, si le fichier des arbres contient plus d'une année par arbre, ajouter le colonne identifiant l'année comme variable de groupement: grouping_vars='var1'.
+#' Par exemple, si le fichier des arbres contient plus d'une année par arbre, ajouter la colonne identifiant l'année comme variable de groupement: grouping_vars='var1'.
 #' S'il y a plusieurs variables de groupement: grouping_vars=c('var1','var2').
 #' @param nb_iter Le nombre d'itérations si le mode stochastique est utilisé, doit être > 1. Ignoré si \code{mode_simul="DET"},
 #' @param nb_step Le nombre d'années pour lesquelles on veut estimer la hauteur pour un même arbre (par défaut 1), ignoré si \code{mode_simul="DET"}.
 #' @param dt La durée de l'intervalle de temps entre deux mesures d'un même arbre si \code{nb_step>1} (par défaut 10), ignoré si \code{mode_simul="DET"}.
 #' @param seed_value Optionnel. La valeur du seed pour la génération de nombres aléatoires. Généralement utilisé pour les tests de la fonction.
 #' @param reg_eco Optionel. Mettre à \code{TRUE} si reg_eco est fourni dans \code{fic_arbres} au lieu de sdom_bio. reg_eco sera converti en sdom_bio. La colonne sdom_bio ne doit pas être dans \code{fic_arbres}.
+#' @param use_ass_ess binaire
+#' \itemize{
+#'    \item TRUE: Par défaut. les essences sans relation h-d seront associées à une des 27 essences avec le fichier d'association interne.
+#'    \item FALSE: les essences sans relation h-d n'auront pas de hauteur estimée
+#'    }
 #'
 #' @return La table \code{fic_arbres} avec une colonne contenant la hauteur estimée en mètres (hauteur_pred).
 #' @import data.table
@@ -79,9 +86,9 @@
 #'                        nb_iter=nb_iter, nb_step=nb_step)
 #'}
 #'
-relation_h_d<-function (fic_arbres, mode_simul="DET", nb_iter=1, nb_step=1, dt=10, seed_value=NULL, grouping_vars=NULL, reg_eco=FALSE) {
+relation_h_d<-function (fic_arbres, mode_simul="DET", nb_iter=1, nb_step=1, dt=10, seed_value=NULL, grouping_vars=NULL, reg_eco=FALSE, use_ass_ess=TRUE) {
 
-  # fic_arbres=data_arbre; mode_simul="DET"; nb_iter=1; nb_step=1; dt=10; seed_value=NULL; grouping_vars=NULL; reg_eco=FALSE;
+  # fic_arbres=fic_arbres_test; mode_simul="DET"; nb_iter=1; nb_step=1; dt=10; seed_value=NULL; grouping_vars=NULL; reg_eco=FALSE;
 
   # le parametre grouping_vars ne peut pas etre utilisé avec le mode stochastique
   # en mode stochastique, les variables iter et step sont obligatoires
@@ -105,24 +112,26 @@ if (reg_eco==TRUE){
   fic_arbres <- fic_arbres[regeco_ass_sdom2[, .(reg_eco, sdom_bio)], on = "reg_eco", nomatch = 0]
 }
 
-# compiler la st a la placette car on a besoin de sttot dans la relation h-d (avec les non commerciaux)
-# compil <- fic_arbres[
-#   , .(
-#     sum_st_ha = sum(pi * (dhpcm/2/ 100)^2 * nb_tige * 25, na.rm = TRUE),
-#     dens = sum(nb_tige * 25, na.rm = TRUE)),
-#   by = grouping_vars][
-#       , `:=`(
-#     dhp_moy = sqrt((sum_st_ha*40000)/(dens*pi))
-#   )]
+# Si sum_st_ha et/ou dhp_moy ne sont dans le fichier, on calcule le 2
+nom <- c('sum_st_ha','dhp_moy')
+nom_fic <- names(fic_arbres)
+calcule_var_dendro = FALSE
+if (!(nom[1] %in% nom_fic) | !(nom[2] %in% nom_fic)){
 
-# ajouter la st au fichier des arbres et preparer les autres variables necessaires
-arbre2 <- fic_arbres[, `:=`(
-  sum_st_ha = sum(pi * (dhpcm/2/ 100)^2 * nb_tige * 25, na.rm = TRUE),
-  dens = sum(nb_tige * 25, na.rm = TRUE)
+  fic_arbres[, `:=`(
+    sum_st_ha = sum(pi * (dhpcm/2/ 100)^2 * nb_tige * 25, na.rm = TRUE),
+    dens = sum(nb_tige * 25, na.rm = TRUE)
   ), by = grouping_vars][
     , `:=`(
       dhp_moy = sqrt((sum_st_ha*40000)/(dens*pi))
-    )][, `:=`(
+    )]
+
+  calcule_var_dendro = TRUE
+
+}
+
+# preparer les autres variables necessaires
+arbre2 <- fic_arbres[, `:=`(
     type_eco4 = milieu,
     milieu = NULL,
     sdom_orig = sdom_bio,
@@ -144,20 +153,26 @@ arbre2 <- fic_arbres[, `:=`(
     )
   ]
 
-# ajouter l'essence associée au modèle de hauteur
 
 ht_ass_ess2 <- ht_ass_ess; ht_ass_pert2 <- ht_ass_pert; ht_ass_mil2 <- ht_ass_mil; ht_ass_sd2 <- ht_ass_sd; ht_ass_vp2 <- ht_ass_vp
 setDT(ht_ass_ess2); setDT(ht_ass_pert2); setDT(ht_ass_mil2); setDT(ht_ass_sd2); setDT(ht_ass_vp2)
 
-arbre2 <- merge(arbre2, ht_ass_ess2, by = "essence", all.x = T) # je veux un vrai left_join
-arbre2 <- arbre2[
-  , `:=`(
-    essence_orig = essence,
-    essence = essence_hauteur
-  )
-][, essence_hauteur := NULL
-]
+# ajouter l'essence associée au modèle de hauteur
+if (use_ass_ess==T) {
 
+  arbre2 <- merge(arbre2, ht_ass_ess2, by = "essence", all.x = T) # je veux un vrai left_join
+  arbre2[, `:=`(
+      essence_orig = essence,
+      essence = essence_hauteur
+    )
+  ][, essence_hauteur := NULL
+  ]
+
+} else {
+
+  arbre2[, `:=`(essence_orig = essence)]
+
+}
 
 
 # association des classes des variables categoriques selon l'essence au fichier des arbres
@@ -257,11 +272,11 @@ arbre2[
   , `:=`(
     res_arbre = NULL,
     random_ldhp2 = NULL,
-    dens = NULL,
-    dhp_moy = NULL,
+    #dens = NULL,
+    #dhp_moy = NULL,
     logdhp = NULL,
     rdhp = NULL,
-    sum_st_ha = NULL,
+    #sum_st_ha = NULL,
     pert = NULL,
     milieu = NULL,
     vp = NULL,
@@ -285,6 +300,21 @@ arbre2[
     sdom_orig = NULL
     )
 ]
+
+# si les variables dendro ont été calculées, les enlever du fichier
+if (calcule_var_dendro==T) {
+
+  arbre2[
+    , `:=`(
+      sum_st_ha = NULL,
+      dens = NULL,
+      dhp_moy = NULL
+    )
+  ]
+
+}
+
 return(arbre2)
+
 }
 

@@ -109,6 +109,31 @@ test_that("cubage() fonctionne comme attendu avec les essences qui ont des essen
   expect_equal(5*nb_iter, nrow(data_obt_na))
 })
 
+test_that("cubage() fonctionne comme attendu avec use_ess_ass=F en mode DET", {
+
+  data_arbre <- readRDS(test_path("fixtures", "data_arbre_vol.rds"))
+  data_obt <- cubage(fic_arbres = data_arbre, mode_simul = 'DET', use_ass_ess=F)
+  data_obt_na <- data_obt %>% filter(is.na(vol_dm3))
+
+  expect_equal(nrow(data_arbre), nrow(data_obt))
+
+  expect_equal(39, nrow(data_obt_na))
+})
+
+test_that("cubage() fonctionne comme attendu avec use_ess_ass=F en mode STO", {
+
+  data_ess_ass <- readRDS(test_path("fixtures", "data_ess_ass_sto.rds"))
+  data_ess_ass <- data_ess_ass %>% mutate(hauteur_pred=10)
+  nb_iter <- max(data_ess_ass$iter)
+  nb_step <- max(data_ess_ass$step)
+  data_obt <- cubage(fic_arbres = data_ess_ass, mode_simul = 'STO', nb_iter = nb_iter, nb_step = nb_step,use_ass_ess=F)
+  data_obt_na <- data_obt %>% filter(is.na(vol_dm3))
+
+  expect_equal(nrow(data_ess_ass), nrow(data_obt))
+
+  expect_equal(1950, nrow(data_obt_na))
+})
+
 
 # test_that("cubage() avec mode stochastique fonctionne avec un gros fichier", {
 #

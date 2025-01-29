@@ -97,3 +97,53 @@
 #' }
 "fic_arbres_reg_eco"
 
+
+#' Table d'association d'essences pour la relation h-d
+#'
+#' Table d'association d'essences pour 65 essences ou groupes d'essences à une des 27 essences avec une relation h-d
+#'
+#' @format ## `ht_ass_ess`
+#' A data frame with 65 lignes et 2 colonnes:
+#' \describe{
+#'   \item{essence}{Code de l'essence}
+#'   \item{essence_hauteur}{Code de l'essence de la relation h-d}
+#' }
+"ht_ass_ess"
+
+
+#' Table d'association d'essences pour le tarif de cubage
+#'
+#' Table d'association d'essences pour 65 essences ou groupes d'essences à une des 26 essences avec un tarif de cubage
+#'
+#' @format ## `tarif_ass_ess`
+#' A data frame with 65 lignes et 2 colonnes:
+#' \describe{
+#'   \item{essence}{Code de l'essence}
+#'   \item{essence_volume}{Code de l'essence du tarif de cubage}
+#' }
+"tarif_ass_ess"
+
+
+#' Fichier test pour la fonction get_diam
+#'
+#' Fichier test pour la fonction get_diam
+#'
+#' @format ## `data_diam1`
+#' A data frame with 11 lignes et 10 colonnes:
+"data_diam1"
+
+#' Fichier test pour la fonction get_diam
+#'
+#' Fichier test pour la fonction get_diam
+#'
+#' @format ## `data_diam2`
+#' A data frame with 11 lignes et 10 colonnes:
+"data_diam2"
+
+#' Liste des essences avec une équation de défilement
+#'
+#' Liste des essences avec une équation de défilement
+#'
+#' @format ## `defil_liste_ess`
+#' Vecteur de 10 essences
+"defil_liste_ess"

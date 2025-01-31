@@ -52,16 +52,16 @@ get_modele <- function(type_modele, essence) {
 # fonction pour passer chacune des essences d'un fichier, ne traite que les essences avec un modele de défilement, élimine les autres, donc garder les autres arbres dans un autre fichier
 # fic = data avec les variables nécessaires pour l'utilisation d'un modèle de défilement, une ligne par iter/placette/arbre/hauteur
 # variables qui doicent être dans fic:
-  # essence= code de l'essence en majuscule, ex: SAB
-  # sdom_bio = sous-domaine: ex: 2EST
-  # cl_drai = classe de drainage, ex: '2'
-  # veg_pot = code de végétation potentielle , ex: 'MS2'
-  # DHP_Ae = dhp de l'arbre en mm
-  # HT_REELLE_M = hauteur de l'arbre en m
-  # HAUTEUR_M = hauteur à laquelle on veut estimer le diametre (m)
-  # nbTi_ha = nombre d'arbres à l'ha dans la placette
-  # st_ha = surface terrière en m2/ha dans la placette
-  # ALTITUDE = altitude de la placette (m)
+# essence= code de l'essence en majuscule, ex: SAB
+# sdom_bio = sous-domaine: ex: 2EST
+# cl_drai = classe de drainage, ex: '2'
+# veg_pot = code de végétation potentielle , ex: 'MS2'
+# DHP_Ae = dhp de l'arbre en mm
+# HT_REELLE_M = hauteur de l'arbre en m
+# HAUTEUR_M = hauteur à laquelle on veut estimer le diametre (m)
+# nbTi_ha = nombre d'arbres à l'ha dans la placette
+# st_ha = surface terrière en m2/ha dans la placette
+# ALTITUDE = altitude de la placette (m)
 
 get_diam <- function(fic) {
 
@@ -203,7 +203,7 @@ calcul_vol_bille <- function(fichier_billes) {
   setDT(data_filtre_temp)
   print(data_filtre_temp)
   if (nrow(data_filtre_temp) > 0) {
-    #la liste de datatable créée est consituée d'objet data.table
+    #la liste de data.table créée est consituée d'objet data.table
     split_essence <- split(data_filtre_temp, by = "essence")
     # traite les arbres une essence à la fois
     for (ess in names(split_essence)) {
@@ -220,159 +220,80 @@ calcul_vol_bille <- function(fichier_billes) {
       #data_filtre[is.na(nom_grade2), column_name := "pate"]
       #data_filtre[is.na(long_grade2), column_name := 4]
       #data_filtre[is.na(diam_grade2), column_name := 8]
-      #on s'assure que l'arbre en cours redevienne vide
-      arbre_en_cours <- data.table()
-      #On fait les manipulations en passant par chaque arbre pour la sortie dans le fichier csv
-      for(i in seq_len(nrow(data_filtre))) {
-        ##ce qui va être remis dans le nouveau fichier
-        arbre_en_cours <- data_filtre[i]
-        setDT(arbre_en_cours)
-        #arbre_en_cours <- arbre_en_cours[!is.na(`column_name`)]
-        #print(arbre_en_cours)
-        #type 1
-        nom_grade_1 <- arbre_en_cours$nom_grade1
-        long_grade_1 <- arbre_en_cours$long_grade1 * 12.25/ ratio_pouce_metre
-        diam_grade_1 <- arbre_en_cours$diam_grade1 / ratio_cm_metre
-        nom_grade_2 <- arbre_en_cours$nom_grade2
-        long_grade_2 <- arbre_en_cours$long_grade2 * 12.25/ ratio_pouce_metre
-        diam_grade_2 <- arbre_en_cours$diam_grade2 / ratio_cm_metre
-        nom_grade_3 <- arbre_en_cours$nom_grade3
-        long_grade_3 <- arbre_en_cours$long_grade3 * 12.25/ ratio_pouce_metre
-        diam_grade_3 <- arbre_en_cours$diam_grade3 / ratio_cm_metre
-        #on crée une list pour stocker les lignes contenant la hauteur du diamètre en question, création d'index pour
-        #aider à changer l'élément de la liste
-        collection_sections <- data.table()
-        collection_list <- list()
-        index <- 1
-        #aucune conversion, on travaille en metre
-        hauteur_arbre_en_cours <- arbre_en_cours$HT_REELLE_M
-        #print(hauteur_arbre_en_cours)
-        #12 pouces * 2 + 0.5 pouce, qu'on divise par le ratio
-        section_en_metres <- 24.5 / ratio_pouce_metre
-        #on crée une data.table pour stocker les diamètres à hauteur h tout en pouces
-        ##collection_sections <- data.table(HAUTEUR_M = numeric(), DIAM_MM = numeric())
-        #on compte le nombre de sections, et on met les diamètres de chaques sections dans le dt
-        for (h in seq(dhs, hauteur_arbre_en_cours, by = section_en_metres)) {
-          ##comprendre comment ça marche, faut-il savoir de quel arbre on parle(leur attribuer un id?)!!
-          hauteur_en_calcul <- arbre_en_cours[, .(essence, id_pe, no_arbre, sdom_bio, cl_drai, veg_pot, DHP_Ae,
-                                                  HT_REELLE_M, HAUTEUR_M, nbTi_ha, st_ha, ALTITUDE)]
-          hauteur_en_calcul[, HAUTEUR_M := h]
-          setDT(hauteur_en_calcul)
-          #print(hauteur_en_calcul)
-          #on fait le calcul, ça retourne la valeur get_diam(pred_mm2_corr)
-          diametre_calcul <- get_diam(hauteur_en_calcul)
-          setDT(diametre_calcul)
-          #on met la ligne dans la liste et on incrémente l'index, en mettant la hauteur à la valeur de h, puis
-          #on transforme pred_mm2_corr en mètre pour le calcul plus tard
-          collection_list[[index]] <- diametre_calcul[, .(id_pe = id_pe, no_arbre = no_arbre,
-                                                      HAUTEUR_M = h, pred_mm2_corr = sqrt(pred_mm2_corr) / ratio_mm_metre)]
-          index <- index + 1
-        }
-        #on ramène toutes les lignes dans notre data.table que l'on veut avoir, avec toutes les hauteurs et diamètres
-        collection_sections <- rbindlist(collection_list)
-        if(nrow(collection_sections) > 0){
-          #on traverse les différentes sections de l'arbre en vérifiant les différentes conditions de billes
-          nom_grade1 <- nom_grade_1
-          log_length1 <- long_grade_1
-          diam_value1 <- diam_grade_1
-          nom_grade2 <- nom_grade_2
-          log_length2 <- long_grade_2
-          diam_value2 <- diam_grade_2
-          nom_grade3 <- nom_grade_3
-          log_length3 <- long_grade_3
-          diam_value3 <- diam_grade_3
-          current_hauteur <- dhs
-          current_hauteur2 <- 0
-          current_hauteur3 <- 0
-          print(collection_sections)
-          #on crée la data.table où nous allons stocker les billes et leurs volumes
-          #on prend les diametres à la bonne hauteur(celle du bas, et celle à distance de la longueur voulue(log_length))
-          diam_hauteur_1 <- collection_sections[HAUTEUR_M == current_hauteur]$pred_mm2_corr
-          #on prend les valeurs de id_pe et no_arbre de l'arbre en cours
-          id_pe_value <- arbre_en_cours$id_pe[1]
-          no_arbre_value <- arbre_en_cours$no_arbre[1]
-          for (current_hauteur in seq(current_hauteur, hauteur_arbre_en_cours, by = log_length1)) {
-            #on donne du jeu pour ne pas qu'il y ait aucun match alors que la différence est de 0.0000000001
-            diam_hauteur_2 <- collection_sections[abs(HAUTEUR_M - (current_hauteur + log_length1)) < 1e-6]$pred_mm2_corr
-            current_hauteur2 <- current_hauteur
-            if (!is.na(diam_value1) && !is.na(diam_hauteur_2)) {
-              #on regarde si le diamètre minimum est disponible, sinon on change
-              if (diam_value1 >= diam_hauteur_2) {
-                break
-              } else {
-              #calcul du volume du premier type
-              volume <- pi * log_length1 * (diam_hauteur_1 * diam_hauteur_1 + diam_hauteur_2 * diam_hauteur_2)
-              # Append to data_billes
-              data_billes <- rbind(data_billes, data.table(
-                id_pe = id_pe_value,
-                no_arbre = no_arbre_value,
-                grade = nom_grade1,
-                volume = volume
-              ))
-              # Update diam_hauteur_1 for the next iteration
-              diam_hauteur_1 <- diam_hauteur_2
-              }
-            }
-            else{break}
-          }
-          if(length(log_length2) == 1){
-            for (current_hauteur2 in seq(current_hauteur2, hauteur_arbre_en_cours, by = log_length2)) {
-              diam_hauteur_2 <- collection_sections[abs(HAUTEUR_M - (current_hauteur2 + log_length2)) < 1e-6]$pred_mm2_corr
-              current_hauteur3 <- current_hauteur2
-              if (!is.na(diam_value2) && !is.na(diam_hauteur_2)) {
-                #on regarde si le diamètre minimum est disponible, sinon on change
-                if (diam_value2 >= diam_hauteur_2) {
-                  break
-                } else {
-                  #calcul du volume du premier type
-                  volume <- pi * log_length2 * (diam_hauteur_1 * diam_hauteur_1 + diam_hauteur_2 * diam_hauteur_2)
-                  # Append to data_billes
-                  data_billes <- rbind(data_billes, data.table(
-                    id_pe = id_pe_value,
-                    no_arbre = no_arbre_value,
-                    grade = nom_grade2,
-                    volume = volume
-                  ))
-                  # Update diam_hauteur_1 for the next iteration
-                  diam_hauteur_1 <- diam_hauteur_2
-                }
-              }
-              else{break}
-            }
-          }
-          if(length(log_length3) == 1){
-            for (current_hauteur3 in seq(current_hauteur3, hauteur_arbre_en_cours, by = log_length3)) {
-              diam_hauteur_2 <- collection_sections[abs(HAUTEUR_M - (current_hauteur3 + log_length3)) < 1e-6]$pred_mm2_corr
-              if (!is.na(diam_value3) && !is.na(diam_hauteur_2)) {
-                #on regarde si le diamètre minimum est disponible, sinon on change
-                if (diam_value3 >= diam_hauteur_2) {
-                  break
-                } else {
-                  #calcul du volume du premier type
-                  volume <- pi * log_length3 * (diam_hauteur_1 * diam_hauteur_1 + diam_hauteur_2 * diam_hauteur_2)
-                  # Append to data_billes
-                  data_billes <- rbind(data_billes, data.table(
-                    id_pe = id_pe_value,
-                    no_arbre = no_arbre_value,
-                    grade = nom_grade3,
-                    volume = volume
-                  ))
-                  # Update diam_hauteur_1 for the next iteration
-                  diam_hauteur_1 <- diam_hauteur_2
-                }
-              }
-              else{break}
-            }
+      nom_grade_1 <- data_filtre$nom_grade1
+      long_grade_1 <- data_filtre$long_grade1 * 12.25/ ratio_pouce_metre
+      diam_grade_1 <- data_filtre$diam_grade1 / ratio_cm_metre
+      nom_grade_2 <- data_filtre$nom_grade2
+      long_grade_2 <- data_filtre$long_grade2 * 12.25/ ratio_pouce_metre
+      diam_grade_2 <- data_filtre$diam_grade2 / ratio_cm_metre
+      nom_grade_3 <- data_filtre$nom_grade3
+      long_grade_3 <- data_filtre$long_grade3 * 12.25/ ratio_pouce_metre
+      diam_grade_3 <- data_filtre$diam_grade3 / ratio_cm_metre
+      # Generate all section heights (`h`) for each tree
+      # Expand each tree into multiple rows for each height (h)
+      expanded_data <- data_filtre[, {
+        list(HAUTEUR_M = seq(dhs, HT_REELLE_M, by = 24.5 / ratio_pouce_metre))
+      }, by = .(essence, id_pe, no_arbre, sdom_bio, cl_drai, veg_pot, DHP_Ae, HT_REELLE_M, nbTi_ha, st_ha, ALTITUDE)]
+      # Add the height-dependent calculations (apply get_diam)
+      # Use lapply to apply the get_diam function for each group of expanded heights
+      new_data <- expanded_data[, pred_mm2_corr := sqrt(get_diam(.SD)$pred_mm2_corr) / ratio_mm_metre,
+                  by = 1:nrow(expanded_data)]
+      new_data1 <- new_data[, .(id_pe = id_pe, no_arbre = no_arbre,
+                       HAUTEUR_M = HAUTEUR_M, pred_mm2_corr = pred_mm2_corr)]
+      print(new_data1)
+      #on va chercher les valeurs pour mieux afficher
+      nom_grade1 <- nom_grade_1
+      log_length1 <- long_grade_1
+      diam_value1 <- diam_grade_1
+      nom_grade2 <- nom_grade_2
+      log_length2 <- long_grade_2
+      diam_value2 <- diam_grade_2
+      nom_grade3 <- nom_grade_3
+      log_length3 <- long_grade_3
+      diam_value3 <- diam_grade_3
+      #on crée une list avec les différents paramètres afin de pouvoir passer à travers ceux-ci
+      log_lengths <- list(log_length1, log_length2, log_length3)
+      diam_values <- list(diam_value1, diam_value2, diam_value3)
+      nom_grades <- list(nom_grade1, nom_grade2, nom_grade3)
+      current_hauteur <- dhs
+      for (i in seq_along(log_lengths)) {
+        log_length <- log_lengths[[i]]
+        diam_value <- diam_values[[i]]
+        nom_grade <- nom_grades[[i]]
+        hauteur_fin_bout <- current_hauteur + log_length
+        diam_hauteur_1 <- new_data1[HAUTEUR_M == current_hauteur]$pred_mm2_corr
+        diam_hauteur_2 <- new_data1[abs(HAUTEUR_M - (current_hauteur + log_length)) < 1e-6]$pred_mm2_corr
+        # Skip if log_length is not defined
+        if (length(log_length) != 1) next
+
+        if (!is.na(diam_value) && !is.na(diam_hauteur_2)){
+          while (diam_value <= diam_hauteur_2) {
+            #calcul du volume du premier type
+            volume <- pi * log_length * (diam_hauteur_1 * diam_hauteur_1 + diam_hauteur_2 * diam_hauteur_2)
+            print(volume)
+            # Append to data_billes
+            ######bien append le tout#############
+            data_billes <- rbind(data_billes, data.table(
+              id_pe = new_data1$id_pe[1],
+              no_arbre = new_data1$no_arbre[1],
+              grade = nom_grade,
+              volume = volume
+            ))
+            # Update diam_hauteur_1 for the next iteration
+            current_hauteur <- current_hauteur + log_length
+            diam_hauteur_1 <- diam_hauteur_2
+            diam_hauteur_2 <- new_data1[abs(HAUTEUR_M - (current_hauteur + log_length)) < 1e-6]$pred_mm2_corr
           }
         }
-      }#fin de for seqlen
+      }
     }
   }
-  #fwrite(data_billes, "data_billes.csv", row.names = FALSE)
+  #fwrite(data_billes, "data_billes1.csv", row.names = FALSE)
   return(data_billes)
 }
 
 ##################################################
-#get_diam(data_diam5)
-calcul_vol_bille(data_diam6)
+#get_diam(data_diam4)
+calcul_vol_bille(data_diam4)
 #data_diam5
+#great first attempt, vectorized operations are needed

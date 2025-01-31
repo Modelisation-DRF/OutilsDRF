@@ -389,7 +389,58 @@ data_diam4 <- data.frame(essence=c('BOP','EPB','EPN','EPR','PEG','PET','PIG','SA
                          long_grade3 = 2,
                          diam_grade3 = 3)
 
-usethis::use_data(data_diam1, data_diam2, data_diam3, data_diam4, defil_liste_ess,
+df_replicated <- data_diam4[rep(seq_len(nrow(data_diam4)), 300),]
+
+data_diam5 <- data.frame(essence=rep(c('BOP','EPB','EPN','EPR','PEG','PET','PIB','PIG','SAB','THO','ERS'), 1800),
+                         id_pe = seq(1, 19800, 1),
+                         no_arbre = seq(1, 19800, 1),
+                         sdom_bio = rep(c('2EST','2OUEST','3EST','3OUEST','4EST','4OUEST','5EST','5OUEST','6EST','6OUEST','1'), 1800),
+                         cl_drai = rep(c('2','4','1','3','5','6','0','1','2','3','4'), 1800),
+                         veg_pot = rep(c('MS2','RE3','MJ2','FE2','RE2','RE1','MJ1','RB2','MS1','RS2','FE2'), 1800),
+                         DHP_Ae = rep(150, 19800),
+                         HT_REELLE_M = rep(10, 19800),
+                         HAUTEUR_M = rep(5, 19800),
+                         nbTi_ha = 2000,
+                         st_ha = 15,
+                         ALTITUDE = 200,
+                         nom_grade1 = "sciage court",
+                         long_grade1 = 8,
+                         diam_grade1 = 10,
+                         nom_grade2 = "pate",
+                         long_grade2 = 4,
+                         diam_grade2 = 5,
+                         nom_grade3 = "autre",
+                         long_grade3 = 2,
+                         diam_grade3 = 3)
+
+data_diam6 <- data.frame(essence=rep(c('BOP','EPB','EPN','EPR','PEG','PET','PIB','PIG','SAB','THO','ERS'), 50),
+                         id_pe = seq(1, 550, 1),
+                         no_arbre = seq(1, 550, 1),
+                         sdom_bio = rep(c('2EST','2OUEST','3EST','3OUEST','4EST','4OUEST','5EST','5OUEST','6EST','6OUEST','1'), 50),
+                         cl_drai = rep(c('2','4','1','3','5','6','0','1','2','3','4'), 50),
+                         veg_pot = rep(c('MS2','RE3','MJ2','FE2','RE2','RE1','MJ1','RB2','MS1','RS2','FE2'), 50),
+                         DHP_Ae = rep(150, 550),
+                         HT_REELLE_M = rep(10, 550),
+                         HAUTEUR_M = rep(5, 550),
+                         nbTi_ha = 2000,
+                         st_ha = 15,
+                         ALTITUDE = 200,
+                         nom_grade1 = "sciage court",
+                         long_grade1 = 8,
+                         diam_grade1 = 10,
+                         nom_grade2 = "pate",
+                         long_grade2 = 4,
+                         diam_grade2 = 5,
+                         nom_grade3 = "autre",
+                         long_grade3 = 2,
+                         diam_grade3 = 3)
+
+
+
+
+
+usethis::use_data(data_diam1, data_diam2, data_diam3, data_diam4, df_replicated, data_diam5, data_diam6,
+                  defil_liste_ess,
                   overwrite = TRUE,
                   internal = FALSE)
 # ces fichiers seront sous data/ et toujours accessible quand le package est loadé

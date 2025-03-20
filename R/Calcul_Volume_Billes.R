@@ -28,8 +28,12 @@
 #'   \itemize{
 #'     \item id_pe - Identifiant de la placette
 #'     \item no_arbre - Numéro de l'arbre
-#'     \item grade - Type (grade) de la bille
-#'     \item volume - Volume de la bille en dm³
+#'     \item dhpcm - Diamètre à hauteur de poitrine de l'arbre en cm
+#'     \item ht - Hauteur de l'arbre en m
+#'     \item vol_bille_dm3 - Volume de la bille en dm³
+#'     \item grade_bille - Type (grade) de la bille
+#'     \item diam_fb_cm - Diamètre minimal au fin bout de la bille en cm
+#'     \item long_bille_pied - Longueur de la bille en pied, NA si aucune valeur spécifiée au départ
 #'   }
 #'
 #' @details
@@ -99,9 +103,9 @@ calcul_vol_bille <- function(fichier_billes) {
   data_billes <- data.table()
 
   # Constantes de conversion d'unités
-  # Ces ratios permettent de convertir différentes unités en mètres (unité de travail interne)
+  # Ces ratios permettent de convertir différentes unités(unité de travail interne)
   ratio_pouce_metre <- 39.3700787  # Nombre de pouces dans un mètre
-  ratio_cm_mm <- 10
+  ratio_cm_mm <- 10                # Nombre de milimètres dans un centimètre
   ratio_cm_metre <- 100            # Nombre de centimètres dans un mètre
   ratio_mm_metre <- 1000           # Nombre de millimètres dans un mètre
 
@@ -174,7 +178,6 @@ calcul_vol_bille <- function(fichier_billes) {
     data_all_sections <- data_filtre[, .(
       HT_REELLE_M = seq(dhs, HAUTEUR_M, by = section_metre)
     ), by = group_id]
-    #print("all_sections done")
 
     # Jointure pour récupérer les informations nécessaires de l'arbre pour chaque section
     # On garde uniquement les colonnes nécessaires au calcul du diamètre
@@ -185,10 +188,7 @@ calcul_vol_bille <- function(fichier_billes) {
 
     # Calcul du diamètre prédit à chaque hauteur de section pour tous les arbres
     # Utilise la fonction get_diam qui applique des modèles de défilement
-    #tic()
     diam_all_sections <- get_diam(data_all_sections)
-    #toc()
-    #print("get_diam done")
 
     # Conversion du diamètre prédit de mm² en mètres
     # pred_mm2_corr est en mm², on prend la racine carrée puis on convertit en mètres
@@ -206,7 +206,6 @@ calcul_vol_bille <- function(fichier_billes) {
     # - diam_hauteur_fb: diamètre au fin bout (à l'extrémité de la section)
     # - volume_section: volume de chaque section individuelle
     # - volume_cumulatif: somme cumulée des volumes depuis le début
-    #tic()
     data_treatment[, c("diam_hauteur_fb", "volume_section", "volume_cumulatif") :=
                      {
                        # Décalage du vecteur DIAM_PREDICT pour obtenir le diamètre fin bout
@@ -223,12 +222,11 @@ calcul_vol_bille <- function(fichier_billes) {
 
                        list(diam_fb, vol_sec, vol_cum)
                      }]
-    #toc()
-    #print("volume done")
+
     # Création d'un vecteur pour stocker les longueurs spéciales
     # Ce vecteur est utilisé quand l'utilisateur spécifie un diamètre minimal sans longueur
-    special_lengths_vector <- numeric(length = max(data_treatment$group_id))
-    names(special_lengths_vector) <- 1:max(data_treatment$group_id)
+    #special_lengths_vector <- numeric(length = max(data_treatment$group_id))
+    #names(special_lengths_vector) <- 1:max(data_treatment$group_id)
 
     # Création de variables booléennes pour simplifier les conditions
     # has_set: a à la fois le diamètre ET la longueur spécifiés
@@ -243,328 +241,196 @@ calcul_vol_bille <- function(fichier_billes) {
 
     # PARTIE CRITIQUE: Algorithme de découpe des arbres en billes
     # Cette section détermine comment chaque arbre sera découpé en billes commerciales
-    all_cuts <- data_treatment[, {
-      # Initialisation des vecteurs pour stocker les résultats
-      # - result: indices des positions de coupe
-      # - next_lengths: longueurs des billes
-      # - next_diams: diamètres fin bout des billes
-      # - next_vols: volumes des billes
-      # On travaille toujours avec la bille suivante et c'est les valeurs de celle-ci qu'on ajoute
-      result <- numeric()
-      next_lengths <- numeric()
-      next_diams <- numeric()
-      next_vols <- numeric()
+    cut_positions <- data_treatment[, {
+      # Ne collecte que les positions des coupes valides
+      positions <- integer()
+      grade_types <- character()  # Vecteur pour stocker le type de grade pour chaque coupe
+      # Suppression de next_vols de cette section
 
-      # Définition d'abréviations pour simplifier le code
-      dp <- DIAM_PREDICT        # Diamètre prédit à chaque hauteur
-      vc <- volume_cumulatif    # Volume cumulatif à chaque hauteur
-      ht <- HT_REELLE_M         # Hauteur réelle de chaque section
-      n <- .N                   # Nombre de sections pour cet arbre
-      j <- 0                    # Variable temporaire pour les cas spéciaux
+      # Définition des variables locales pour un accès plus facile
+      dp <- DIAM_PREDICT
+      vc <- volume_cumulatif
+      ht <- HT_REELLE_M
+      n <- .N
+      i <- 1
+      j <- 0
 
-      # Pré-calcul des diamètres après sauts pour chaque type de bille
-      # Ceci permet d'évaluer rapidement si une bille potentielle respecte les critères de diamètre
+      # Drapeau nécessaire pour ajuster les indices des cas spéciaux consécutifs
+      special_case1_accessed <- FALSE
+      special_case2_accessed <- FALSE
+
+      # Pré-calcul des diamètres suivants pour les grades de longueur fixe
       next_diam1 <- if(has_set1) {
-        # Décale le vecteur de diamètres par la longueur de la bille (en nombre de sections)
         c(dp[(1 + jump_log1):n], rep(NA, jump_log1))
       } else {
         rep(NA, n)
       }
-
       next_diam2 <- if(has_set2) {
         c(dp[(1 + jump_log2):n], rep(NA, jump_log2))
       } else {
         rep(NA, n)
       }
-
       next_diam3 <- if(has_set3) {
         c(dp[(1 + jump_log3):n], rep(NA, jump_log3))
       } else {
         rep(NA, n)
       }
 
-      # Début de l'algorithme de découpe des billes
-      i <- 1  # Position de départ
-
       while(i <= n) {
-        # Enregistre la position courante comme point de coupe potentiel
-        result <- c(result, i)
+        # Détermine la position actuelle à utiliser (ajustée si un cas spécial a été détecté)
+        current_pos <- if(special_case1_accessed || special_case2_accessed) i - 1 else i
 
-        # Vérifie si une bille de type 1 peut être découpée à partir de cette position
+        # Ajoute la position aux positions de coupe
+        positions <- c(positions, current_pos)
+
+        # Réinitialise les drapeaux
+        special_case1_accessed <- FALSE
+        special_case2_accessed <- FALSE
+
+        # Vérifie si l'un des critères de grade est rempli et avance en conséquence
         if(has_set1 && !is.na(next_diam1[i]) && diam_value1 < next_diam1[i]) {
-          # Si le diamètre au bout de la bille potentielle est supérieur au minimum requis
-          next_i <- i + jump_log1  # Calcule la position après la bille
-
-          # Enregistre les informations de cette bille
-          next_lengths <- c(next_lengths, ht[next_i] - ht[i])  # Longueur de la bille
-          next_diams <- c(next_diams, dp[next_i])              # Diamètre fin bout
-          next_vols <- c(next_vols, vc[next_i] - vc[i])        # Volume de la bille
-
-          i <- next_i  # Avance à la position après cette bille
+          # Grade 1 de longueur fixe
+          grade_types <- c(grade_types, nom_grade1)
+          next_i <- i + jump_log1
+          i <- next_i
         }
-        # Vérifications similaires pour les billes de type 2 et 3
         else if(has_set2 && !is.na(next_diam2[i]) && diam_value2 < next_diam2[i]) {
+          # Grade 2 de longueur fixe
+          grade_types <- c(grade_types, nom_grade2)
           next_i <- i + jump_log2
-          next_lengths <- c(next_lengths, ht[next_i] - ht[i])
-          next_diams <- c(next_diams, dp[next_i])
-          next_vols <- c(next_vols, vc[next_i] - vc[i])
           i <- next_i
         }
         else if(has_set3 && !is.na(next_diam3[i]) && diam_value3 < next_diam3[i]) {
+          # Grade 3 de longueur fixe
+          grade_types <- c(grade_types, nom_grade3)
           next_i <- i + jump_log3
-          next_lengths <- c(next_lengths, ht[next_i] - ht[i])
-          next_diams <- c(next_diams, dp[next_i])
-          next_vols <- c(next_vols, vc[next_i] - vc[i])
           i <- next_i
         }
         # CAS SPÉCIAUX: Gestion des types de billes avec diamètre spécifié mais sans longueur fixe
-        # Dans ce cas, on cherche la plus longue bille possible respectant le diamètre minimal
         else if(no_log1 && diam_value1 < dp[i] && !is.na(dp[i])) {
-          # Trouve toutes les positions sur l'arbre où le diamètre dépasse le minimum requis
-          next_positions <- which(dp[i:n] > diam_value1)
+          #Ajustement du drapeau
+          special_case1_accessed <- TRUE
+          # Grade 1 de longueur variable
+          grade_types <- c(grade_types, nom_grade1)
 
-          # Détermine la position la plus élevée respectant le critère
-          if(length(next_positions) > 0) {
-            j <- i + next_positions[length(next_positions)]
+          # Trouve où le diamètre passe en dessous du seuil
+          drop_positions <- which(dp[(i+1):n] < diam_value1)
+          if(length(drop_positions) > 0) {
+            j <- i + drop_positions[1] - 1  # Dernière position où le diamètre est encore valide
           } else {
-            j <- n
+            j <- n  # Utilise toute la longueur restante
           }
-
-          # Calcule la longueur de cette bille spéciale
-          total_jump <- (j - i) - 1
-          special_length <- section_metre * total_jump
-
-          # Stocke cette longueur pour référence future
-          special_lengths_vector[.BY$group_id] <<- special_length
-
-          # Enregistre les informations de cette bille
-          next_lengths <- c(next_lengths, special_length)
-          next_diams <- c(next_diams, dp[j - 1])
-          next_vols <- c(next_vols, vc[j - 1] - vc[i])
-
-          i <- j  # Avance à la position après cette bille(il n'y aura plus aucune bille valide)
+          i <- j + 1
         }
-        # Cas spéciaux similaires pour les types 2 et 3
         else if(no_log2 && diam_value2 < dp[i] && !is.na(dp[i])) {
-          next_positions <- which(dp[i:n] > diam_value2)
-          if(length(next_positions) > 0) {
-            j <- i + next_positions[length(next_positions)]
+          special_case2_accessed <- TRUE
+          grade_types <- c(grade_types, nom_grade2)
+
+          drop_positions <- which(dp[(i+1):n] < diam_value2)
+          if(length(drop_positions) > 0) {
+            j <- i + drop_positions[1] - 1
           } else {
             j <- n
           }
 
-          total_jump <- (j - i) - 1
-          special_length <- section_metre * total_jump
-
-          special_lengths_vector[.BY$group_id] <<- special_length
-          next_lengths <- c(next_lengths, special_length)
-          next_diams <- c(next_diams, dp[j - 1])
-          next_vols <- c(next_vols, vc[j - 1] - vc[i])
-          i <- j
+          i <- j + 1
         }
         else if(no_log3 && diam_value3 < dp[i] && !is.na(dp[i])) {
-          next_positions <- which(dp[i:n] > diam_value3)
-          if(length(next_positions) > 0) {
-            j <- i + next_positions[length(next_positions)]
+          grade_types <- c(grade_types, nom_grade3)
+
+          drop_positions <- which(dp[(i+1):n] < diam_value3)
+          if(length(drop_positions) > 0) {
+            j <- i + drop_positions[1] - 1
           } else {
             j <- n
           }
 
-          total_jump <- (j - i) - 1
-          special_length <- section_metre * total_jump
-
-          special_lengths_vector[.BY$group_id] <<- special_length
-          next_lengths <- c(next_lengths, special_length)
-          next_diams <- c(next_diams, dp[j - 1])
-          next_vols <- c(next_vols, vc[j - 1] - vc[i])
-          i <- j
+          # Suppression de la ligne next_vols
+          i <- j + 1
         }
         else {
-          # Aucun type de bille ne peut être découpé à partir de cette position
-          # On ajoute des NA et on arrête la découpe pour cet arbre
-          next_lengths <- c(next_lengths, NA)
-          next_diams <- c(next_diams, NA)
-          next_vols <- c(next_vols, NA)
+          # Plus de segments valides ne peuvent être extraits
+          grade_types <- c(grade_types, NA)  # Étiquette par défaut pour les coupes non classées
+          # Suppression de la ligne next_vols
           break
         }
       }
 
-      # Retourne les résultats de la découpe pour cet arbre
-      .(
-        id_pe = id_pe[result],           # Identifiant de placette
-        no_arbre = no_arbre[result],     # Numéro d'arbre
-        HT_REELLE_M = HT_REELLE_M[result], # Hauteur de la coupe
-        DIAM_PREDICT = DIAM_PREDICT[result], # Diamètre à la hauteur de la coupe
-        next_log_length = next_lengths,   # Longueur de la bille
-        diam_hauteur_fb = next_diams,     # Diamètre fin bout
-        next_vol_bille = next_vols        # Volume de la bille
-      )
-    }, by = group_id]  # Effectue cette opération pour chaque arbre individuellement
+      # Retourne les positions où les coupes doivent se produire et leurs types de grade
+      .(cut_positions = positions, grade_type = grade_types)
+    }, by = group_id]
 
-    #Enlever les lignes avec des NA
-    all_cuts <- na.omit(all_cuts)
+    # Création d'un index pour chaque ligne dans son groupe respectif
+    data_treatment[, row_within_group := seq_len(.N), by = group_id]
 
-    # CLASSIFICATION DES BILLES selon leur type (grade)
-    # Plusieurs cas selon les combinaisons de paramètres spécifiés par l'utilisateur
-    #tic()
-    # CAS 1: Tous les types de billes ont diamètre ET longueur spécifiés
-    if(has_set3 && has_set2 && has_set1) {
-      # Conversion des longueurs en mètres (depuis des unités de billes)
-      length1 <- log_length1 * 12.25 / ratio_pouce_metre
-      length2 <- log_length2 * 12.25 / ratio_pouce_metre
-      length3 <- log_length3 * 12.25 / ratio_pouce_metre
+    # Transformation de cut_positions en format long
+    cut_positions_long <- cut_positions[, .(
+      group_id = group_id,
+      row_within_group = cut_positions,
+      grade_type = grade_type
+    )]
 
-      # Identification des billes qui correspondent aux longueurs spécifiées
-      # Une petite tolérance (1e-6) est utilisée pour gérer les erreurs d'arrondi
-      meets_length1 <- abs(all_cuts$next_log_length - length1) < 1e-6
-      meets_length2 <- abs(all_cuts$next_log_length - length2) < 1e-6
-      meets_length3 <- abs(all_cuts$next_log_length - length3) < 1e-6
+    # Jointure en une seule opération pour extraire uniquement les lignes nécessaires
+    cuts_data <- data_treatment[cut_positions_long, on = .(group_id, row_within_group)]
 
-      # Identification des billes qui respectent les diamètres minimaux
-      meets_diam1 <- all_cuts$diam_hauteur_fb >= diam_value1
-      meets_diam2 <- all_cuts$diam_hauteur_fb >= diam_value2
-      meets_diam3 <- all_cuts$diam_hauteur_fb >= diam_value3
+    # Suppression de la colonne temporaire
+    cuts_data[, row_within_group := NULL]
 
-      # Attribution du type (grade) à chaque bille en fonction des critères
-      # fcase est une version optimisée de ifelse pour data.table
-      all_cuts[, current_grade := fcase(
-        meets_length1 & meets_diam1, nom_grade1,
-        meets_length2 & meets_diam2, nom_grade2,
-        meets_length3 & meets_diam3, nom_grade3
-      )]
-    }
+    # Tri par group_id pour assurer l'ordre correct pour les opérations suivantes
+    setkey(cuts_data, group_id)
 
-    # CAS 2: Les types 1 et 2 ont diamètre ET longueur, le type 3 peut être incomplet
-    else if(!has_set3 && has_set2 && has_set1) {
-      length1 <- log_length1 * 12.25 / ratio_pouce_metre
-      length2 <- log_length2 * 12.25 / ratio_pouce_metre
+    # Utilisation des opérations data.table pour calculer les longueurs, diamètres, volumes
+    cuts_data[, `:=`(
+      # Calcul des informations de position suivante en utilisant shift() avec group_id
+      next_height = shift(HT_REELLE_M, -1, type="lag"),
+      next_diam = shift(DIAM_PREDICT, -1, type="lag"),
+      next_vol = shift(volume_cumulatif, -1, type="lag")
+    ), by = group_id]
 
-      meets_length1 <- abs(all_cuts$next_log_length - length1) < 1e-6
-      meets_length2 <- abs(all_cuts$next_log_length - length2) < 1e-6
-      meets_diam1 <- all_cuts$diam_hauteur_fb >= diam_value1
-      meets_diam2 <- all_cuts$diam_hauteur_fb >= diam_value2
+    # Calcul des propriétés des billes
+    cuts_data[, `:=`(
+      next_log_length = next_height - HT_REELLE_M,
+      diam_hauteur_fb = next_diam,
+      next_vol_bille = next_vol - volume_cumulatif
+    )]
 
-      # Sous-cas: Le type 3 a un nom mais pas de longueur fixe
-      if(!is.null(nom_grade3) && length(nom_grade3) > 0) {
-        all_cuts[, current_grade := fcase(
-          meets_length1 & meets_diam1, nom_grade1,
-          meets_length2 & meets_diam2, nom_grade2,
-          default = nom_grade3  # Toutes les autres billes sont de type 3
-        )]
-      }
-      # Sous-cas: Le type 3 n'existe pas
-      else {
-        all_cuts[, current_grade := fcase(
-          meets_length1 & meets_diam1, nom_grade1,
-          meets_length2 & meets_diam2, nom_grade2,
-          default = NA_character_  # Les autres billes n'ont pas de type
-        )]
-      }
-    }
+    # Calcul des propriétés des billes
+    cuts_data[, `:=`(
+      next_log_length = next_height - HT_REELLE_M,
+      diam_hauteur_fb = next_diam
+    )]
 
-    # CAS 3: Seul le type 1 a diamètre ET longueur, les autres peuvent être incomplets
-    else if(!has_set3 && !has_set2 && has_set1) {
-      length1 <- log_length1 * 12.25 / ratio_pouce_metre
+    # Utilisation de grade_type pour créer des colonnes supplémentaires
+    cuts_data[, `:=`(
+      grade_name = grade_type  # Utilisation directe de la colonne grade_type
+    )]
 
-      meets_length1 <- abs(all_cuts$next_log_length - length1) < 1e-6
-      meets_diam1 <- all_cuts$diam_hauteur_fb >= diam_value1
+    # Suppression des lignes contenant des valeurs NA
+    cuts_data <- na.omit(cuts_data)
 
-      # Sous-cas: Le type 2 a un nom mais pas de longueur fixe
-      if(!is.null(nom_grade2) && length(nom_grade2) > 0) {
-        all_cuts[, current_grade := fcase(
-          meets_length1 & meets_diam1, nom_grade1,
-          default = nom_grade2  # Toutes les autres billes sont de type 2
-        )]
-      }
-      # Sous-cas: Le type 2 n'existe pas
-      else {
-        all_cuts[, current_grade := fcase(
-          meets_length1 & meets_diam1, nom_grade1,
-          default = NA_character_  # Les autres billes n'ont pas de type
-        )]
-      }
-    }
-
-    # CAS 4: Aucun type n'a de longueur fixe (seulement des diamètres)
-    else {
-      # Dans ce cas, toutes les billes sont attribuées au type 1
-      all_cuts[, current_grade := nom_grade1]
-    }
-
-    # ASSIGNATION DES LONGUEURS DE BILLES pour la table finale
-    # Cette étape attribue la longueur correcte à chaque bille selon son type
-
-    # CAS 1: Tous les types ont longueur fixe
-    if(has_set3 && has_set2 && has_set1) {
-      all_cuts[, current_log_length := fcase(
-        current_grade == nom_grade1, log_length1 * 12.25/ ratio_pouce_metre,
-        current_grade == nom_grade2, log_length2 * 12.25/ ratio_pouce_metre,
-        current_grade == nom_grade3, log_length3 * 12.25/ ratio_pouce_metre
-      )]
-    }
-    # CAS 2: Types 1 et 2 ont longueur fixe, type 3 peut varier
-    else if(!has_set3 && has_set2 && has_set1) {
-      if(!is.null(nom_grade3)) {
-        # Type 3 existe mais sans longueur fixe
-        all_cuts[, current_log_length := fcase(
-          current_grade == nom_grade1, log_length1 * 12.25 / ratio_pouce_metre,
-          current_grade == nom_grade2, log_length2 * 12.25 / ratio_pouce_metre,
-          current_grade == nom_grade3, special_lengths_vector[group_id]  # Utilise la longueur spéciale calculée
-        )]
-      }
-      else {
-        # Type 3 n'existe pas
-        all_cuts[, current_log_length := fcase(
-          current_grade == nom_grade1, log_length1 * 12.25 / ratio_pouce_metre,
-          current_grade == nom_grade2, log_length2 * 12.25 / ratio_pouce_metre,
-          default = NA_real_
-        )]
-      }
-    }
-    # CAS 3: Seul le type 1 a longueur fixe
-    else if(!has_set3 && !has_set2 && has_set1){
-      if(!is.null(nom_grade2)) {
-        # Type 2 existe mais sans longueur fixe
-        all_cuts[, current_log_length := fcase(
-          current_grade == nom_grade1, log_length1 * 12.25 / ratio_pouce_metre,
-          current_grade == nom_grade2, special_lengths_vector[group_id]  # Utilise la longueur spéciale
-        )]
-      } else {
-        # Type 2 n'existe pas
-        all_cuts[, current_log_length := fcase(
-          current_grade == nom_grade1, log_length1 * 12.25 / ratio_pouce_metre,
-          default = NA_real_
-        )]
-      }
-    }
-    # CAS 4: Le type 1 n'a pas de longueur fixe
-    else {
-      # Utilise la longueur spéciale pour toutes les billes
-      all_cuts[, current_log_length := special_lengths_vector[group_id]]
-    }
-
-    all_cuts[, diam_fb_cm := {
-      # Valeur par défaut au cas(ne sera jamais utilisé techniquement)
+    # Création de la colonne diam_fb_cm basée sur le type de grade
+    cuts_data[, diam_fb_cm := {
+      # Valeur par défaut (ne sera jamais utilisée en pratique)
       result <- NA_real_
 
-      #On donne les valeurs nécessaires à la table finale, seulement si le type existe
+      # Attribution des valeurs de diamètre en fonction de la correspondance entre grade_type et nom_grade
       if (!is.null(nom_grade1) && !is.na(nom_grade1) && nchar(nom_grade1) > 0) {
         result <- fcase(
-          current_grade == nom_grade1, diam_value1,
+          grade_type == nom_grade1, diam_value1,
           default = result
         )
       }
 
       if (!is.null(nom_grade2) && !is.na(nom_grade2) && nchar(nom_grade2) > 0) {
         result <- fcase(
-          current_grade == nom_grade2, diam_value2,
+          grade_type == nom_grade2, diam_value2,
           default = result
         )
       }
 
       if (!is.null(nom_grade3) && !is.na(nom_grade3) && nchar(nom_grade3) > 0) {
         result <- fcase(
-          current_grade == nom_grade3, diam_value3,
+          grade_type == nom_grade3, diam_value3,
           default = result
         )
       }
@@ -572,51 +438,53 @@ calcul_vol_bille <- function(fichier_billes) {
       result
     }]
 
-    all_cuts[, long_bille_pied := {
-      #Avec indéfinie dans le cas ou nous n'avons pas de log_length, on doit transformer le log_length en char lorsqu'il
-      #est présent, pour ne pas avoir d'erreur de typage
+    # Création de la colonne long_bille_pied basée sur le type de grade
+    cuts_data[, long_bille_pied := {
+      # Valeur par défaut
       result <- NA_real_
-      indefinie <- NA_real_
 
-      #On donne la longueur pour la table finale seulement si le type existe(et selon les cas spéciaux où log_length existe ou non)
+      # Attribution des valeurs de longueur en fonction de la correspondance entre grade_type et nom_grade
+      # et seulement si la valeur long_grade correspondante n'est pas nulle/NA
       if (!is.null(nom_grade1) && !is.na(nom_grade1) && nchar(nom_grade1) > 0) {
-        if(has_set1){
-        result <- fcase(
-          current_grade == nom_grade1, log_length1,
-          default = result
-        )}
-        else{
+        if (has_log1) {
           result <- fcase(
-            current_grade == nom_grade1, NA_real_,
+            grade_type == nom_grade1, log_length1,
             default = result
-        )}
+          )
+        } else {
+          result <- fcase(
+            grade_type == nom_grade1, NA_real_,
+            default = result
+          )
+        }
       }
 
       if (!is.null(nom_grade2) && !is.na(nom_grade2) && nchar(nom_grade2) > 0) {
-        if(has_set2){
+        if (has_log2) {
           result <- fcase(
-            current_grade == nom_grade2, log_length2,
+            grade_type == nom_grade2, log_length2,
             default = result
-          )}
-        else{
+          )
+        } else {
           result <- fcase(
-            current_grade == nom_grade2, NA_real_,
+            grade_type == nom_grade2, NA_real_,
             default = result
-        )}
+          )
+        }
       }
 
-
       if (!is.null(nom_grade3) && !is.na(nom_grade3) && nchar(nom_grade3) > 0) {
-        if(has_set3){
+        if (has_log3) {
           result <- fcase(
-            current_grade == nom_grade3, log_length3,
+            grade_type == nom_grade3, log_length3,
             default = result
-          )}
-        else{
+          )
+        } else {
           result <- fcase(
-            current_grade == nom_grade3, NA_real_,
+            grade_type == nom_grade3, NA_real_,
             default = result
-        )}
+          )
+        }
       }
 
       result
@@ -627,36 +495,35 @@ calcul_vol_bille <- function(fichier_billes) {
     setkey(final_join, group_id)  # Set key for faster joins
 
     #On fait un join avec les colonnes DHP_Ae et HAUTEUR_M pour la table finale
-    all_cuts[final_join, `:=`(
+    cuts_data[final_join, `:=`(
       DHP_Ae = i.DHP_Ae,
       HAUTEUR_M = i.HAUTEUR_M
     ), on = "group_id"]
 
     # Nettoie les données et garde seulement les colonnes essentielles
-    all_cuts[, `:=`(
+    cuts_data[, `:=`(
       id_pe = id_pe,
       no_arbre = no_arbre,
       dhpcm = DHP_Ae,
       ht = HAUTEUR_M,
       volume = next_vol_bille,
-      grade_bille = current_grade,
+      grade_bille = grade_type,
       diam_fb_cm = diam_fb_cm,
       long_bille_pied = long_bille_pied
     )]
 
     # Filtre les résultats finaux:
     # - Élimine les lignes avec valeurs manquantes
+    # - Algorithme crée une donnée non utilisable(billes de volume 0 dans cas spécial), on doit la retirer
     # - Ajuste avec des valeurs de conversions différentes colonnes pour obtenir les bons résultats à l'écran
     # - Remultiplie les volumes par le facteur d'échelle
-    data_billes <- all_cuts[!is.na(volume) & !is.na(id_pe) & !is.na(no_arbre) & !is.na(DHP_Ae) & !is.na(ht)
-                            & !is.na(grade_bille) & !is.na(diam_fb_cm),
-                            .(id_pe, no_arbre, dhpcm = dhpcm / ratio_cm_mm , ht, vol_bille_dm3 = volume * scale,
-                              grade_bille, diam_fb_cm = diam_fb_cm * ratio_cm_metre, long_bille_pied)]
-  #toc()
-  #print("rest done")
+    data_billes <- cuts_data[!is.na(volume) & !is.na(id_pe) & !is.na(no_arbre) & !is.na(DHP_Ae) & !is.na(ht)
+                             & !is.na(grade_bille) & !is.na(diam_fb_cm) & volume > 0,
+                             .(id_pe, no_arbre, dhpcm = dhpcm / ratio_cm_mm , ht, vol_bille_dm3 = volume * scale,
+                               grade_bille, diam_fb_cm = diam_fb_cm * ratio_cm_metre, long_bille_pied)]
   }
   else{
-    #retourne une data.table vide puisque aucune essence n'existe ou n'est valide
+    #Retourne une data.table vide puisque aucune essence n'existe ou n'est valide
     return(data_billes)
   }
   # Retourne la table finale des billes avec leurs volumes

@@ -30,8 +30,12 @@ Une data.table contenant les billes extraites avec les colonnes:
   \itemize{
     \item id_pe - Identifiant de la placette
     \item no_arbre - Numéro de l'arbre
-    \item grade - Type (grade) de la bille
-    \item volume - Volume de la bille en dm³
+    \item dhpcm - Diamètre à hauteur de poitrine de l'arbre en cm
+    \item ht - Hauteur de l'arbre en m
+    \item vol_bille_dm3 - Volume de la bille en dm³
+    \item grade_bille - Type (grade) de la bille
+    \item diam_fb_cm - Diamètre minimal au fin bout de la bille en cm
+    \item long_bille_pied - Longueur de la bille en pied, NA si aucune valeur spécifiée au départ
   }
 }
 \description{

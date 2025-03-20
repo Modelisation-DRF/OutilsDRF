@@ -179,50 +179,57 @@ save(list = ls(envir = temp_env), file = "R/sysdata.rda", envir = temp_env)
 
 rm(temp_env)
 
+data_tree1 <- data.frame(essence=rep(c("AUR", "BOP", "EPB", "CAR", "CHX"), 1),#
+                         id_pe = seq(1,5,1),#
+                         no_arbre = rep(1,5),#
+                         DHP_Ae = rep(35, 5),  ##
+                         nbTi_ha = 2000, #/// N
+                         st_ha = 15) #/// BA
+
 
 #load("R/sysdata.rda")
 #ls()
 
 
-###############################################
-# ensuite, dans le code qui génèrera les paramètres, après avoir générer les paramètres aléatoires, il faudra faire ceci pour le trt sélectionné:
-# effets qui ne dépendent pas de l'essence et les transposer
-ess_non <- param_0 %>% filter(is.na(essence))
-ess_non_tr <- ess_non %>% select(code_trt, num_trt, effect, estimate) %>% group_by(code_trt, num_trt) %>% pivot_wider(names_from = effect, values_from = estimate)
-
-# transposer les effets qui dépendent de l'essence
-param_ess <- param_0 %>% filter(!is.na(essence)) %>% select(code_trt, num_trt, essence, effect, estimate) %>%
-  group_by(code_trt, num_trt, essence) %>%
-  pivot_wider(names_from = effect, values_from = estimate)
-
-# ajouter les effet qui ne dépendent pas de l'essence
-param_ess2 <- left_join(param_ess, ess_non_tr, by=c('code_trt', 'num_trt'))
-
-# ajouter les paramètres qui ne sont pas présents dans ce trt
-list_effets <- c("b1_s", "b2_s", "b4_s", "b3_s", "b5_s", "b6_s", "b7_s", "b0", "b4", "b5", "b6", "b3", "b2")
-effet_presents <- param_ess2 %>% ungroup() %>% select(-code_trt, -num_trt, -essence) %>% names()
-effets_manquants <- setdiff(list_effets, effet_presents)
-for (var in effets_manquants) {
-  param_ess2[[var]] <- NA
-}
-
-# copier les parmètres qui ne dépendent pas de l'essence dans les colonnes des effets des essences
-param_ess3 <- param_ess2 %>%
-  mutate(b2_s = ifelse(!is.na(b2), b2, b2_s),
-         b3_s = ifelse(!is.na(b3), b3, b3_s),
-         b4_s = ifelse(!is.na(b4), b4, b4_s),
-         b5_s = ifelse(!is.na(b5), b5, b5_s),
-         b6_s = ifelse(!is.na(b6), b6, b6_s)) %>%
-  select(-c(b2,b3,b4,b5,b6))
-# mettre des 0 au lieu des NA
-param_ess3 <-  param_ess3 %>% replace(is.na(.), 0)
-
-# on merge les paramètres aux arbre par essence, en sélectionnant le trt désiré
-# l'équation s'écrira comme ceci:
-# y = b0 + b1_s + (b2_s + b3_s * m)*d + (b4_s + b5_s*m)*d^2 + b6_s*log(N+1) + b7_s*BA
-# où d = dhp-23
-# où m = 1 si dhp>23
-#    m = 0 si dhp<=23
+################################################
+## ensuite, dans le code qui génèrera les paramètres, après avoir générer les paramètres aléatoires, il faudra faire ceci pour le trt sélectionné:
+## effets qui ne dépendent pas de l'essence et les transposer
+#ess_non <- param_0 %>% filter(is.na(essence))
+#ess_non_tr <- ess_non %>% select(code_trt, num_trt, effect, estimate) %>% group_by(code_trt, num_trt) %>% pivot_wider(names_from = effect, values_from = estimate)
+#
+## transposer les effets qui dépendent de l'essence
+#param_ess <- param_0 %>% filter(!is.na(essence)) %>% select(code_trt, num_trt, essence, effect, estimate) %>%
+#  group_by(code_trt, num_trt, essence) %>%
+#  pivot_wider(names_from = effect, values_from = estimate)
+#
+## ajouter les effet qui ne dépendent pas de l'essence
+#param_ess2 <- left_join(param_ess, ess_non_tr, by=c('code_trt', 'num_trt'))
+#
+## ajouter les paramètres qui ne sont pas présents dans ce trt
+#list_effets <- c("b1_s", "b2_s", "b4_s", "b3_s", "b5_s", "b6_s", "b7_s", "b0", "b4", "b5", "b6", "b3", "b2")
+#effet_presents <- param_ess2 %>% ungroup() %>% select(-code_trt, -num_trt, -essence) %>% names()
+#effets_manquants <- setdiff(list_effets, effet_presents)
+#for (var in effets_manquants) {
+#  param_ess2[[var]] <- NA
+#}
+#
+## copier les parmètres qui ne dépendent pas de l'essence dans les colonnes des effets des essences
+#param_ess3 <- param_ess2 %>%
+#  mutate(b2_s = ifelse(!is.na(b2), b2, b2_s),
+#         b3_s = ifelse(!is.na(b3), b3, b3_s),
+#         b4_s = ifelse(!is.na(b4), b4, b4_s),
+#         b5_s = ifelse(!is.na(b5), b5, b5_s),
+#         b6_s = ifelse(!is.na(b6), b6, b6_s)) %>%
+#  select(-c(b2,b3,b4,b5,b6))
+## mettre des 0 au lieu des NA
+#param_ess3 <-  param_ess3 %>% replace(is.na(.), 0)
+#
+## on merge les paramètres aux arbre par essence, en sélectionnant le trt désiré
+## l'équation s'écrira comme ceci:
+## y = b0 + b1_s + (b2_s + b3_s * m)*d + (b4_s + b5_s*m)*d^2 + b6_s*log(N+1) + b7_s*BA
+## où d = dhp-23
+## où m = 1 si dhp>23
+##    m = 0 si dhp<=23
 
 
 

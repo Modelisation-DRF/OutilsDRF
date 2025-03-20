@@ -1,3 +1,5 @@
+#devtools::test_file("tests/testthat/test-calcul_vol_bille.R")
+
 test_that("calcul_vol_bille retourne une data.table vide si l'entrée est vide", {
   # Créer un data.frame avec les colonnes requises mais aucune ligne
   donnees_vide <- data.frame(
@@ -361,6 +363,154 @@ test_that("calcul_vol_bille retourne les bons volumes et le bon nombre de billes
   resultat <- calcul_vol_bille(data_billes)
   resultat_attendu <- read.csv(
     test_path("fixtures", "Test_billes_indefinie.csv"),
+    sep = ";",
+    #À la base, vecteur de NA -> vecteur Logical.
+    colClasses = c(long_bille_pied = "numeric"),
+    stringsAsFactors = FALSE
+  )
+
+  setDT(resultat_attendu)
+
+  cols_identification <- c("id_pe", "no_arbre", "dhpcm", "ht", "vol_bille_dm3", "grade_bille", "diam_fb_cm", "long_bille_pied")
+  for (col in cols_identification) {
+    if (col %in% names(resultat) && col %in% names(resultat_attendu)) {
+      if (col == "vol_bille_dm3") {
+        # Utiliser une tolérance relative de 1.5%
+        expect_equal(resultat[[col]], resultat_attendu[[col]], tolerance = 0.015)
+      } else {
+        # Pour les autres colonnes, on peut garder une comparaison stricte
+        expect_equal(resultat[[col]], resultat_attendu[[col]])
+      }
+    }
+  }
+  expect_equal(nrow(resultat), nrow(resultat_attendu))
+})
+
+test_that("calcul_vol_bille retourne les bons volumes et le bon nombre de billes lorsque tout les types n'ont pas de valeur de longueur définie", {
+  data_billes <- data.frame(essence = rep(c('BOP'), 3),
+                            id_pe = rep(1, 3),
+                            no_arbre = 1:3,
+                            sdom_bio = rep(c("3OUEST"), 3),
+                            cl_drai = rep(NA, 3),
+                            veg_pot = rep('MS2', 3),
+                            DHP_Ae = c(120, 150, 300),
+                            HT_REELLE_M = rep(0, 3),
+                            HAUTEUR_M = c(13, 20, 28),
+                            nbTi_ha = NA,
+                            st_ha = NA,
+                            ALTITUDE = NA,
+                            nom_grade1 = "sciage long",
+                            long_grade1 = NA,
+                            diam_grade1 = 10,
+                            nom_grade2 = "sciage court",
+                            long_grade2 = NA,
+                            diam_grade2 = 8,
+                            nom_grade3 = "pate",
+                            long_grade3 = NA,
+                            diam_grade3 = 6,
+                            stringsAsFactors = FALSE)
+
+  resultat <- calcul_vol_bille(data_billes)
+  resultat_attendu <- read.csv(
+    test_path("fixtures", "Test_billes_all_indefinie.csv"),
+    sep = ";",
+    #À la base, vecteur de NA -> vecteur Logical.
+    colClasses = c(long_bille_pied = "numeric"),
+    stringsAsFactors = FALSE
+  )
+
+  setDT(resultat_attendu)
+
+  cols_identification <- c("id_pe", "no_arbre", "dhpcm", "ht", "vol_bille_dm3", "grade_bille", "diam_fb_cm", "long_bille_pied")
+  for (col in cols_identification) {
+    if (col %in% names(resultat) && col %in% names(resultat_attendu)) {
+      if (col == "vol_bille_dm3") {
+        # Utiliser une tolérance relative de 1.5%
+        expect_equal(resultat[[col]], resultat_attendu[[col]], tolerance = 0.015)
+      } else {
+        # Pour les autres colonnes, on peut garder une comparaison stricte
+        expect_equal(resultat[[col]], resultat_attendu[[col]])
+      }
+    }
+  }
+  expect_equal(nrow(resultat), nrow(resultat_attendu))
+})
+
+test_that("calcul_vol_bille retourne les bons volumes et le bon nombre de billes lorsque le premier type est complet et
+          les deux autres n'ont pas de valeur de longueur définie", {
+  data_billes <- data.frame(essence = rep(c('BOP'), 3),
+                            id_pe = rep(1, 3),
+                            no_arbre = 1:3,
+                            sdom_bio = rep(c("3OUEST"), 3),
+                            cl_drai = rep(NA, 3),
+                            veg_pot = rep('MS2', 3),
+                            DHP_Ae = c(120, 150, 300),
+                            HT_REELLE_M = rep(0, 3),
+                            HAUTEUR_M = c(13, 20, 28),
+                            nbTi_ha = NA,
+                            st_ha = NA,
+                            ALTITUDE = NA,
+                            nom_grade1 = "sciage long",
+                            long_grade1 = 8,
+                            diam_grade1 = 12,
+                            nom_grade2 = "sciage court",
+                            long_grade2 = NA,
+                            diam_grade2 = 9,
+                            nom_grade3 = "pate",
+                            long_grade3 = NA,
+                            diam_grade3 = 5,
+                            stringsAsFactors = FALSE)
+
+  resultat <- calcul_vol_bille(data_billes)
+  resultat_attendu <- read.csv(
+    test_path("fixtures", "Test_billes_8_indefinie_indefinie.csv"),
+    sep = ";",
+    #À la base, vecteur de NA -> vecteur Logical.
+    colClasses = c(long_bille_pied = "numeric"),
+    stringsAsFactors = FALSE
+  )
+
+  setDT(resultat_attendu)
+
+  cols_identification <- c("id_pe", "no_arbre", "dhpcm", "ht", "vol_bille_dm3", "grade_bille", "diam_fb_cm", "long_bille_pied")
+  for (col in cols_identification) {
+    if (col %in% names(resultat) && col %in% names(resultat_attendu)) {
+      if (col == "vol_bille_dm3") {
+        # Utiliser une tolérance relative de 1.5%
+        expect_equal(resultat[[col]], resultat_attendu[[col]], tolerance = 0.015)
+      } else {
+        # Pour les autres colonnes, on peut garder une comparaison stricte
+        expect_equal(resultat[[col]], resultat_attendu[[col]])
+      }
+    }
+  }
+  expect_equal(nrow(resultat), nrow(resultat_attendu))
+})
+
+test_that("calcul_vol_bille retourne les bons volumes et le bon nombre de billes lorsque 2 types de billes ont une longueur indéfinie", {
+  data_billes <- data.frame(essence = rep(c('BOP'), 3),
+                            id_pe = rep(1, 3),
+                            no_arbre = 1:3,
+                            sdom_bio = rep(c("3OUEST"), 3),
+                            cl_drai = rep(NA, 3),
+                            veg_pot = rep('MS2', 3),
+                            DHP_Ae = c(120, 150, 300),
+                            HT_REELLE_M = rep(0, 3),
+                            HAUTEUR_M = c(13, 20, 28),
+                            nbTi_ha = NA,
+                            st_ha = NA,
+                            ALTITUDE = NA,
+                            nom_grade1 = "sciage long",
+                            long_grade1 = NA,
+                            diam_grade1 = 14,
+                            nom_grade2 = "sciage court",
+                            long_grade2 = NA,
+                            diam_grade2 = 7,
+                            stringsAsFactors = FALSE)
+
+  resultat <- calcul_vol_bille(data_billes)
+  resultat_attendu <- read.csv(
+    test_path("fixtures", "Test_billes_indefinie_indefinie.csv"),
     sep = ";",
     #À la base, vecteur de NA -> vecteur Logical.
     colClasses = c(long_bille_pied = "numeric"),

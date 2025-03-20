@@ -73,82 +73,160 @@ param_coupe <- function(trt_coupe, mode_simul='DET', nb_iter=1, seed_value=NULL)
   # le fichier des matrices de covariances des effets fixes : coupe_param_covb
   # une liste de un élément pas traitement de coupes
 
+  # Assurer que les données sont en data.table
+  if (!is.data.table(coupe_param)) {
+    coupe_param_dt <- as.data.table(coupe_param)
+  } else {
+    coupe_param_dt <- copy(coupe_param)
+  }
 
-  # choisir le trt
-  param <- coupe_param %>% filter(num_trt==trt_coupe) %>% dplyr::select(code_trt, num_trt, essence, effect, estimate)
+  # Sélection des données pour le traitement spécifié
+  param <- coupe_param_dt[num_trt == trt_coupe, .(code_trt, num_trt, essence, effect, estimate)]
   covb <- coupe_param_covb[[trt_coupe+1]]
 
-  if (mode_simul=='STO') {
-
+  if (mode_simul == 'STO') {
     # le modèle de coupe n'a pas d'effet alétoire ni d'erreur résiduelle
-    # la seule partie qui est stochastique est cellle des effets fixes
+    # la seule partie qui est stochastique est celle des effets fixes
     # les paramètres du modèle pour une itération seront utilisés pour tous les arbres, de toutes les placettes, pour toutes leurs steps
     # il y aura donc une série de paramètres par itération
 
-    # lecture des effets fixes du trt
-    param2 <- param %>% dplyr::select(estimate)
+    # Extraction des effets fixes du traitement
+    param2 <- param[, .(estimate)]
 
-    # générer une série de paramètres d'effets fixes, une par itération
-    # il faut donc autant de séries qu'il y a d'itérations, les itérations sont en lignes, les effets fixes en colonne
-    # pour que mvrnorm() fonctionne avec empirical=T, il faut au moins autant de n que la longueur du vecteur mu à simuler
-    mu = as.matrix(param2)
-    l_mu = length(mu)
-    if (nb_iter<l_mu) {nb_iter_temp=l_mu} else {nb_iter_temp=nb_iter}
-    param_cp = as.data.frame(matrix(rockchalk::mvrnorm(n = nb_iter_temp,
-                                              mu = mu,
-                                              Sigma = covb,
-                                              empirical = T
-                                              ),
-                                      nrow=nb_iter_temp))[1:nb_iter,]
-    # transposer les paramètres
-    nom <- data.frame(var=names(param_cp))
-    param_a <- bind_cols(param, nom) %>% dplyr::select(-estimate)
-    param_cp_tr <- param_cp %>% mutate(iter=row_number()) %>% group_by(iter) %>% pivot_longer(cols=all_of(names(param_cp)), names_to = 'var', values_to = 'estimate')
-    param_cp_tr2 <- left_join(param_cp_tr,param_a, by='var') %>% dplyr::select(-var)
+    # Génération des paramètres d'effets fixes
+    mu <- as.matrix(param2)
+    l_mu <- length(mu)
+    if (nb_iter < l_mu) {
+      nb_iter_temp <- l_mu
+    } else {
+      nb_iter_temp <- nb_iter
+    }
 
+    # Génération par simulation MCMC
+    param_cp <- as.data.frame(matrix(
+      rockchalk::mvrnorm(
+        n = nb_iter_temp,
+        mu = mu,
+        Sigma = covb,
+        empirical = TRUE
+      ),
+      nrow = nb_iter_temp
+    ))[1:nb_iter, ]
+
+    # Préparation des noms de variables et jointure avec les paramètres
+    nom <- data.table(var = names(param_cp))
+    param_a <- cbind(param, nom)[, -"estimate"]
+
+    # Transformation des données du format large au format long
+    param_cp_dt <- as.data.table(param_cp)
+    param_cp_dt[, iter := .I]  # Ajoute un numéro d'itération
+
+    param_cp_long <- melt(
+      param_cp_dt,
+      id.vars = "iter",
+      measure.vars = names(param_cp),
+      variable.name = "var",
+      value.name = "estimate"
+    )
+
+    # Jointure avec les informations sur les paramètres
+    param_cp_tr2 <- merge(param_cp_long, param_a, by = "var")[, -"var"]
   }
 
-  if (mode_simul=='DET'){
-    # le fichier aura autant de lignes que d'essences du modele de coupe dans le fichier d'entrée
-    param_cp_tr2 <- param %>% mutate(iter=1)
+  if (mode_simul == 'DET') {
+    # Mode déterministe - une seule itération
+    param_cp_tr2 <- copy(param)[, iter := 1]
   }
 
-  # préparer le fichier des paramètres pour appliquer l'équation
+  # Préparation des paramètres pour l'équation
 
-  # effets qui ne dépendent pas de l'essence et les transposer
-  ess_non <- param_cp_tr2 %>% filter(is.na(essence))
-  ess_non_tr <- ess_non %>% select(iter, code_trt, num_trt, effect, estimate) %>% group_by(iter, code_trt, num_trt) %>% pivot_wider(names_from = effect, values_from = estimate)
+  # Séparation des paramètres qui dépendent ou non de l'essence
+  ess_non <- param_cp_tr2[is.na(essence)]
 
-  # transposer les effets qui dépendent de l'essence
-  param_ess <- param_cp_tr2 %>% filter(!is.na(essence)) %>%
-    group_by(iter, code_trt, num_trt, essence) %>%
-    pivot_wider(names_from = effect, values_from = estimate)
+  # Transformation des paramètres généraux (non-essence) au format large
+  ess_non_tr <- dcast(
+    ess_non[, .(iter, code_trt, num_trt, effect, estimate)],
+    iter + code_trt + num_trt ~ effect,
+    value.var = "estimate"
+  )
 
-  # ajouter les effet qui ne dépendent pas de l'essence
-  param_ess2 <- left_join(param_ess, ess_non_tr, by=c('iter', 'code_trt', 'num_trt'))
+  # Transformation des paramètres spécifiques aux essences au format large
+  param_ess <- dcast(
+    param_cp_tr2[!is.na(essence)],
+    iter + code_trt + num_trt + essence ~ effect,
+    value.var = "estimate"
+  )
 
-  # ajouter les paramètres qui ne sont pas présents dans ce trt
+  # Jointure des deux types de paramètres
+  param_ess2 <- merge(
+    param_ess,
+    ess_non_tr,
+    by = c("iter", "code_trt", "num_trt"),
+    all.x = TRUE
+  )
+
+  # Ajout des paramètres manquants
   list_effets <- c("b1_s", "b2_s", "b4_s", "b3_s", "b5_s", "b6_s", "b7_s", "b0", "b4", "b5", "b6", "b3", "b2")
-  effet_presents <- param_ess2 %>% ungroup() %>% select(-iter, -code_trt, -num_trt, -essence) %>% names()
+  effet_presents <- setdiff(names(param_ess2), c("iter", "code_trt", "num_trt", "essence"))
   effets_manquants <- setdiff(list_effets, effet_presents)
+
   for (var in effets_manquants) {
-    param_ess2[[var]] <- NA
+    param_ess2[, (var) := NA_real_]  # Utiliser NA_real_ pour assurer le type double
   }
 
-  # copier les parmètres qui ne dépendent pas de l'essence dans les colonnes des effets des essences
-  param_ess3 <- param_ess2 %>%
-    mutate(b2_s = ifelse(!is.na(b2), b2, b2_s),
-           b3_s = ifelse(!is.na(b3), b3, b3_s),
-           b4_s = ifelse(!is.na(b4), b4, b4_s),
-           b5_s = ifelse(!is.na(b5), b5, b5_s),
-           b6_s = ifelse(!is.na(b6), b6, b6_s)) %>%
-    select(-c(b2,b3,b4,b5,b6))
+  # Copie des paramètres généraux dans les colonnes spécifiques à l'essence
+  param_ess3 <- copy(param_ess2)
 
-  # mettre des 0 au lieu des NA
-  param_ess3 <-  param_ess3 %>% replace(is.na(.), 0)
+  # Mise à jour des paramètres en utilisant ifelse standard
+  param_ess3[, b2_s := ifelse(!is.na(b2), b2, b2_s)]
+  param_ess3[, b3_s := ifelse(!is.na(b3), b3, b3_s)]
+  param_ess3[, b4_s := ifelse(!is.na(b4), b4, b4_s)]
+  param_ess3[, b5_s := ifelse(!is.na(b5), b5, b5_s)]
+  param_ess3[, b6_s := ifelse(!is.na(b6), b6, b6_s)]
 
+  # Suppression des colonnes sources
+  param_ess3[, c("b2", "b3", "b4", "b5", "b6") := NULL]
+
+  # Remplacement des NA par 0
+  for (col in names(param_ess3)) {
+    if (col %in% c("iter", "code_trt", "num_trt", "essence")) next
+    set(param_ess3, which(is.na(param_ess3[[col]])), col, 0)
+  }
+
+  param_ess3_df <- as.data.frame(param_ess3)
   return(param_ess3)
+
+}
+
+prob_coupe <- function(data_tree, trt_coupe, mode_simul = "STO") {
+  setDT(data_tree)
+  data_param <- param_coupe(trt_coupe, mode_simul, nb_iter = 3)
+
+  temp_table <- data_tree[, num_trt := trt_coupe]
+
+  print(temp_table)
+
+  data_mid_table <- merge(data_tree, coupe_ass_ess, by = c("num_trt", "essence"))
+
+  print(data_mid_table)
+
+  data_full_table <- merge(data_mid_table, data_param, by = c(""))
+
+
 }
 
 
+##############################################################
+
+#prob_coupe(data_tree1, 10, "STO")
+#result_det <- param_coupe(trt_coupe = 3, mode_simul = 'DET')
+
+# Print the first few rows to see the result
+#print(tail(result_det))
+
+# Test with stochastic mode if desired
+#result_sto <- param_coupe(trt_coupe = 10, mode_simul = 'STO', nb_iter = 3)
+
+# Print the first few rows of stochastic results
+#print(tail(result_sto))
 

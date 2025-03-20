@@ -345,17 +345,17 @@ data_diam2 <- data.frame(essence=rep('BOP',11),
                          st_ha = 15,
                          ALTITUDE = 200)
 
-data_diam3 <- data.frame(essence=rep('BOP',9000),
-                         id_pe = seq(1,9000,1),
-                         no_arbre = rep(1,9000),
+data_diam3 <- data.frame(essence=rep('BOP',9000),#
+                         id_pe = seq(1,9000,1),#
+                         no_arbre = rep(1,9000),#
                          sdom_bio = rep(c('2EST','3EST','3OUEST','4EST','4OUEST','5EST','5OUEST','6EST','6OUEST'), 1000),
                          cl_drai = rep('2',9000),
                          veg_pot = rep('MS2',9000),
-                         DHP_Ae = rep(150, 9000),
+                         DHP_Ae = rep(150, 9000),  ##
                          HT_REELLE_M = rep(3,9000),
                          HAUTEUR_M = rep(10, 9000),
-                         nbTi_ha = 2000,
-                         st_ha = 15,
+                         nbTi_ha = 2000, #/// N
+                         st_ha = 15, #/// BA
                          ALTITUDE = 200,
                          nom_grade1 = "sciage court",
                          long_grade1 = 8,
@@ -443,7 +443,7 @@ data_diam7 <- data.frame(essence=rep(c('BOP','EPB','EPN','EPR','PEG','PET','PIB'
                          veg_pot = rep(c('MS2','RE3','MJ2','FE2','RE2','RE1','MJ1','RB2','MS1','RS2','FE2'), 50000),
                          DHP_Ae = rep(150, 550000),
                          HT_REELLE_M = rep(1, 550000),
-                         HAUTEUR_M = rep(10, 550000),
+                         HAUTEUR_M = rep(25, 550000),
                          nbTi_ha = 2000,
                          st_ha = 15,
                          ALTITUDE = 200,
@@ -549,14 +549,15 @@ data_diam12 <- data.frame(essence = rep(c('BOP'), 3),
                           st_ha = NA,
                           ALTITUDE = NA,
                           nom_grade1 = "sciage long",
-                          long_grade1 = 50,
-                          diam_grade1 = 12,
+                          long_grade1 = NA,
+                          diam_grade1 = 10,
                           nom_grade2 = "sciage court",
-                          long_grade2 = 50,
+                          long_grade2 = NA,
                           diam_grade2 = 8,
                           nom_grade3 = "pate",
-                          long_grade3 = 90,
-                          diam_grade3 = 6)
+                          long_grade3 = NA,
+                          diam_grade3 = 6
+                          )
 
 
 usethis::use_data(data_diam4, data_diam5, data_diam6, data_diam7, data_diam8, data_diam9, data_diam10, data_diam11, data_diam12,

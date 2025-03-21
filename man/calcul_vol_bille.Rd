@@ -31,10 +31,25 @@ calcul_vol_bille(
   \item nbTi_ha - Nombre d'arbres à l'ha dans la placette
   \item st_ha - Surface terrière en m2/ha dans la placette
   \item ALTITUDE - Altitude de la placette (en m)
-  \item nom_grade1, nom_grade2, nom_grade3 - Noms des types de billes
-  \item long_grade1, long_grade2, long_grade3 - Longueurs des billes en pieds
-  \item diam_grade1, diam_grade2, diam_grade3 - Diamètres minimaux au fin bout des billes en cm
 }}
+
+\item{nom_grade1}{Nom du premier type de bille.}
+
+\item{long_grade1}{Longueur de la première bille en pieds.}
+
+\item{diam_grade1}{Diamètre minimal au fin bout de la première bille en cm.}
+
+\item{nom_grade2}{Nom du deuxième type de bille.}
+
+\item{long_grade2}{Longueur de la deuxième bille en pieds.}
+
+\item{diam_grade2}{Diamètre minimal au fin bout de la deuxième bille en cm.}
+
+\item{nom_grade3}{Nom du troisième type de bille.}
+
+\item{long_grade3}{Longueur de la troisième bille en pieds.}
+
+\item{diam_grade3}{Diamètre minimal au fin bout de la troisième bille en cm.}
 }
 \value{
 Une data.table contenant les billes extraites avec les colonnes:
@@ -95,20 +110,12 @@ La fonction dépend de variables globales:
       HAUTEUR_M = c(13, 20, 28),
       nbTi_ha = NA,
       st_ha = NA,
-      ALTITUDE = NA,
-      nom_grade1 = "vmb",
-      long_grade1 = 8,
-      diam_grade1 = 9,
-      nom_grade2 = "pate",
-      long_grade2 = 4,
-      diam_grade2 = 5,
-      nom_grade3 = "autre",
-      long_grade3 = NA,
-      diam_grade3 = 3
+      ALTITUDE = NA
     )
 
     # Calcul des volumes de billes
-    resultats <- calcul_vol_bille(donnees_arbre)
+    resultats <- calcul_vol_bille(donnees_arbre, nom_grade1 = "sciage court", long_grade1 = 8, diam_grade1 = 12, nom_grade2 = "pate",
+      long_grade2 = NA, diam_grade2 = 8)
   }
 }
 \seealso{

@@ -19,10 +19,17 @@
 #'     \item nbTi_ha - Nombre d'arbres à l'ha dans la placette
 #'     \item st_ha - Surface terrière en m2/ha dans la placette
 #'     \item ALTITUDE - Altitude de la placette (en m)
-#'     \item nom_grade1, nom_grade2, nom_grade3 - Noms des types de billes
-#'     \item long_grade1, long_grade2, long_grade3 - Longueurs des billes en pieds
-#'     \item diam_grade1, diam_grade2, diam_grade3 - Diamètres minimaux au fin bout des billes en cm
 #'   }
+#' @param nom_grade1 Nom du premier type de bille.
+#' @param nom_grade2 Nom du deuxième type de bille.
+#' @param nom_grade3 Nom du troisième type de bille.
+#' @param long_grade1 Longueur de la première bille en pieds.
+#' @param long_grade2 Longueur de la deuxième bille en pieds.
+#' @param long_grade3 Longueur de la troisième bille en pieds.
+#' @param diam_grade1 Diamètre minimal au fin bout de la première bille en cm.
+#' @param diam_grade2 Diamètre minimal au fin bout de la deuxième bille en cm.
+#' @param diam_grade3 Diamètre minimal au fin bout de la troisième bille en cm.
+#'
 #'
 #' @return Une data.table contenant les billes extraites avec les colonnes:
 #'   \itemize{
@@ -75,20 +82,12 @@
 #'       HAUTEUR_M = c(13, 20, 28),
 #'       nbTi_ha = NA,
 #'       st_ha = NA,
-#'       ALTITUDE = NA,
-#'       nom_grade1 = "vmb",
-#'       long_grade1 = 8,
-#'       diam_grade1 = 9,
-#'       nom_grade2 = "pate",
-#'       long_grade2 = 4,
-#'       diam_grade2 = 5,
-#'       nom_grade3 = "autre",
-#'       long_grade3 = NA,
-#'       diam_grade3 = 3
+#'       ALTITUDE = NA
 #'     )
 #'
 #'     # Calcul des volumes de billes
-#'     resultats <- calcul_vol_bille(donnees_arbre)
+#'     resultats <- calcul_vol_bille(donnees_arbre, nom_grade1 = "sciage court", long_grade1 = 8, diam_grade1 = 12, nom_grade2 = "pate",
+#'       long_grade2 = NA, diam_grade2 = 8)
 #'   }
 #' @seealso get_diam(dans le fichier Equation_defil.R) pour le calcul des diamètres le long du tronc
 #'
@@ -565,7 +564,7 @@ calcul_vol_bille <- function(fichier_billes, nom_grade1 = NA, long_grade1 = NA, 
     # Id des arbres qui ont des essences valides, mais aucune bille valide
     arbres_sans_billes <- group_id[!id_arbres_billes, on = .(id_pe, no_arbre)]
 
-    # Data.table contenant les arbres qui ont des essences valides, mais aucune bille valide, pour le retour
+    # Data.table contenant les arbres qui n'ont pas été traités pour la découpe de billes(essence non-valide ou aucune bille découpée)
     data_no_bille <- arbres_sans_billes[, .(
       id_pe = id_pe,
       no_arbre = no_arbre,
@@ -586,6 +585,5 @@ calcul_vol_bille <- function(fichier_billes, nom_grade1 = NA, long_grade1 = NA, 
 
 ##################################################
 #tic()
-#calcul_vol_bille(data_diam13, nom_grade1 = "sciage court", long_grade1 = 6, diam_grade1 = 10, nom_grade2 = "sciage court", long_grade2 = NA, diam_grade2 = 20
-                 #, nom_grade3 = "sciage court", long_grade3 = NA, diam_grade3 = 20)
+#calcul_vol_bille(data_diam13)
 #toc()

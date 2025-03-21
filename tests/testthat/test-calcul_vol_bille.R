@@ -1,6 +1,6 @@
 #devtools::test_file("tests/testthat/test-calcul_vol_bille.R")
 
-test_that("calcul_vol_bille retourne une data.table vide si l'entrée est vide", {
+test_that("calcul_vol_bille retourne une data.table vide si l'entrée du fichier est vide", {
   # Créer un data.frame avec les colonnes requises mais aucune ligne
   donnees_vide <- data.frame(
     essence = character(0),
@@ -19,6 +19,45 @@ test_that("calcul_vol_bille retourne une data.table vide si l'entrée est vide",
   resultat <- calcul_vol_bille(donnees_vide)
   expect_s3_class(resultat, "data.table")
   expect_equal(nrow(resultat), 0)
+})
+
+test_that("calcul_vol_bille retourne une data.table de valeur NA si tous les paramètres sont vides", {
+  data_billes <- data.frame(essence = c('ABC', "DEF", "GHI"),
+                            id_pe = rep(1, 3),
+                            no_arbre = 1:3,
+                            sdom_bio = rep(c("3OUEST"), 3),
+                            cl_drai = rep(NA, 3),
+                            veg_pot = rep('MS2', 3),
+                            DHP_Ae = c(120, 150, 300),
+                            HT_REELLE_M = rep(0, 3),
+                            HAUTEUR_M = c(13, 20, 28),
+                            nbTi_ha = NA,
+                            st_ha = NA,
+                            ALTITUDE = NA,
+                            stringsAsFactors = FALSE)
+
+  resultat <- calcul_vol_bille(data_billes)
+  resultat_attendu <- read.csv(
+    test_path("fixtures", "Aucune_ess_valide.csv"),
+    sep = ";",
+    stringsAsFactors = FALSE
+  )
+
+  setDT(resultat_attendu)
+
+  cols_identification <- c("id_pe", "no_arbre", "dhpcm", "ht", "vol_bille_dm3", "grade_bille", "diam_fb_cm", "long_bille_pied")
+  for (col in cols_identification) {
+    if (col %in% names(resultat) && col %in% names(resultat_attendu)) {
+      if (col == "vol_bille_dm3") {
+        # Utiliser une tolérance relative de 1.5%
+        expect_equal(as.numeric(resultat[[col]]), as.numeric(resultat_attendu[[col]]), tolerance = 0.015)
+      } else {
+        # On convertit les NA en char pour les 2 tables, puisque le type ne dérange pas pour les tests(vecteur de NA dans R donne un vecteur logical...)
+        expect_equal(as.character(resultat[[col]]), as.character(resultat_attendu[[col]]))
+      }
+    }
+  }
+  expect_equal(nrow(resultat), nrow(resultat_attendu))
 })
 
 test_that("calcul_vol_bille retourne une data.table de valeur NA si l'entrée ne contient que des essences qui ne sont pas dans defil_liste_ess", {

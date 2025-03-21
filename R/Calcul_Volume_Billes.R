@@ -96,7 +96,9 @@
 #'
 #' @export
 
-calcul_vol_bille <- function(fichier_billes) {
+calcul_vol_bille <- function(fichier_billes, nom_grade1 = NA, long_grade1 = NA, diam_grade1 = NA, nom_grade2 = NA, long_grade2 = NA, diam_grade2 = NA,
+                             nom_grade3 = NA, long_grade3 = NA, diam_grade3 = NA) {
+
   # Conversion en data.table pour optimiser les opérations
   setDT(fichier_billes)
   # Initialisation de la table de résultats
@@ -122,37 +124,70 @@ calcul_vol_bille <- function(fichier_billes) {
   # Facteur de conversion pour obtenir des dm³ (décimètres cubes)
   factor <- as.double(1 / 8 * 1000)
 
+  # Vérification des valeures entrées par l'utilisateur
+  if (!is.character(nom_grade1) && !is.na(nom_grade1)) stop("nom_grade1 doit être une chaîne de caractère")
+  if (!is.numeric(long_grade1) && !is.na(long_grade1)) stop("long_grade1 doit être une valeur numérique")
+  if (!is.numeric(diam_grade1) && !is.na(diam_grade1)) stop("diam_grade1 doit être une valeur numérique")
+
+  if (!is.character(nom_grade2) && !is.na(nom_grade2)) stop("nom_grade2 doit être une chaîne de caractère")
+  if (!is.numeric(long_grade2) && !is.na(long_grade2)) stop("long_grade2 doit être une valeur numérique")
+  if (!is.numeric(diam_grade2) && !is.na(diam_grade2)) stop("diam_grade2 doit être une valeur numérique")
+
+  if (!is.character(nom_grade3) && !is.na(nom_grade3)) stop("nom_grade3 doit être une chaîne de caractère")
+  if (!is.numeric(long_grade3) && !is.na(long_grade3)) stop("long_grade3 doit être une valeur numérique")
+  if (!is.numeric(diam_grade3) && !is.na(diam_grade3)) stop("diam_grade3 doit être une valeur numérique")
+
+  if (!is.na(long_grade1) && (long_grade1 %% 2 != 0)) {
+    stop("Erreur: long_grade1 doit être un multiple de 2. La valeur actuelle donnée est: ", long_grade1)
+  }
+
+  if (!is.na(long_grade2) && (long_grade2 %% 2 != 0)) {
+    stop("Erreur: long_grade2 doit être un multiple de 2. La valeur actuelle donnée est: ", long_grade2)
+  }
+
+  if (!is.na(long_grade3) && (long_grade3 %% 2 != 0)) {
+    stop("Erreur: long_grade3 doit être un multiple de 2. La valeur actuelle donnée est: ", long_grade3)
+  }
+
+  if (is.na(long_grade1) && (!is.na(long_grade2) || !is.na(long_grade3))) {
+    stop("Erreur: Le cas où long_grade1 est indéfini et long_grade2 ou long_grade3 est défini n'est pas valide.")
+  }
+
+  if (is.na(long_grade2) && !is.na(long_grade3)) {
+    stop("Erreur: Le cas où long_grade2 est indéfini et long_grade3 est défini n'est pas valide.")
+  }
+
+  ## Renommage des valeurs uniques pour chaque paramètre(pour la suite)
+  log_length1 <- long_grade1
+  diam_value1 <- diam_grade1 / ratio_cm_metre
+  log_length2 <- long_grade2
+  diam_value2 <- diam_grade2 / ratio_cm_metre
+  log_length3 <- long_grade3
+  diam_value3 <- diam_grade3 / ratio_cm_metre
+
   # Filtrage des données pour ne conserver que les essences d'arbres valides
   data_filtre <- fichier_billes[essence %in% defil_liste_ess]
   # S'assure que le résultat est toujours une data.table
   setDT(data_filtre)
 
+  #On récupère les arbres qui ne sont pas dans les essences d'arbres valides
+  data_filtre_NA <- fichier_billes[!(essence %in% defil_liste_ess)]
+
+  #Au cas où on aurait un fichier qu'avec des essences d'arbres non-valides
+  if(nrow(data_filtre_NA) > 0) {
+    data_incomplete <- data_filtre_NA[, .(id_pe = id_pe,
+                                          no_arbre = no_arbre,
+                                          dhpcm = DHP_Ae / ratio_cm_mm,
+                                          ht = HAUTEUR_M,
+                                          vol_bille_dm3 = as.numeric(NA),
+                                          grade_bille = as.character(NA),
+                                          diam_fb_cm = as.numeric(NA),
+                                          long_bille_pied = as.numeric(NA)
+    )]
+  }
+
   # Commence le traitement uniquement s'il y a des données après filtrage
   if (nrow(data_filtre) > 0) {
-    # Extraction des paramètres de billes à partir des données
-    # Chaque bille (jusqu'à 3 types) a un nom, une longueur et un diamètre minimal
-    # _1, _2, _3 sont les vecteurs bruts extraits des données
-    nom_grade_1 <- data_filtre$nom_grade1
-    log_length_1 <- data_filtre$long_grade1
-    diam_value_1 <- as.numeric(data_filtre$diam_grade1 / ratio_cm_metre)  # Conversion cm -> m
-    nom_grade_2 <- data_filtre$nom_grade2
-    log_length_2 <- data_filtre$long_grade2
-    diam_value_2 <- as.numeric(data_filtre$diam_grade2 / ratio_cm_metre)
-    nom_grade_3 <- data_filtre$nom_grade3
-    log_length_3 <- data_filtre$long_grade3
-    diam_value_3 <- as.numeric(data_filtre$diam_grade3 / ratio_cm_metre)
-
-    # Extraction des valeurs uniques pour chaque paramètre
-    # Ces valeurs sont souvent les mêmes pour tous les arbres, on prend donc le premier élément
-    nom_grade1 <- nom_grade_1[1]
-    log_length1 <- log_length_1[1]
-    diam_value1 <- diam_value_1[1]
-    nom_grade2 <- nom_grade_2[1]
-    log_length2 <- log_length_2[1]
-    diam_value2 <- diam_value_2[1]
-    nom_grade3 <- nom_grade_3[1]
-    log_length3 <- log_length_3[1]
-    diam_value3 <- diam_value_3[1]
 
     # Ces valeurs déterminent de combien de segments on "saute" lors de l'analyse pour les différents types de billes
     jump_log1 <- log_length1 / 2
@@ -345,13 +380,11 @@ calcul_vol_bille <- function(fichier_billes) {
             j <- n
           }
 
-          # Suppression de la ligne next_vols
           i <- j + 1
         }
         else {
           # Plus de segments valides ne peuvent être extraits
           grade_types <- c(grade_types, NA)  # Étiquette par défaut pour les coupes non classées
-          # Suppression de la ligne next_vols
           break
         }
       }
@@ -392,12 +425,6 @@ calcul_vol_bille <- function(fichier_billes) {
       next_log_length = next_height - HT_REELLE_M,
       diam_hauteur_fb = next_diam,
       next_vol_bille = next_vol - volume_cumulatif
-    )]
-
-    # Calcul des propriétés des billes
-    cuts_data[, `:=`(
-      next_log_length = next_height - HT_REELLE_M,
-      diam_hauteur_fb = next_diam
     )]
 
     # Utilisation de grade_type pour créer des colonnes supplémentaires
@@ -517,20 +544,48 @@ calcul_vol_bille <- function(fichier_billes) {
     # - Algorithme crée une donnée non utilisable(billes de volume 0 dans cas spécial), on doit la retirer
     # - Ajuste avec des valeurs de conversions différentes colonnes pour obtenir les bons résultats à l'écran
     # - Remultiplie les volumes par le facteur d'échelle
-    data_billes <- cuts_data[!is.na(volume) & !is.na(id_pe) & !is.na(no_arbre) & !is.na(DHP_Ae) & !is.na(ht)
-                             & !is.na(grade_bille) & !is.na(diam_fb_cm) & volume > 0,
-                             .(id_pe, no_arbre, dhpcm = dhpcm / ratio_cm_mm , ht, vol_bille_dm3 = volume * scale,
-                               grade_bille, diam_fb_cm = diam_fb_cm * ratio_cm_metre, long_bille_pied)]
+    data_complete <- cuts_data[!is.na(volume) & !is.na(id_pe) & !is.na(no_arbre) & !is.na(DHP_Ae) & !is.na(ht)
+                               & !is.na(grade_bille) & !is.na(diam_fb_cm) & volume > 0,
+                               .(id_pe, no_arbre, dhpcm = dhpcm / ratio_cm_mm , ht, vol_bille_dm3 = volume * scale,
+                                 grade_bille, diam_fb_cm = diam_fb_cm * ratio_cm_metre, long_bille_pied)]
   }
-  else{
-    #Retourne une data.table vide puisque aucune essence n'existe ou n'est valide
-    return(data_billes)
+
+  #Si data_incomplete existe, on la retourne, et si data_complete existe, les données seront effacées et réécrite par le code du bloc suivant.
+  if(exists("data_incomplete")){
+    data_billes <- data_incomplete
   }
+
+  if (exists("data_complete")) {
+    # Créer un identifiant unique(comme group_id) pour chaque arbre
+    group_id <- unique(fichier_billes[, .(id_pe, no_arbre)])
+
+    # Recréer un identifiant du style group_id pour chaque arbre du fichier final
+    id_arbres_billes <- unique(data_complete[, .(id_pe, no_arbre)])
+
+    # Id des arbres qui ont des essences valides, mais aucune bille valide
+    arbres_sans_billes <- group_id[!id_arbres_billes, on = .(id_pe, no_arbre)]
+
+    # Data.table contenant les arbres qui ont des essences valides, mais aucune bille valide, pour le retour
+    data_no_bille <- arbres_sans_billes[, .(
+      id_pe = id_pe,
+      no_arbre = no_arbre,
+      dhpcm = fichier_billes[.SD, on = .(id_pe, no_arbre), DHP_Ae / ratio_cm_mm],
+      ht = fichier_billes[.SD, on = .(id_pe, no_arbre), HAUTEUR_M],
+      vol_bille_dm3 = as.numeric(NA),
+      grade_bille = as.character(NA),
+      diam_fb_cm = as.numeric(NA),
+      long_bille_pied = as.numeric(NA)
+    )]
+    #Concaténation des différentes tables(présente ou non)
+    data_billes <- rbindlist(list(data_complete, data_no_bille), fill = TRUE)
+  }
+
   # Retourne la table finale des billes avec leurs volumes
   return(data_billes)
 }
 
 ##################################################
 #tic()
-#calcul_vol_bille(data_diam7)
+#calcul_vol_bille(data_diam13, nom_grade1 = "sciage court", long_grade1 = 6, diam_grade1 = 10, nom_grade2 = "sciage court", long_grade2 = NA, diam_grade2 = 20
+                 #, nom_grade3 = "sciage court", long_grade3 = NA, diam_grade3 = 20)
 #toc()

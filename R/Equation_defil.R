@@ -1,50 +1,112 @@
-# fonction pour préparer les variables pour la correction de biais d'une prediction d'un diam avec un des 2 types de modèles
-# type_modele = 'arbre' ou 'complet'
-# fic = data avec les arbres et contenant la prédiction pred_mm2
-# essence = code d'essence en majuscule
+#' Correction de biais pour les prédictions de diamètre
+#'
+#' @description
+#' Applique une correction de biais aux prédictions de diamètre générées à l'aide
+#' de modèles au niveau de l'arbre ou du peuplement. Cette fonction ajuste les prédictions
+#' brutes en tenant compte des effets aléatoires au niveau de l'arbre et de la placette.
+#'
+#' @param type_modele Chaîne de caractères spécifiant le type de modèle. Doit être 'arbre' ou 'complet'.
+#' @param fic Un data.frame ou data.table contenant les mesures d'arbre et la colonne de prédiction brute 'pred_mm2'.
+#' @param essence Chaîne de caractères spécifiant le code d'essence en majuscule (ex: 'PIG').
+#'
+#' @return Un data.table avec deux colonnes supplémentaires:
+#'   \item{correction}{La valeur de correction calculée pour chaque arbre/mesure}
+#'   \item{pred_mm2_corr}{La prédiction corrigée du biais}
+#'
+#' @details
+#' La fonction récupère les paramètres du modèle basés sur le type de modèle et l'essence spécifiés,
+#' puis calcule la correction de biais en utilisant les composants de variance-covariance
+#' des effets aléatoires des modèles ajustés. La correction tient compte de la
+#' transformation non linéaire utilisée dans la prédiction.
+#'
+#' @examples
+#' \dontrun{
+#'   # Appliquer la correction de biais pour le pin ('PIG') en utilisant le modèle au niveau de l'arbre
+#'   donnees_corrigees <- correction_biais(type_modele = 'arbre',
+#'                                         fic = donnees_arbres,
+#'                                         essence = 'PIG')
+#' }
+#'
+#' @importFrom data.table setDT
+#' @export
 correction_biais <- function(type_modele, fic, essence) {
-  # type_modele = 'arbre'; fic=data_ess_na; essence='PIG'
-
-  # aller chercher les paramètres du modèle demandé
+  # Récupérer les paramètres d'effets aléatoires pour le modèle et l'essence demandés
   random_arbre <- get(paste('defil_random_arbre', type_modele, essence, sep='_'))
   random_plot <- get(paste('defil_random_plot', type_modele, essence, sep='_'))
   alpha <- as.numeric(get(paste('defil_alpha', type_modele, essence, sep='_')))
 
+  # Extraire les écarts-types (racine carrée des variances) pour les effets aléatoires au niveau de l'arbre
   sigma_arbre1 <- as.numeric(sqrt(random_arbre[1,1]))
   sigma_arbre2 <- as.numeric(sqrt(random_arbre[2,2]))
+
+  # Calculer la corrélation entre les effets aléatoires au niveau de l'arbre
   corr_arbre <- as.numeric(random_arbre[2,1]/(sigma_arbre1*sigma_arbre2))
-  if (is.na(corr_arbre)) {corr_arbre <- 0}
+  if (is.na(corr_arbre)) {corr_arbre <- 0}  # Par défaut à 0 si NA
+
+  # Extraire les écarts-types pour les effets aléatoires au niveau de la placette
   sigma_plot1 <- as.numeric(sqrt(random_plot[1,1]))
   sigma_plot2 <- as.numeric(sqrt(random_plot[2,2]))
+
+  # Calculer la corrélation entre les effets aléatoires au niveau de la placette
   corr_plot <- as.numeric(random_plot[2,1]/(sigma_plot1*sigma_plot2))
-  if (is.na(corr_plot)) {corr_plot <- 0}
+  if (is.na(corr_plot)) {corr_plot <- 0}  # Par défaut à 0 si NA
 
+  # S'assurer que les données d'entrée sont un data.table pour des opérations efficaces
   setDT(fic)
+
+  # Calculer les composants nécessaires pour la formule de correction de biais
   a12 <- -fic$pred_mm2/alpha*log(fic$HT_REELLE_M/1.3)
-  a21 <- a12
+  a21 <- a12  # Même valeur que a12 dans ce cas
   a22 <- fic$pred_mm2 * (log(fic$HT_REELLE_M/1.3))^2
-  correction <- 0.5 * (a12*corr_plot*sigma_plot1*sigma_plot2 + a21*corr_plot*sigma_plot1*sigma_plot2 + a22*sigma_plot2^2)
-  + 0.5 * (a12*corr_arbre*sigma_arbre1*sigma_arbre2 + a21*corr_arbre*sigma_arbre1*sigma_arbre2 + a22*sigma_arbre2^2)
-  pred_mm2_corr <- fic$pred_mm2+correction
 
+  # Calculer la correction totale (somme des composants au niveau de la placette et de l'arbre)
+  correction <- 0.5 * (a12*corr_plot*sigma_plot1*sigma_plot2 +
+                         a21*corr_plot*sigma_plot1*sigma_plot2 +
+                         a22*sigma_plot2^2) +
+    0.5 * (a12*corr_arbre*sigma_arbre1*sigma_arbre2 +
+             a21*corr_arbre*sigma_arbre1*sigma_arbre2 +
+             a22*sigma_arbre2^2)
+
+  # Appliquer la correction aux prédictions brutes
+  pred_mm2_corr <- fic$pred_mm2 + correction
+
+  # Créer et retourner le jeu de données amélioré avec les colonnes de correction
   new_columns1 <- data.table(correction = correction, pred_mm2_corr = pred_mm2_corr)
-
   fic_biais <- cbind(fic, new_columns1)
-
   return(fic_biais)
 }
-#correction_biais(type_modele='arbre', fic=data_ess_na, essence='PIG')
 
-
-# fonction pour loader le modele de l'essence traitée et du modele désiré
-# type_modele = 'standAndTree' ou 'treeOnly'
-# essence = code d'essence en
-
+#' Récupérer le modèle de défilement pour une essence spécifique
+#'
+#' @description
+#' Charge le modèle de défilement pour une essence et un type de modèle spécifiés.
+#' Cette fonction auxiliaire récupère dynamiquement l'objet modèle approprié basé
+#' sur des conventions de nommage.
+#'
+#' @param type_modele Chaîne de caractères spécifiant le type de modèle. Doit être
+#'        'standAndTree' (niveau peuplement et arbre) ou 'treeOnly' (niveau arbre uniquement).
+#' @param essence Chaîne de caractères spécifiant le code d'essence (ex: 'PIG').
+#'
+#' @return L'objet modèle pour l'essence et le type de modèle spécifiés.
+#'
+#' @details
+#' La fonction construit le nom d'objet approprié basé sur une convention de nommage
+#' prédéfinie et le récupère de l'environnement. Elle suppose que les objets de modèle
+#' sont nommés suivant le modèle "defil_[type_modele].[essence en minuscule]".
+#'
+#' @examples
+#' \dontrun{
+#'   # Obtenir le modèle treeOnly pour le pin ('PIG')
+#'   modele_pig <- get_modele(type_modele = 'treeOnly', essence = 'PIG')
+#' }
+#'
+#' @export
 get_modele <- function(type_modele, essence) {
-  # type_modele = 'treeOnly'; essence='PIG';
+  # Construire le nom du modèle suivant la convention de nommage définie
+  nom_modele <- paste0("defil_", type_modele, '.', tolower(essence))
 
-  # aller chercher le modele et les parametres de l'essence traitée
-  modele <- get(paste0("defil_", type_modele, '.', tolower(essence)))
+  # Récupérer l'objet modèle de l'environnement
+  modele <- get(nom_modele)
 
   return(modele)
 }
@@ -101,6 +163,8 @@ get_modele <- function(type_modele, essence) {
 #'
 #' @import data.table
 #' @export
+
+
 get_diam <- function(fic) {
   # Assure que l'objet est bien une data.table pour optimiser les opérations
   setDT(fic)

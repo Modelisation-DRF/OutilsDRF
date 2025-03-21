@@ -446,16 +446,7 @@ data_diam7 <- data.frame(essence=rep(c('BOP','EPB','EPN','EPR','PEG','PET','PIB'
                          HAUTEUR_M = rep(25, 550000),
                          nbTi_ha = 2000,
                          st_ha = 15,
-                         ALTITUDE = 200,
-                         nom_grade1 = "sciage court",
-                         long_grade1 = 8,
-                         diam_grade1 = 10,
-                         nom_grade2 = "pate",
-                         long_grade2 = 4,
-                         diam_grade2 = 5,
-                         nom_grade3 = "autre",
-                         long_grade3 = 2,
-                         diam_grade3 = 3)
+                         ALTITUDE = 200)
 
 data_diam8 <- data.frame(essence=rep(c('BOP','EPB','EPN','EPR','PEG','PET','PIG','SAB','THO'), 100),
                          id_pe = seq(1,900,1),
@@ -558,6 +549,19 @@ data_diam12 <- data.frame(essence = rep(c('BOP'), 3),
                           long_grade3 = NA,
                           diam_grade3 = 6
                           )
+
+data_diam13 <- data.frame(essence = c('BOP','BOP','BOP'),
+                          id_pe = rep(1, 3),
+                          no_arbre = 1:3,
+                          sdom_bio = rep(c("3OUEST"), 3),
+                          cl_drai = rep(NA, 3),
+                          veg_pot = rep('MS2', 3),
+                          DHP_Ae = c(120, 150, 300),
+                          HT_REELLE_M = rep(0, 3),
+                          HAUTEUR_M = c(13, 20, 28),
+                          nbTi_ha = NA,
+                          st_ha = NA,
+                          ALTITUDE = NA)
 
 
 usethis::use_data(data_diam4, data_diam5, data_diam6, data_diam7, data_diam8, data_diam9, data_diam10, data_diam11, data_diam12,

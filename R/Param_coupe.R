@@ -198,27 +198,35 @@ param_coupe <- function(trt_coupe, mode_simul='DET', nb_iter=1, seed_value=NULL)
 
 }
 
-prob_coupe <- function(data_tree, trt_coupe, mode_simul = "STO") {
-  setDT(data_tree)
-  data_param <- param_coupe(trt_coupe, mode_simul, nb_iter = 3)
+prob_coupe <- function(data_tree, trt_coupe, mode_simul="DET", nb_iter=1) {
+  if(mode_simul == "STO"){
+    setDT(data_tree)
+    data_param <- param_coupe(trt_coupe, mode_simul, nb_iter = 3)
+    setDT(data_param)
+    setnames(data_param, "essence", "essence_coupe")
+    print(data_param)
 
-  temp_table <- data_tree[, num_trt := trt_coupe]
+    temp_table <- data_tree[, num_trt := trt_coupe]
 
-  print(temp_table)
+    print(temp_table)
 
-  data_mid_table <- merge(data_tree, coupe_ass_ess, by = c("num_trt", "essence"))
+    data_mid_table <- merge(data_tree, coupe_ass_ess, by = c("num_trt", "essence"))
 
-  print(data_mid_table)
+    print(data_mid_table)
 
-  data_full_table <- merge(data_mid_table, data_param, by = c(""))
+    data_full_table <- merge(data_mid_table, data_param, by = c("num_trt", "essence_coupe", "code_trt"))
 
+    print(data_full_table)
+
+
+  }
 
 }
 
 
 ##############################################################
 
-#prob_coupe(data_tree1, 10, "STO")
+#prob_coupe(data_tree1, 10, "STO", 3)
 #result_det <- param_coupe(trt_coupe = 3, mode_simul = 'DET')
 
 # Print the first few rows to see the result

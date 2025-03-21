@@ -4,7 +4,18 @@
 \alias{calcul_vol_bille}
 \title{Calcul du volume des billes commerciales à partir d'arbres}
 \usage{
-calcul_vol_bille(fichier_billes)
+calcul_vol_bille(
+  fichier_billes,
+  nom_grade1 = NA,
+  long_grade1 = NA,
+  diam_grade1 = NA,
+  nom_grade2 = NA,
+  long_grade2 = NA,
+  diam_grade2 = NA,
+  nom_grade3 = NA,
+  long_grade3 = NA,
+  diam_grade3 = NA
+)
 }
 \arguments{
 \item{fichier_billes}{Un data.frame ou data.table contenant les données d'arbres avec les colonnes suivantes:

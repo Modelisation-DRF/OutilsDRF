@@ -222,7 +222,7 @@ test_that("relation_h_d() avec mode stochastique retourne le bon nombre de ligne
 
 # ajouter test d'un fichier avec les essences qui ont une essence associée
 
-test_that("relation_h_d() fonctionne comme attendu avec les essences qui ont des essences associées mode DET", {
+test_that("relation_h_d() fonctionne comme attendu avec les essences qui ont des essences associées avec use_ass_ess=T mode DET", {
 
   data_ess_ass <- readRDS(test_path("fixtures", "data_ess_ass_det.rds")) # une placette
   data_obt <- relation_h_d(fic_arbres = data_ess_ass, mode_simul = 'DET')
@@ -232,7 +232,7 @@ test_that("relation_h_d() fonctionne comme attendu avec les essences qui ont des
   expect_equal(0, nrow(data_obt_na))
 })
 
-test_that("relation_h_d() fonctionne comme attendu avec les essences qui ont des essences associées mode STO", {
+test_that("relation_h_d() fonctionne comme attendu avec les essences qui ont des essences associées avec use_ass_ess=T mode STO", {
   data_ess_ass <- readRDS(test_path("fixtures", "data_ess_ass_sto.rds")) # une placette
   nb_iter <- max(data_ess_ass$iter)
   nb_step <- max(data_ess_ass$step)
@@ -242,6 +242,86 @@ test_that("relation_h_d() fonctionne comme attendu avec les essences qui ont des
 
   expect_equal(nrow(data_ess_ass), nrow(data_obt))
   expect_equal(0, nrow(data_obt_na))
+})
+
+test_that("relation_h_d() fonctionne comme attendu avec use_ess_ass=F en mode DET", {
+
+  data_arbre <- readRDS(test_path("fixtures", "data_arbre.rds"))
+  data_obt <- relation_h_d(fic_arbres = data_arbre, mode_simul = 'DET', use_ass_ess=F)
+  data_obt_na <- data_obt %>% filter(!is.na(hauteur_pred))
+
+  expect_equal(nrow(data_arbre), nrow(data_obt))
+  expect_equal(918, nrow(data_obt_na))
+})
+
+
+test_that("relation_h_d() fonctionne comme attendu avec use_ess_ass=F en mode DET mode STO", {
+  data_ess_ass <- readRDS(test_path("fixtures", "data_ess_ass_sto.rds")) # une placette
+  nb_iter <- max(data_ess_ass$iter)
+  nb_step <- max(data_ess_ass$step)
+  data_obt <- relation_h_d(fic_arbres = data_ess_ass, mode_simul = 'STO', nb_iter = nb_iter, nb_step = nb_step, use_ass_ess=F)
+
+  data_obt_na <- data_obt %>% filter(!is.na(hauteur_pred))
+
+  expect_equal(nrow(data_ess_ass), nrow(data_obt))
+  expect_equal(50, nrow(data_obt_na))
+})
+
+
+test_that("relation_h_d() fonctionne avec sum_st_ha et dhp_moy dans le fichier mode DET", {
+  data_arbre <- readRDS(test_path("fixtures", "data_arbre.rds"))
+  data_arbre$sum_st_ha <- 20
+  data_arbre$dhp_moy <- 15
+  DataHt <- relation_h_d(fic_arbres=data_arbre)
+
+  DataHt_na <- DataHt %>% filter(is.na(hauteur_pred))
+
+  expect_equal(0, nrow(DataHt_na)) # pas de données manquantes
+
+  # et les colonnes sum_st_ha et dhp_moy sont encore dans le fichier
+  expect_true('sum_st_ha' %in% names(DataHt))
+  expect_true('dhp_moy' %in% names(DataHt))
+})
+test_that("relation_h_d() fonctionne avec sum_st_ha dans le fichier mode DET", {
+  data_arbre <- readRDS(test_path("fixtures", "data_arbre.rds"))
+  data_arbre$sum_st_ha <- 20
+  DataHt <- relation_h_d(fic_arbres=data_arbre)
+
+  DataHt_na <- DataHt %>% filter(is.na(hauteur_pred))
+
+  expect_equal(0, nrow(DataHt_na)) # pas de données manquantes
+  # et la colonne sum_st_ha n'est plus là car elle a été calculée et onsuite on l'enleve du fichier si calculée
+  expect_false('sum_st_ha' %in% names(DataHt))
+
+})
+
+test_that("relation_h_d() fonctionne avec dhp_moy dans le fichier mode DET", {
+  data_arbre <- readRDS(test_path("fixtures", "data_arbre.rds"))
+  data_arbre$dhp_moy <- 20
+  DataHt <- relation_h_d(fic_arbres=data_arbre)
+
+  DataHt_na <- DataHt %>% filter(is.na(hauteur_pred))
+
+  expect_equal(0, nrow(DataHt_na)) # pas de données manquantes
+  # et la colonne sum_st_ha n'est plus là car elle a été calculée et onsuite on l'enleve du fichier si calculée
+  expect_false('dhp_moy' %in% names(DataHt))
+
+})
+
+
+test_that("relation_h_d() fonctionne avec sum_st_ha et dhp_moy dans le fichier mode STO", {
+  data_arbre <- readRDS(test_path("fixtures", "data_arbre_sto.rds"))
+  data_arbre$sum_st_ha <- 20
+  data_arbre$dhp_moy <- 15
+  DataHt <- relation_h_d(fic_arbres=data_arbre, mode_simul = "STO", nb_iter = 200, nb_step = 5, seed=20)
+
+  DataHt_na <- DataHt %>% filter(is.na(hauteur_pred))
+
+  expect_equal(0, nrow(DataHt_na)) # pas de données manquantes
+
+  # et les colonnes sum_st_ha et dhp_moy sont encore dans le fichier
+  expect_true('sum_st_ha' %in% names(DataHt))
+  expect_true('dhp_moy' %in% names(DataHt))
 })
 
 

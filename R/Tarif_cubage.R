@@ -41,7 +41,11 @@
 #' @param nb_iter Le nombre d'itérations si le mode stochastique est utilisé, doit être > 1. Ignoré si \code{mode_simul="DET"},
 #' @param nb_step Le nombre d'années pour lesquelles on veut estimer la hauteur pour un même arbre (par défaut 1), ignoré si \code{mode_simul="DET"}.
 #' @param seed_value Optionnel. La valeur du seed pour la génération de nombres aléatoires. Généralement utilisé pour les tests de la fonction.
-
+#' @param use_ass_ess binaire
+#' \itemize{
+#'    \item TRUE: Par défaut. les essences sans tarif de cubage seront associées à une des 26 essences avec le fichier d'association interne.
+#'    \item FALSE: les essences sans tarif de cubage n'auront pas de volume estimé
+#'    }
 #' @return La table \code{fic_arbres} avec une colonne contenant le volume marchand estimé en dm3 (vol_dm3).
 #' @import data.table
 #' @export
@@ -65,7 +69,7 @@
 #' vol <- cubage(fic_arbres=ht, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_step)
 #' }
 #'
-cubage <- function (fic_arbres, mode_simul='DET', nb_iter=1, nb_step=1, seed_value=NULL){
+cubage <- function (fic_arbres, mode_simul='DET', nb_iter=1, nb_step=1, seed_value=NULL, use_ass_ess=T){
 
   # en mode stochastique, les variables iter et step sont obligatoires
   if (mode_simul=='STO'){
@@ -75,17 +79,27 @@ cubage <- function (fic_arbres, mode_simul='DET', nb_iter=1, nb_step=1, seed_val
   # générer les paramètres du tarif de cubage
   parametre_vol <- param_vol(fic_arbres=fic_arbres, mode_simul=mode_simul, nb_iter=nb_iter, nb_step=nb_step, seed_value=seed_value)
 
+  setDT(fic_arbres)
+
   # association des essences aux essences du tarif de cubage (tarif_ass_ess.rda)
-  tarif_ass_ess2 <- tarif_ass_ess
-  setDT(tarif_ass_ess2)
-  arbre_vol <- merge(fic_arbres, tarif_ass_ess2, by = "essence", all.x=T) # un vrai left_join
-  arbre_vol[
-    , `:=`(
-      essence_orig = essence,
-      essence = essence_volume
-    )
-  ][, essence_volume := NULL
-  ]
+  if (use_ass_ess==T) {
+
+    tarif_ass_ess2 <- tarif_ass_ess
+    setDT(tarif_ass_ess2)
+    arbre_vol <- merge(fic_arbres, tarif_ass_ess2, by = "essence", all.x=T) # un vrai left_join
+    arbre_vol[
+      , `:=`(
+        essence_orig = essence,
+        essence = essence_volume
+      )
+    ][, essence_volume := NULL
+    ]
+
+  } else {
+
+    arbre_vol <- fic_arbres[, `:=`(essence_orig = essence)]
+
+  }
 
 if (mode_simul=='DET'){
   # Ajout des paramètres des effets fixes du tarif au fichier des arbres

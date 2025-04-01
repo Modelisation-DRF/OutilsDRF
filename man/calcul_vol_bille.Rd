@@ -6,6 +6,7 @@
 \usage{
 calcul_vol_bille(
   fichier_billes,
+  dhs = 0.15,
   nom_grade1 = NA,
   long_grade1 = NA,
   diam_grade1 = NA,
@@ -32,6 +33,8 @@ calcul_vol_bille(
   \item st_ha - Surface terrière en m2/ha dans la placette
   \item ALTITUDE - Altitude de la placette (en m)
 }}
+
+\item{dhs}{Hauteur de souche standard en mètres (point de départ des mesures), initialisée à 0.15(15 cm)}
 
 \item{nom_grade1}{Nom du premier type de bille.}
 
@@ -84,8 +87,9 @@ L'algorithme procède en plusieurs étapes:
 
 La fonction gère plusieurs cas spéciaux:
 \itemize{
-  \item Billes avec diamètre minimum mais sans longueur fixe
   \item Priorités entre les différents types de billes
+  \item Billes avec diamètre minimum mais sans longueur fixe
+  \item Billes avec longueur fixe mais sans diamètre minimum
 }
 
 La fonction dépend de variables globales:
@@ -114,7 +118,7 @@ La fonction dépend de variables globales:
     )
 
     # Calcul des volumes de billes
-    resultats <- calcul_vol_bille(donnees_arbre, nom_grade1 = "sciage court", long_grade1 = 8, diam_grade1 = 12, nom_grade2 = "pate",
+    resultats <- calcul_vol_bille(donnees_arbre, dhs = 0.2, nom_grade1 = "sciage court", long_grade1 = 8, diam_grade1 = 12, nom_grade2 = "pate",
       long_grade2 = NA, diam_grade2 = 8)
   }
 }

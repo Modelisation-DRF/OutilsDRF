@@ -1,4 +1,7 @@
+#library("testthat")
 #devtools::test_file("tests/testthat/test-calcul_vol_bille.R")
+
+#On assume que tous les dhs sont à 0.15
 
 test_that("calcul_vol_bille retourne une data.table vide si l'entrée du fichier est vide", {
   # Créer un data.frame avec les colonnes requises mais aucune ligne
@@ -610,6 +613,89 @@ test_that("calcul_vol_bille retourne les bons volumes et le bon nombre de billes
       } else {
         # Pour les autres colonnes, on peut garder une comparaison stricte
         expect_equal(resultat[[col]], resultat_attendu[[col]])
+      }
+    }
+  }
+  expect_equal(nrow(resultat), nrow(resultat_attendu))
+})
+
+test_that("calcul_vol_bille retourne les bons volumes et le bon nombre de billes lorsque la longueur est spécifié, mais pas le diamètre", {
+  data_billes <- data.frame(essence = rep(c('BOP'), 3),
+                            id_pe = rep(1, 3),
+                            no_arbre = 1:3,
+                            sdom_bio = rep(c("3OUEST"), 3),
+                            cl_drai = rep(NA, 3),
+                            veg_pot = rep('MS2', 3),
+                            DHP_Ae = c(120, 150, 300),
+                            HT_REELLE_M = rep(0, 3),
+                            HAUTEUR_M = c(13, 20, 28),
+                            nbTi_ha = NA,
+                            st_ha = NA,
+                            ALTITUDE = NA,
+                            stringsAsFactors = FALSE)
+
+  resultat <- calcul_vol_bille(data_billes, nom_grade1 = "sciage long", long_grade1 = 14, diam_grade1 = NA,
+                               nom_grade2 = "sciage court", long_grade2 = 6, diam_grade2 = NA, nom_grade3 = "pate", long_grade3 = 4, diam_grade3 = NA)
+  resultat_attendu <- read.csv(
+    test_path("fixtures", "Test_billes_all_diam_indefini.csv"),
+    sep = ";",
+    #À la base, vecteur de NA -> vecteur Logical.
+    colClasses = c(long_bille_pied = "numeric"),
+    stringsAsFactors = FALSE
+  )
+
+  setDT(resultat_attendu)
+
+  cols_identification <- c("id_pe", "no_arbre", "dhpcm", "ht", "vol_bille_dm3", "grade_bille", "diam_fb_cm", "long_bille_pied")
+  for (col in cols_identification) {
+    if (col %in% names(resultat) && col %in% names(resultat_attendu)) {
+      if (col == "vol_bille_dm3") {
+        # Utiliser une tolérance relative de 1.5%
+        expect_equal(resultat[[col]], resultat_attendu[[col]], tolerance = 0.015)
+      } else {
+        # On convertit les NA en char pour les 2 tables, puisque le type ne dérange pas pour les tests(vecteur de NA dans R donne un vecteur logical...)
+        expect_equal(as.character(resultat[[col]]), as.character(resultat_attendu[[col]]))
+      }
+    }
+  }
+  expect_equal(nrow(resultat), nrow(resultat_attendu))
+})
+
+test_that("calcul_vol_bille retourne les bons volumes et le bon nombre de billes lorsque le diamètre est à 0(on récupère la bille au complet dans ce cas)", {
+  data_billes <- data.frame(essence = rep(c('BOP'), 3),
+                            id_pe = rep(1, 3),
+                            no_arbre = 1:3,
+                            sdom_bio = rep(c("3OUEST"), 3),
+                            cl_drai = rep(NA, 3),
+                            veg_pot = rep('MS2', 3),
+                            DHP_Ae = c(120, 150, 300),
+                            HT_REELLE_M = rep(0, 3),
+                            HAUTEUR_M = c(13, 20, 28),
+                            nbTi_ha = NA,
+                            st_ha = NA,
+                            ALTITUDE = NA,
+                            stringsAsFactors = FALSE)
+
+  resultat <- calcul_vol_bille(data_billes, nom_grade1 = "sciage long", long_grade1 = NA, diam_grade1 = 0)
+  resultat_attendu <- read.csv(
+    test_path("fixtures", "Test_billes_all_diam_0.csv"),
+    sep = ";",
+    #À la base, vecteur de NA -> vecteur Logical.
+    colClasses = c(long_bille_pied = "numeric"),
+    stringsAsFactors = FALSE
+  )
+
+  setDT(resultat_attendu)
+
+  cols_identification <- c("id_pe", "no_arbre", "dhpcm", "ht", "vol_bille_dm3", "grade_bille", "diam_fb_cm", "long_bille_pied")
+  for (col in cols_identification) {
+    if (col %in% names(resultat) && col %in% names(resultat_attendu)) {
+      if (col == "vol_bille_dm3") {
+        # Utiliser une tolérance relative de 1.5%
+        expect_equal(resultat[[col]], resultat_attendu[[col]], tolerance = 0.015)
+      } else {
+        # On convertit les NA en char pour les 2 tables, puisque le type ne dérange pas pour les tests(vecteur de NA dans R donne un vecteur logical...)
+        expect_equal(as.character(resultat[[col]]), as.character(resultat_attendu[[col]]))
       }
     }
   }

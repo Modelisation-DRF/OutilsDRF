@@ -198,35 +198,85 @@ param_coupe <- function(trt_coupe, mode_simul='DET', nb_iter=1, seed_value=NULL)
 
 }
 
-prob_coupe <- function(data_tree, trt_coupe, mode_simul="DET", nb_iter=1) {
-  if(mode_simul == "STO"){
-    setDT(data_tree)
-    data_param <- param_coupe(trt_coupe, mode_simul, nb_iter = 3)
-    setDT(data_param)
-    setnames(data_param, "essence", "essence_coupe")
-    print(data_param)
+prob_coupe <- function(data_tree, trt_coupe, mode_simul="DET", nb_iter=1, seed_value=NULL) {
 
-    temp_table <- data_tree[, num_trt := trt_coupe]
-
-    print(temp_table)
-
-    data_mid_table <- merge(data_tree, coupe_ass_ess, by = c("num_trt", "essence"))
-
-    print(data_mid_table)
-
-    data_full_table <- merge(data_mid_table, data_param, by = c("num_trt", "essence_coupe", "code_trt"))
-
-    print(data_full_table)
-
-
+  if(!is.null(seed_value)) {
+    set.seed(seed_value)
   }
 
+  setDT(data_tree)
+  data_param <- param_coupe(trt_coupe, mode_simul, nb_iter)
+  setDT(data_param)
+  setnames(data_param, "essence", "essence_coupe")
+  # Add treatment number to tree data
+  temp_table <- data_tree[, num_trt := trt_coupe]
+  # Store the original trees before any merges
+  data_arbre_complet <- copy(temp_table)
+  # First merge with the essence associations
+  data_mid_table <- merge(temp_table, coupe_ass_ess, by = c("num_trt", "essence"), all.x = FALSE)
+  print(data_mid_table)  # Third print
+  # Second merge with parameters by iteration
+  data_full_table <- merge(data_mid_table, data_param,
+                           by = c("num_trt", "essence_coupe", "code_trt"))
+  print(data_full_table)  # Fourth print
+  # Identify lost trees by comparing original to the final merged data
+  arbre_non_valide <- data_arbre_complet[!paste(id_pe, no_arbre) %in%
+                                    paste(data_full_table$id_pe, data_full_table$no_arbre)]
+  # If we have lost trees and iterations
+  if(nrow(arbre_non_valide) > 0 && length(unique(data_param$iter)) > 0) {
+    # Get unique iterations
+    all_iters <- unique(data_param$iter)
+    # Create a list to hold copies of lost trees for each iteration
+    arbre_non_valide_list <- vector("list", length(all_iters))
+    # For each iteration, create a copy of lost trees with that iteration
+    for(i in seq_along(all_iters)) {
+      iter_val <- all_iters[i]
+      arbre_non_valide_copy <- copy(arbre_non_valide)
+      arbre_non_valide_copy[, iter := iter_val]
+      # Add default values for parameter columns
+      param_cols <- setdiff(names(data_full_table), names(arbre_non_valide_copy))
+      for(col in param_cols) {
+        if(col %in% c("b0", "b1_s", "b2_s", "b3_s", "b4_s", "b5_s", "b6_s", "b7_s")) {
+          arbre_non_valide_copy[, (col) := 0]
+        } else {
+          arbre_non_valide_copy[, (col) := NA]
+        }
+      }
+      arbre_non_valide_list[[i]] <- arbre_non_valide_copy
+    }
+    # Combine all the lost trees (now with iterations) into one data.table
+    all_arbre_non_valide <- rbindlist(arbre_non_valide_list, fill = TRUE)
+  }
+
+  # Calculate XB using the equation
+  data_full_table[, d := DHP_Ae - 23]       # d = DHP - 23
+  data_full_table[, m := as.numeric(DHP_Ae > 23)]  # m = 1 if DHP > 23, 0 otherwise
+  data_full_table[, N := nbTi_ha]           # N = number of trees per ha
+  data_full_table[, BA := st_ha]            # BA = basal area (m²/ha)
+
+  # Calculate XB using the formula
+  data_full_table[, XB := b0 + b1_s + (b2_s + b3_s * m) * d +
+                    (b4_s + b5_s * m) * d^2 + b6_s * log(N + 1) + b7_s * BA]
+
+  # Calculate probability of cutting
+  data_full_table[, prob_coupe := exp(XB) / (1 + exp(XB))]
+
+  if(mode_simul == "STO"){
+    data_full_table[, nb_alea := runif(.N)]  # Generate random number for each row
+    data_full_table[, COUPE := ifelse(prob_coupe > nb_alea, "OUI", "NON")]  # Determine cut state
+  }
+  # Combine with processed trees
+  all_trees <- rbindlist(list(data_full_table, all_arbre_non_valide), fill = TRUE)
+
+  return(all_trees)
 }
 
 
 ##############################################################
 
-#prob_coupe(data_tree1, 10, "STO", 3)
+#prob_coupe(data_tree1, 10, "STO", 3, seed_value=123)
+
+#prob_coupe(data_tree1, 10, "DET", 1, seed_value=100)
 #result_det <- param_coupe(trt_coupe = 3, mode_simul = 'DET')
 
 # Print the first few rows to see the result

@@ -20,6 +20,7 @@
 #'     \item st_ha - Surface terrière en m2/ha dans la placette
 #'     \item ALTITUDE - Altitude de la placette (en m)
 #'   }
+#' @param dhs Hauteur de souche standard en mètres (point de départ des mesures), initialisée à 0.15(15 cm)
 #' @param nom_grade1 Nom du premier type de bille.
 #' @param nom_grade2 Nom du deuxième type de bille.
 #' @param nom_grade3 Nom du troisième type de bille.
@@ -56,8 +57,9 @@
 #'
 #' La fonction gère plusieurs cas spéciaux:
 #' \itemize{
-#'   \item Billes avec diamètre minimum mais sans longueur fixe
 #'   \item Priorités entre les différents types de billes
+#'   \item Billes avec diamètre minimum mais sans longueur fixe
+#'   \item Billes avec longueur fixe mais sans diamètre minimum
 #' }
 #'
 #' La fonction dépend de variables globales:
@@ -86,7 +88,7 @@
 #'     )
 #'
 #'     # Calcul des volumes de billes
-#'     resultats <- calcul_vol_bille(donnees_arbre, nom_grade1 = "sciage court", long_grade1 = 8, diam_grade1 = 12, nom_grade2 = "pate",
+#'     resultats <- calcul_vol_bille(donnees_arbre, dhs = 0.2, nom_grade1 = "sciage court", long_grade1 = 8, diam_grade1 = 12, nom_grade2 = "pate",
 #'       long_grade2 = NA, diam_grade2 = 8)
 #'   }
 #' @seealso get_diam(dans le fichier Equation_defil.R) pour le calcul des diamètres le long du tronc
@@ -95,7 +97,7 @@
 #'
 #' @export
 
-calcul_vol_bille <- function(fichier_billes, nom_grade1 = NA, long_grade1 = NA, diam_grade1 = NA, nom_grade2 = NA, long_grade2 = NA, diam_grade2 = NA,
+calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_grade1 = NA, diam_grade1 = NA, nom_grade2 = NA, long_grade2 = NA, diam_grade2 = NA,
                              nom_grade3 = NA, long_grade3 = NA, diam_grade3 = NA) {
 
   # Conversion en data.table pour optimiser les opérations
@@ -117,24 +119,29 @@ calcul_vol_bille <- function(fichier_billes, nom_grade1 = NA, long_grade1 = NA, 
   # Longueur de section standard (24.5 pouces convertis en mètres)
   section_metre <- 24.5 / ratio_pouce_metre
 
-  # Hauteur de souche standard en mètres (point de départ des mesures)
-  dhs <- 0.15
-
   # Facteur de conversion pour obtenir des dm³ (décimètres cubes)
   factor <- as.double(1 / 8 * 1000)
 
   # Vérification des valeures entrées par l'utilisateur
-  if (!is.character(nom_grade1) && !is.na(nom_grade1)) stop("nom_grade1 doit être une chaîne de caractère")
-  if (!is.numeric(long_grade1) && !is.na(long_grade1)) stop("long_grade1 doit être une valeur numérique")
-  if (!is.numeric(diam_grade1) && !is.na(diam_grade1)) stop("diam_grade1 doit être une valeur numérique")
+  if (!is.character(nom_grade1) && !is.na(nom_grade1)) stop("Erreur: nom_grade1 doit être une chaîne de caractère")
+  if (!is.numeric(long_grade1) && !is.na(long_grade1)) stop("Erreur: long_grade1 doit être une valeur numérique")
+  if (!is.numeric(diam_grade1) && !is.na(diam_grade1)) stop("Erreur: diam_grade1 doit être une valeur numérique")
+  if (long_grade1 <= 0 && !is.na(long_grade1)) stop("Erreur: long_grade1 doit être une valeur positive")
+  if (diam_grade1 < 0 && !is.na(diam_grade1)) stop("Erreur: diam_grade1 doit être une valeur positive")
 
-  if (!is.character(nom_grade2) && !is.na(nom_grade2)) stop("nom_grade2 doit être une chaîne de caractère")
-  if (!is.numeric(long_grade2) && !is.na(long_grade2)) stop("long_grade2 doit être une valeur numérique")
-  if (!is.numeric(diam_grade2) && !is.na(diam_grade2)) stop("diam_grade2 doit être une valeur numérique")
+  if (!is.character(nom_grade2) && !is.na(nom_grade2)) stop("Erreur: nom_grade2 doit être une chaîne de caractère")
+  if (!is.numeric(long_grade2) && !is.na(long_grade2)) stop("Erreur: long_grade2 doit être une valeur numérique")
+  if (!is.numeric(diam_grade2) && !is.na(diam_grade2)) stop("Erreur: diam_grade2 doit être une valeur numérique")
+  if (long_grade2 <= 0 && !is.na(long_grade2)) stop("Erreur: long_grade2 doit être une valeur positive")
+  if (diam_grade2 < 0 && !is.na(diam_grade2)) stop("Erreur: diam_grade2 doit être une valeur positive")
 
-  if (!is.character(nom_grade3) && !is.na(nom_grade3)) stop("nom_grade3 doit être une chaîne de caractère")
-  if (!is.numeric(long_grade3) && !is.na(long_grade3)) stop("long_grade3 doit être une valeur numérique")
-  if (!is.numeric(diam_grade3) && !is.na(diam_grade3)) stop("diam_grade3 doit être une valeur numérique")
+  if (!is.character(nom_grade3) && !is.na(nom_grade3)) stop("Erreur: nom_grade3 doit être une chaîne de caractère")
+  if (!is.numeric(long_grade3) && !is.na(long_grade3)) stop("Erreur: long_grade3 doit être une valeur numérique")
+  if (!is.numeric(diam_grade3) && !is.na(diam_grade3)) stop("Erreur: diam_grade3 doit être une valeur numérique")
+  if (long_grade3 <= 0 && !is.na(long_grade3)) stop("Erreur: long_grade3 doit être une valeur positive")
+  if (diam_grade3 < 0 && !is.na(diam_grade3)) stop("Erreur: diam_grade3 doit être une valeur positive")
+
+  if (!is.numeric(dhs) && dhs <= 0) stop("Erreur: dhs doit être une valeur numérique positive")
 
   if (!is.na(long_grade1) && (long_grade1 %% 2 != 0)) {
     stop("Erreur: long_grade1 doit être un multiple de 2. La valeur actuelle donnée est: ", long_grade1)
@@ -154,6 +161,27 @@ calcul_vol_bille <- function(fichier_billes, nom_grade1 = NA, long_grade1 = NA, 
 
   if (is.na(long_grade2) && !is.na(long_grade3)) {
     stop("Erreur: Le cas où long_grade2 est indéfini et long_grade3 est défini n'est pas valide.")
+  }
+
+  if (is.na(diam_grade1) && (!is.na(diam_grade2) || !is.na(diam_grade3))) {
+    stop("Erreur: Le cas où diam_grade1 est indéfini et diam_grade2 ou diam_grade3 est défini n'est pas valide.")
+  }
+
+  if (is.na(diam_grade2) && !is.na(diam_grade3)) {
+    stop("Erreur: Le cas où diam_grade2 est indéfini et diam_grade3 est défini n'est pas valide.")
+  }
+
+  # Remplacer 0 par une valeur minimale positive afin de ne pas dépasser la dernière ligne
+  if (!is.na(diam_grade1) && diam_grade1 == 0) {
+    diam_grade1 <- 0.00001
+  }
+
+  if (!is.na(diam_grade2) && diam_grade2 == 0) {
+    diam_grade2 <- 0.00001
+  }
+
+  if (!is.na(diam_grade3) && diam_grade3 == 0) {
+    diam_grade3 <- 0.00001
   }
 
   ## Renommage des valeurs uniques pour chaque paramètre(pour la suite)
@@ -193,25 +221,21 @@ calcul_vol_bille <- function(fichier_billes, nom_grade1 = NA, long_grade1 = NA, 
     jump_log2 <- log_length2 / 2
     jump_log3 <- log_length3 / 2
 
-    # Détermination de la disponibilité des paramètres pour chaque type de bille
-    # has_diam: le diamètre minimal est spécifié
-    # has_log: la longueur est spécifiée
-    has_diam1 <- !is.na(diam_value1)
-    has_diam2 <- !is.na(diam_value2)
-    has_diam3 <- !is.na(diam_value3)
-    has_log1 <- !is.na(log_length1)
-    has_log2 <- !is.na(log_length2)
-    has_log3 <- !is.na(log_length3)
-
     # Création d'un identifiant de groupe unique pour chaque arbre
     # Cela permet de traiter les arbres individuellement tout en gardant un lien avec les données d'origine
     data_filtre[, group_id := .GRP, by = .(id_pe, no_arbre)]
 
     # Division de chaque arbre en sections de 2 pieds (convertis en mètres)
     # Pour chaque arbre (group_id), on crée une séquence de hauteurs, de la souche jusqu'à la hauteur totale
-    data_all_sections <- data_filtre[, .(
-      HT_REELLE_M = seq(dhs, HAUTEUR_M, by = section_metre)
-    ), by = group_id]
+    data_all_sections <- data_filtre[, {
+      # Nous créons toutes les sections, sauf la dernière
+      heights <- seq(dhs, HAUTEUR_M - 0.0001, by = section_metre)
+
+      # On ajoute la dernière section(le sommet de l'arbre)
+      heights <- c(heights, HAUTEUR_M)
+
+      .(HT_REELLE_M = heights)
+    }, by = group_id]
 
     # Jointure pour récupérer les informations nécessaires de l'arbre pour chaque section
     # On garde uniquement les colonnes nécessaires au calcul du diamètre
@@ -257,14 +281,20 @@ calcul_vol_bille <- function(fichier_billes, nom_grade1 = NA, long_grade1 = NA, 
                        list(diam_fb, vol_sec, vol_cum)
                      }]
 
-    # Création d'un vecteur pour stocker les longueurs spéciales
-    # Ce vecteur est utilisé quand l'utilisateur spécifie un diamètre minimal sans longueur
-    #special_lengths_vector <- numeric(length = max(data_treatment$group_id))
-    #names(special_lengths_vector) <- 1:max(data_treatment$group_id)
+    # Détermination de la disponibilité des paramètres pour chaque type de bille
+    # has_diam: le diamètre minimal est spécifié
+    # has_log: la longueur est spécifiée
+    has_diam1 <- !is.na(diam_value1)
+    has_diam2 <- !is.na(diam_value2)
+    has_diam3 <- !is.na(diam_value3)
+    has_log1 <- !is.na(log_length1)
+    has_log2 <- !is.na(log_length2)
+    has_log3 <- !is.na(log_length3)
 
     # Création de variables booléennes pour simplifier les conditions
     # has_set: a à la fois le diamètre ET la longueur spécifiés
     # no_log: a le diamètre spécifié MAIS PAS la longueur
+    # no_diam : a la longueur spécifié mais pas le diamètre
     has_set1 <- has_diam1 && has_log1
     has_set2 <- has_diam2 && has_log2
     has_set3 <- has_diam3 && has_log3
@@ -273,13 +303,16 @@ calcul_vol_bille <- function(fichier_billes, nom_grade1 = NA, long_grade1 = NA, 
     no_log2 <- has_diam2 && !has_log2
     no_log3 <- has_diam3 && !has_log3
 
+    no_diam1 <- !has_diam1 && has_log1
+    no_diam2 <- !has_diam2 && has_log2
+    no_diam3 <- !has_diam3 && has_log3
+
     # PARTIE CRITIQUE: Algorithme de découpe des arbres en billes
     # Cette section détermine comment chaque arbre sera découpé en billes commerciales
     cut_positions <- data_treatment[, {
       # Ne collecte que les positions des coupes valides
       positions <- integer()
       grade_types <- character()  # Vecteur pour stocker le type de grade pour chaque coupe
-      # Suppression de next_vols de cette section
 
       # Définition des variables locales pour un accès plus facile
       dp <- DIAM_PREDICT
@@ -294,17 +327,17 @@ calcul_vol_bille <- function(fichier_billes, nom_grade1 = NA, long_grade1 = NA, 
       special_case2_accessed <- FALSE
 
       # Pré-calcul des diamètres suivants pour les grades de longueur fixe
-      next_diam1 <- if(has_set1) {
+      next_diam1 <- if(has_set1 || no_diam1) {
         c(dp[(1 + jump_log1):n], rep(NA, jump_log1))
       } else {
         rep(NA, n)
       }
-      next_diam2 <- if(has_set2) {
+      next_diam2 <- if(has_set2 || no_diam2) {
         c(dp[(1 + jump_log2):n], rep(NA, jump_log2))
       } else {
         rep(NA, n)
       }
-      next_diam3 <- if(has_set3) {
+      next_diam3 <- if(has_set3 || no_diam3) {
         c(dp[(1 + jump_log3):n], rep(NA, jump_log3))
       } else {
         rep(NA, n)
@@ -321,39 +354,41 @@ calcul_vol_bille <- function(fichier_billes, nom_grade1 = NA, long_grade1 = NA, 
         special_case1_accessed <- FALSE
         special_case2_accessed <- FALSE
 
-        # Vérifie si l'un des critères de grade est rempli et avance en conséquence
-        if(has_set1 && !is.na(next_diam1[i]) && diam_value1 < next_diam1[i]) {
+        # Vérifie si l'un des critères de grade est rempli et avance en conséquence OU si le cas de no_diam == TRUE et qu'il reste des lignes après la
+        #sélection de la coupe(sinon cela implique qu'on est à la fin de l'arbre, et on sait que la toute dernière section est moins de 2 pieds,
+        #ce qui rend le saut invalide)
+        if((has_set1 && !is.na(next_diam1[i]) && diam_value1 < next_diam1[i]) || (no_diam1 && !is.na(next_diam1[i + 1]))) {
           # Grade 1 de longueur fixe
           grade_types <- c(grade_types, nom_grade1)
           next_i <- i + jump_log1
           i <- next_i
         }
-        else if(has_set2 && !is.na(next_diam2[i]) && diam_value2 < next_diam2[i]) {
+        else if((has_set2 && !is.na(next_diam2[i]) && diam_value2 < next_diam2[i]) || (no_diam2 && !is.na(next_diam2[i + 1])))  {
           # Grade 2 de longueur fixe
           grade_types <- c(grade_types, nom_grade2)
           next_i <- i + jump_log2
           i <- next_i
         }
-        else if(has_set3 && !is.na(next_diam3[i]) && diam_value3 < next_diam3[i]) {
+        else if((has_set3 && !is.na(next_diam3[i]) && diam_value3 < next_diam3[i]) || (no_diam3 && !is.na(next_diam3[i + 1])))  {
           # Grade 3 de longueur fixe
           grade_types <- c(grade_types, nom_grade3)
           next_i <- i + jump_log3
           i <- next_i
         }
-        # CAS SPÉCIAUX: Gestion des types de billes avec diamètre spécifié mais sans longueur fixe
+
+        # CAS SPÉCIAL2: Gestion des types de billes avec diamètre spécifié mais sans longueur fixe
         else if(no_log1 && diam_value1 < dp[i] && !is.na(dp[i])) {
-          #Ajustement du drapeau
+          # Ajustement du drapeau
           special_case1_accessed <- TRUE
           # Grade 1 de longueur variable
           grade_types <- c(grade_types, nom_grade1)
-
-          # Trouve où le diamètre passe en dessous du seuil
           drop_positions <- which(dp[(i+1):n] < diam_value1)
           if(length(drop_positions) > 0) {
             j <- i + drop_positions[1] - 1  # Dernière position où le diamètre est encore valide
           } else {
-            j <- n  # Utilise toute la longueur restante
+            j <- n  # On utilise la longueur totale
           }
+
           i <- j + 1
         }
         else if(no_log2 && diam_value2 < dp[i] && !is.na(dp[i])) {
@@ -425,6 +460,18 @@ calcul_vol_bille <- function(fichier_billes, nom_grade1 = NA, long_grade1 = NA, 
       diam_hauteur_fb = next_diam,
       next_vol_bille = next_vol - volume_cumulatif
     )]
+
+    # Calculer si next_log_length est un multiple de section_metre(cas spécial lorsque diam_grade = 0, création d'une section de longueur plus
+    #petite que section_metre)
+    # On utilise une approche avec modulo et une petite tolérance pour gérer les erreurs d'arrondi
+    cuts_data[, is_multiple := abs(next_log_length %% section_metre) < 1e-10 |
+                abs(next_log_length %% section_metre - section_metre) < 1e-10]
+
+    # Filtrer pour ne garder que les lignes où next_log_length est un multiple de section_metre
+    cuts_data <- cuts_data[is_multiple == TRUE]
+
+    # Supprimer la colonne temporaire
+    cuts_data[, is_multiple := NULL]
 
     # Utilisation de grade_type pour créer des colonnes supplémentaires
     cuts_data[, `:=`(
@@ -538,15 +585,17 @@ calcul_vol_bille <- function(fichier_billes, nom_grade1 = NA, long_grade1 = NA, 
       long_bille_pied = long_bille_pied
     )]
 
-    # Filtre les résultats finaux:
-    # - Élimine les lignes avec valeurs manquantes
+
+
+    # Data pour les résultats finaux:
     # - Algorithme crée une donnée non utilisable(billes de volume 0 dans cas spécial), on doit la retirer
     # - Ajuste avec des valeurs de conversions différentes colonnes pour obtenir les bons résultats à l'écran
+    # - Ajuste la valeur de diam_fb_cm à 0 si besoin
     # - Remultiplie les volumes par le facteur d'échelle
     data_complete <- cuts_data[!is.na(volume) & !is.na(id_pe) & !is.na(no_arbre) & !is.na(DHP_Ae) & !is.na(ht)
-                               & !is.na(grade_bille) & !is.na(diam_fb_cm) & volume > 0,
+                               & !is.na(grade_bille) & volume > 0,
                                .(id_pe, no_arbre, dhpcm = dhpcm / ratio_cm_mm , ht, vol_bille_dm3 = volume * scale,
-                                 grade_bille, diam_fb_cm = diam_fb_cm * ratio_cm_metre, long_bille_pied)]
+                                 grade_bille, diam_fb_cm = fifelse(diam_fb_cm * ratio_cm_metre < 0.001, 0, diam_fb_cm * ratio_cm_metre), long_bille_pied)]
   }
 
   #Si data_incomplete existe, on la retourne, et si data_complete existe, les données seront effacées et réécrite par le code du bloc suivant.
@@ -585,5 +634,13 @@ calcul_vol_bille <- function(fichier_billes, nom_grade1 = NA, long_grade1 = NA, 
 
 ##################################################
 #tic()
-#calcul_vol_bille(data_diam13)
+#calcul_vol_bille(data_diam13, dhs = 0.15, nom_grade1 = "sciage long",
+#                 long_grade1 = NA,
+#                 diam_grade1 = 0,
+#                 nom_grade2 = "sciage court",
+#                 long_grade2 = 6,
+#                 diam_grade2 = NA,
+#                 nom_grade3 = "pate",
+#                 long_grade3 = 4,
+#                 diam_grade3 = NA)
 #toc()

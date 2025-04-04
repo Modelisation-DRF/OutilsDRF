@@ -15,9 +15,9 @@ Equation;Estimate;Variable;Intercept;PrioRecolte;vp;Sdom
 1;-0.3914;Sdom;;;;6EST
 1;0.0152;sum_st_ha;;;;
 1;-0.112;tmoy;;;;
-1;0.058;Dhpcm*PRIORECOL;;C;;
-1;0.0475;Dhpcm*PRIORECOL;;R;;
-1;0.0487;Dhpcm*PRIORECOL;;S;;
+1;0.058;Dhpcm_X_PRIORECOL;;C;;
+1;0.0475;Dhpcm_X_PRIORECOL;;R;;
+1;0.0487;Dhpcm_X_PRIORECOL;;S;;
 2;-0.8038;Intercept;A;;;
 2;0.888;Intercept;B;;;
 2;1.5212;PRIORECOL;;C;;
@@ -30,9 +30,9 @@ Equation;Estimate;Variable;Intercept;PrioRecolte;vp;Sdom
 2;0.1194;Sdom;;;;4OUEST
 2;-0.131;Sdom;;;;5EST
 2;0.00905;sum_st_ha;;;;
-2;-0.0186;sum_st_ha*PRIORECOL;;C;;
-2;-0.00855;sum_st_ha*PRIORECOL;;R;;
-2;0.0154;sum_st_ha*PRIORECOL;;S;;
+2;-0.0186;sum_st_ha_X_PRIORECOL;;C;;
+2;-0.00855;sum_st_ha_X_PRIORECOL;;R;;
+2;0.0154;sum_st_ha_X_PRIORECOL;;S;;
 3;1.0688;Intercept;A;;;
 3;2.0478;Intercept;B;;;
 3;3.3383;Intercept;C;;;
@@ -42,6 +42,6 @@ Equation;Estimate;Variable;Intercept;PrioRecolte;vp;Sdom
 3;-0.0304;Dhpcm;;;;
 3;0.0142;sum_st_ha;;;;
 3;-0.00133;ptot;;;;
-3;0.0546;dhpcm*PRIORECOL;;C;;
-3;0.0679;dhpcm*PRIORECOL;;R;;
-3;0.0187;dhpcm*PRIORECOL;;S;;
+3;0.0546;dhpcm_X_PRIORECOL;;C;;
+3;0.0679;dhpcm_X_PRIORECOL;;R;;
+3;0.0187;dhpcm_X_PRIORECOL;;S;;

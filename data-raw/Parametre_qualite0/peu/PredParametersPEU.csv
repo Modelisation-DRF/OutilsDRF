@@ -12,9 +12,9 @@ Equation;Estimate;Variable;Intercept;PrioRecolte;vp;Sdom
 1;0.526;Sdom;;;;4OUEST
 1;-0.753;Sdom;;;;5EST
 1;0.0125;Sum_st_ha;;;;
-1;0.0304;Dhpcm*PRIORECOL;;C;;
-1;0.1455;Dhpcm*PRIORECOL;;R;;
-1;0.0787;Dhpcm*PRIORECOL;;S;;
+1;0.0304;Dhpcm_X_PRIORECOL;;C;;
+1;0.1455;Dhpcm_X_PRIORECOL;;R;;
+1;0.0787;Dhpcm_X_PRIORECOL;;S;;
 2;-1.7838;Intercept;A;;;
 2;-0.0734;Intercept;B;;;
 2;1.5894;PRIORECOL;;C;;

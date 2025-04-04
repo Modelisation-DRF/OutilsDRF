@@ -47,16 +47,17 @@
 #' @examples
 #' \dontrun{
 #' # Mode déterministe
-#' parametre_vol <- param_vol(fic_arbres=fic_arbres_test)
+#' parametre_vol <- param_vol(fic_arbres = fic_arbres_test)
 #'
-#'#' # Mode stochastique, plusieurs années et 10 itérations
-#' parametre_vol <- param_vol(fic_arbres=fic_artemis_sto, mode_simul='STO', nb_iter=10, nb_step=5)
-#'}
+#' #' # Mode stochastique, plusieurs années et 10 itérations
+#' parametre_vol <- param_vol(fic_arbres = fic_artemis_sto, mode_simul = "STO", nb_iter = 10, nb_step = 5)
+#' }
 #'
-param_vol <- function(fic_arbres, mode_simul="DET", nb_iter=1, nb_step=1, seed_value=NULL){
-
-  if (mode_simul=='STO'){
-    if (nb_iter==1) {stop("Le nombre d'iterations doit etre plus grand que 1 en mode stochastique")}
+param_vol <- function(fic_arbres, mode_simul = "DET", nb_iter = 1, nb_step = 1, seed_value = NULL) {
+  if (mode_simul == "STO") {
+    if (nb_iter == 1) {
+      stop("Le nombre d'iterations doit etre plus grand que 1 en mode stochastique")
+    }
   }
 
   # ne garder que les variables nécessaires si stochastique
@@ -64,20 +65,25 @@ param_vol <- function(fic_arbres, mode_simul="DET", nb_iter=1, nb_step=1, seed_v
   tarif_ass_ess2 <- tarif_ass_ess
   setDT(tarif_ass_ess2)
 
-  if (mode_simul=='STO'){
-    fic_arbres <- fic_arbres[,.(id_pe, no_arbre, essence, iter, step)] # si sto, on a besoin de iter et step
+  if (mode_simul == "STO") {
+    fic_arbres <- fic_arbres[, .(id_pe, no_arbre, essence, iter, step)] # si sto, on a besoin de iter et step
   }
 
-  if (length(seed_value)>0) {set.seed(seed_value)}
+  if (length(seed_value) > 0) {
+    set.seed(seed_value)
+  }
 
   # établir la liste des essences pour lesquelles on a besoin du modele de volume
   fic_arbres_temp <- merge(fic_arbres, tarif_ass_ess2, by = "essence", all.x = T)
-  fic_arbres_temp2 <- fic_arbres_temp %>% rename(essence_orig=essence) %>% rename(essence=essence_volume)
-  liste_ess_vol <- fic_arbres_temp2 %>% filter(!is.na(essence)) %>% dplyr::select(essence)
+  fic_arbres_temp2 <- fic_arbres_temp %>%
+    rename(essence_orig = essence) %>%
+    rename(essence = essence_volume)
+  liste_ess_vol <- fic_arbres_temp2 %>%
+    filter(!is.na(essence)) %>%
+    dplyr::select(essence)
   liste_ess_vol <- unique(liste_ess_vol$essence)
 
-  if (mode_simul=='STO') {
-
+  if (mode_simul == "STO") {
     # liste des arbres
     liste_arbre <- unique(fic_arbres_temp2[, .(id_pe, no_arbre, essence)]) # ici c'est important d'inclure essence dans le unique, car un même numéro d'arbre peut avoir des essences différentes, à cause des recrues stochastique de samare
 
@@ -90,23 +96,28 @@ param_vol <- function(fic_arbres, mode_simul="DET", nb_iter=1, nb_step=1, seed_v
 
     # générer les effets fixes avec la matrice de covariances des effets fixes (tarif_param_cov.rda)
     # pour que mvrnorm() fonctionne avec empirical=T, il faut au moins autant de n que la longueur du vecteur mu à simuler
-    mu = as.matrix(param_tarif_tr)
-    l_mu = length(mu)
-    if (nb_iter<l_mu) {nb_iter_temp=l_mu} else {nb_iter_temp=nb_iter}
-    param_vol = as.data.frame(matrix(rockchalk::mvrnorm(n = nb_iter_temp, mu = mu, Sigma = as.matrix(tarif_param_cov), empirical = T),
-                                     nrow=nb_iter_temp))[1:nb_iter,]
+    mu <- as.matrix(param_tarif_tr)
+    l_mu <- length(mu)
+    if (nb_iter < l_mu) {
+      nb_iter_temp <- l_mu
+    } else {
+      nb_iter_temp <- nb_iter
+    }
+    param_vol <- as.data.frame(matrix(rockchalk::mvrnorm(n = nb_iter_temp, mu = mu, Sigma = as.matrix(tarif_param_cov), empirical = T),
+      nrow = nb_iter_temp
+    ))[1:nb_iter, ]
     names(param_vol) <- names(param_tarif_tr)
     param_vol <- param_vol %>% mutate(iter = row_number())
 
     # il faut retransposer pour utiliser les paramètres dans la fonction de cubage
     param_vol_tr <- param_vol %>%
       group_by(iter) %>%
-      pivot_longer(cols=b1:b3_TIL, names_to = "parameter", values_to = "estimate") %>%
-      separate_wider_delim(col=parameter, names=c("parm","essence"), delim='_', too_few = "align_start") %>%
+      pivot_longer(cols = b1:b3_TIL, names_to = "parameter", values_to = "estimate") %>%
+      separate_wider_delim(col = parameter, names = c("parm", "essence"), delim = "_", too_few = "align_start") %>%
       filter(!is.na(essence)) %>%
       group_by(iter, essence) %>%
       pivot_wider(names_from = parm, values_from = estimate) %>%
-      left_join(param_vol[,c('iter','b1')], by='iter') %>%
+      left_join(param_vol[, c("iter", "b1")], by = "iter") %>%
       ungroup()
 
 
@@ -121,42 +132,44 @@ param_vol <- function(fic_arbres, mode_simul="DET", nb_iter=1, nb_step=1, seed_v
     data_plot <- expand_grid(iter = 1:nb_iter, id_pe = liste_place)
     # liste des arbres x nb_iter pour accueillir les erreurs résiduelles
     data_arbre <- as.data.frame(unclass(expand_grid(iter = 1:nb_iter, id_pe = liste_arbre)))
-    names(data_arbre) <- c('iter', 'id_pe', 'no_arbre','essence')
+    names(data_arbre) <- c("iter", "id_pe", "no_arbre", "essence")
 
     # liste des arbres x nb_iter x nb_step pour accueillir les erreurs résiduelles
     data_arbre_step <- as.data.frame(unclass(expand_grid(step = 1:nb_step, id_pe = data_arbre)))
-    names(data_arbre_step) <- c('step','iter', 'id_pe', 'no_arbre','essence')
+    names(data_arbre_step) <- c("step", "iter", "id_pe", "no_arbre", "essence")
 
     # générer un effet aléatoire de placette pour chaque placette/iter
-    #random_plot = data.frame('random_plot'=rnorm(nb_iter*length(liste_place), mean=0, sd = sqrt(as.matrix(tarif_param_random[1,4]))))
-    #sig = diag(tarif_param_random[1,4], nrow=nb_step)
-    sig = tarif_param_random[1,4]
-    mu=0
-    rand = as.data.frame(matrix(rockchalk::mvrnorm(nb_iter_temp*length(liste_place), mu=mu, Sigma = sig, empirical=T), nrow=nb_iter_temp*length(liste_place)))
-    rand <- as.data.frame(rand[1:(nb_iter*length(liste_place)),])
-    names(rand) <- 'random_plot'
-    rand = bind_cols(data_plot,rand)
+    # random_plot = data.frame('random_plot'=rnorm(nb_iter*length(liste_place), mean=0, sd = sqrt(as.matrix(tarif_param_random[1,4]))))
+    # sig = diag(tarif_param_random[1,4], nrow=nb_step)
+    sig <- tarif_param_random[1, 4]
+    mu <- 0
+    rand <- as.data.frame(matrix(rockchalk::mvrnorm(nb_iter_temp * length(liste_place), mu = mu, Sigma = sig, empirical = T), nrow = nb_iter_temp * length(liste_place)))
+    rand <- as.data.frame(rand[1:(nb_iter * length(liste_place)), ])
+    names(rand) <- "random_plot"
+    rand <- bind_cols(data_plot, rand)
 
-    #générer les erreurs résiduelles qui sont fonction de l'essence pour chaque arbre
-    sigma2_ess <- tarif_param_random[7:32,c(3,4)] %>% mutate(ess = substr(Group,9,11)) %>% dplyr::select(ess, -Group, Estimate)
+    # générer les erreurs résiduelles qui sont fonction de l'essence pour chaque arbre
+    sigma2_ess <- tarif_param_random[7:32, c(3, 4)] %>%
+      mutate(ess = substr(Group, 9, 11)) %>%
+      dplyr::select(ess, -Group, Estimate)
 
     liste_ess <- sigma2_ess$ess
     res_tous <- NULL
-    for (ess in liste_ess){
-
+    for (ess in liste_ess) {
       # sans créer de colonne par step, car le transpose est trop long, mais utiliser quand même mvrnorm pour le empirical = T
-      sig <- sigma2_ess[sigma2_ess$ess==ess,2]
-      res = as.data.frame(matrix(rockchalk::mvrnorm(nb_step*nb_iter*length(liste_arbre$no_arbre), mu=0, Sigma = sig, empirical = T),
-                                                   nrow=nb_step*nb_iter*length(liste_arbre$no_arbre)))
+      sig <- sigma2_ess[sigma2_ess$ess == ess, 2]
+      res <- as.data.frame(matrix(rockchalk::mvrnorm(nb_step * nb_iter * length(liste_arbre$no_arbre), mu = 0, Sigma = sig, empirical = T),
+        nrow = nb_step * nb_iter * length(liste_arbre$no_arbre)
+      ))
       names(res) <- ess
       # et on n'aura plus à joindre chacune des essences avec un left_join car les lignes touours dans le même ordre, seulement faire un bind_cols
-      res_tous <- bind_cols(res_tous,res)
+      res_tous <- bind_cols(res_tous, res)
     }
 
     # l'erreur résiduelle à choisir est celle de la colonne correspondant à l'essence de l'arbre
     # donc on génère bcp trop de colonne pour rien, et c'est long
     # si les 27 essences sont présentes dans le fichier, et qu'il y a 1 milions D'arbres, on va créer 27 colonnes pour chacun des milion d'arbres
-    res_tous <- bind_cols(data_arbre_step,res_tous)
+    res_tous <- bind_cols(data_arbre_step, res_tous)
     # 97 sec pour toutes les essences
 
     # param_vol_tr : une ligne par iter/essence dans le modèle de vol donc 26 x nb_iter
@@ -168,30 +181,30 @@ param_vol <- function(fic_arbres, mode_simul="DET", nb_iter=1, nb_step=1, seed_v
     setDT(res_tous)
     param0 <- res_tous[rand, on = c("id_pe", "iter")]
     # ne garder que les arbres du fichier d'origine
-    param0 <- param0[fic_arbres_temp2, on = c("id_pe","iter",'no_arbre',"step","essence"), nomatch = 0] # ici je veux vraiment un inner_join
-    param0[,`:=`(
-      essence_orig=NULL)]
+    param0 <- param0[fic_arbres_temp2, on = c("id_pe", "iter", "no_arbre", "step", "essence"), nomatch = 0] # ici je veux vraiment un inner_join
+    param0[, `:=`(
+      essence_orig = NULL
+    )]
     # param0 contient l'essence associé amodèle de tarif, et non l'essence originale
-  }
-  else{ # si déterministe
+  } else { # si déterministe
     param_vol_tr <- tarif_param_fixe %>%
-      separate_wider_delim(col=beta_ess, names=c("parm","essence"), delim='_', too_few = "align_start") %>%
+      separate_wider_delim(col = beta_ess, names = c("parm", "essence"), delim = "_", too_few = "align_start") %>%
       filter(!is.na(essence)) %>%
       group_by(essence) %>%
       pivot_wider(names_from = parm, values_from = Estimate) %>%
-      mutate(b1 = tarif_param_fixe[tarif_param_fixe$beta_ess=='b1',2],
-             #iter=1,
-             random_plot=0,
-             resid=0) %>%
+      mutate(
+        b1 = tarif_param_fixe[tarif_param_fixe$beta_ess == "b1", 2],
+        # iter=1,
+        random_plot = 0,
+        resid = 0
+      ) %>%
       ungroup()
 
     param0 <- NULL
-
   }
 
   # ne garder que les essences de fic_arbres
-  param_vol_tr <- param_vol_tr[param_vol_tr$essence %in% liste_ess_vol,]
+  param_vol_tr <- param_vol_tr[param_vol_tr$essence %in% liste_ess_vol, ]
 
-  return(list('effet_fixe'=param_vol_tr, 'random'=param0))
-
+  return(list("effet_fixe" = param_vol_tr, "random" = param0))
 }

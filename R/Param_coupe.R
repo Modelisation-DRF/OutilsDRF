@@ -53,19 +53,22 @@
 #' parametre_coupe <- param_coupe()
 #'
 #' # Mode stochastique, pour une seule année et 10 itérations
-#' parametre_coupe <- param_coupe(mode_simul='STO', nb_iter=10)
-#'}
+#' parametre_coupe <- param_coupe(mode_simul = "STO", nb_iter = 10)
+#' }
 #'
-param_coupe <- function(trt_coupe, mode_simul='DET', nb_iter=1, seed_value=NULL){
-
+param_coupe <- function(trt_coupe, mode_simul = "DET", nb_iter = 1, seed_value = NULL) {
   # trt_coupe=10; mode_simul='DET'; nb_iter=1; seed_value=NULL;
   # trt_coupe=10; mode_simul='STO'; nb_iter=10; seed_value=NULL;
 
-  if (mode_simul=='STO'){
-    if (nb_iter==1) {stop("Le nombre d'iterations doit etre plus grand que 1 en mode stochastique")}
+  if (mode_simul == "STO") {
+    if (nb_iter == 1) {
+      stop("Le nombre d'iterations doit etre plus grand que 1 en mode stochastique")
+    }
   }
 
-  if (length(seed_value)>0) {set.seed(seed_value)}
+  if (length(seed_value) > 0) {
+    set.seed(seed_value)
+  }
 
   # le fichier des tous les paramètres des modèles de coupe est dans: coupe_param
   # c'est une table avec les paramètre dans une seule colonne
@@ -75,11 +78,12 @@ param_coupe <- function(trt_coupe, mode_simul='DET', nb_iter=1, seed_value=NULL)
 
 
   # choisir le trt
-  param <- coupe_param %>% filter(num_trt==trt_coupe) %>% dplyr::select(code_trt, num_trt, essence, effect, estimate)
-  covb <- coupe_param_covb[[trt_coupe+1]]
+  param <- coupe_param %>%
+    filter(num_trt == trt_coupe) %>%
+    dplyr::select(code_trt, num_trt, essence, effect, estimate)
+  covb <- coupe_param_covb[[trt_coupe + 1]]
 
-  if (mode_simul=='STO') {
-
+  if (mode_simul == "STO") {
     # le modèle de coupe n'a pas d'effet alétoire ni d'erreur résiduelle
     # la seule partie qui est stochastique est cellle des effets fixes
     # les paramètres du modèle pour une itération seront utilisés pour tous les arbres, de toutes les placettes, pour toutes leurs steps
@@ -91,45 +95,61 @@ param_coupe <- function(trt_coupe, mode_simul='DET', nb_iter=1, seed_value=NULL)
     # générer une série de paramètres d'effets fixes, une par itération
     # il faut donc autant de séries qu'il y a d'itérations, les itérations sont en lignes, les effets fixes en colonne
     # pour que mvrnorm() fonctionne avec empirical=T, il faut au moins autant de n que la longueur du vecteur mu à simuler
-    mu = as.matrix(param2)
-    l_mu = length(mu)
-    if (nb_iter<l_mu) {nb_iter_temp=l_mu} else {nb_iter_temp=nb_iter}
-    param_cp = as.data.frame(matrix(rockchalk::mvrnorm(n = nb_iter_temp,
-                                              mu = mu,
-                                              Sigma = covb,
-                                              empirical = T
-                                              ),
-                                      nrow=nb_iter_temp))[1:nb_iter,]
+    mu <- as.matrix(param2)
+    l_mu <- length(mu)
+    if (nb_iter < l_mu) {
+      nb_iter_temp <- l_mu
+    } else {
+      nb_iter_temp <- nb_iter
+    }
+    param_cp <- as.data.frame(matrix(
+      rockchalk::mvrnorm(
+        n = nb_iter_temp,
+        mu = mu,
+        Sigma = covb,
+        empirical = T
+      ),
+      nrow = nb_iter_temp
+    ))[1:nb_iter, ]
     # transposer les paramètres
-    nom <- data.frame(var=names(param_cp))
+    nom <- data.frame(var = names(param_cp))
     param_a <- bind_cols(param, nom) %>% dplyr::select(-estimate)
-    param_cp_tr <- param_cp %>% mutate(iter=row_number()) %>% group_by(iter) %>% pivot_longer(cols=all_of(names(param_cp)), names_to = 'var', values_to = 'estimate')
-    param_cp_tr2 <- left_join(param_cp_tr,param_a, by='var') %>% dplyr::select(-var)
-
+    param_cp_tr <- param_cp %>%
+      mutate(iter = row_number()) %>%
+      group_by(iter) %>%
+      pivot_longer(cols = all_of(names(param_cp)), names_to = "var", values_to = "estimate")
+    param_cp_tr2 <- left_join(param_cp_tr, param_a, by = "var") %>% dplyr::select(-var)
   }
 
-  if (mode_simul=='DET'){
+  if (mode_simul == "DET") {
     # le fichier aura autant de lignes que d'essences du modele de coupe dans le fichier d'entrée
-    param_cp_tr2 <- param %>% mutate(iter=1)
+    param_cp_tr2 <- param %>% mutate(iter = 1)
   }
 
   # préparer le fichier des paramètres pour appliquer l'équation
 
   # effets qui ne dépendent pas de l'essence et les transposer
   ess_non <- param_cp_tr2 %>% filter(is.na(essence))
-  ess_non_tr <- ess_non %>% select(iter, code_trt, num_trt, effect, estimate) %>% group_by(iter, code_trt, num_trt) %>% pivot_wider(names_from = effect, values_from = estimate)
+  ess_non_tr <- ess_non %>%
+    select(iter, code_trt, num_trt, effect, estimate) %>%
+    group_by(iter, code_trt, num_trt) %>%
+    pivot_wider(names_from = effect, values_from = estimate)
 
   # transposer les effets qui dépendent de l'essence
-  param_ess <- param_cp_tr2 %>% filter(!is.na(essence)) %>%
+  param_ess <- param_cp_tr2 %>%
+    filter(!is.na(essence)) %>%
     group_by(iter, code_trt, num_trt, essence) %>%
     pivot_wider(names_from = effect, values_from = estimate)
 
   # ajouter les effet qui ne dépendent pas de l'essence
-  param_ess2 <- left_join(param_ess, ess_non_tr, by=c('iter', 'code_trt', 'num_trt'))
+  param_ess2 <- left_join(param_ess, ess_non_tr, by = c("iter", "code_trt", "num_trt"))
 
   # ajouter les paramètres qui ne sont pas présents dans ce trt
   list_effets <- c("b1_s", "b2_s", "b4_s", "b3_s", "b5_s", "b6_s", "b7_s", "b0", "b4", "b5", "b6", "b3", "b2")
-  effet_presents <- param_ess2 %>% ungroup() %>% select(-iter, -code_trt, -num_trt, -essence) %>% names()
+  effet_presents <- param_ess2 %>%
+    ungroup() %>%
+    select(-iter, -code_trt, -num_trt, -essence) %>%
+    names()
   effets_manquants <- setdiff(list_effets, effet_presents)
   for (var in effets_manquants) {
     param_ess2[[var]] <- NA
@@ -137,18 +157,17 @@ param_coupe <- function(trt_coupe, mode_simul='DET', nb_iter=1, seed_value=NULL)
 
   # copier les parmètres qui ne dépendent pas de l'essence dans les colonnes des effets des essences
   param_ess3 <- param_ess2 %>%
-    mutate(b2_s = ifelse(!is.na(b2), b2, b2_s),
-           b3_s = ifelse(!is.na(b3), b3, b3_s),
-           b4_s = ifelse(!is.na(b4), b4, b4_s),
-           b5_s = ifelse(!is.na(b5), b5, b5_s),
-           b6_s = ifelse(!is.na(b6), b6, b6_s)) %>%
-    select(-c(b2,b3,b4,b5,b6))
+    mutate(
+      b2_s = ifelse(!is.na(b2), b2, b2_s),
+      b3_s = ifelse(!is.na(b3), b3, b3_s),
+      b4_s = ifelse(!is.na(b4), b4, b4_s),
+      b5_s = ifelse(!is.na(b5), b5, b5_s),
+      b6_s = ifelse(!is.na(b6), b6, b6_s)
+    ) %>%
+    select(-c(b2, b3, b4, b5, b6))
 
   # mettre des 0 au lieu des NA
-  param_ess3 <-  param_ess3 %>% replace(is.na(.), 0)
+  param_ess3 <- param_ess3 %>% replace(is.na(.), 0)
 
   return(param_ess3)
 }
-
-
-

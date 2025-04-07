@@ -4,9 +4,9 @@ Equation;Estimate;Variable;Intercept;PrioRecolte;vp;Sdom
 1;-1.934;PRIORECOL;;R;;
 1;-4.4772;PRIORECOL;;S;;
 1;-0.0255;Dhpcm;;;;
-1;0.0426;Dhpcm_X_PRIORECOL;;C;;
-1;0.177;Dhpcm_X_PRIORECOL;;R;;
-1;0.1965;Dhpcm_X_PRIORECOL;;S;;
+1;0.0426;Dhpcm*PRIORECOL;;C;;
+1;0.177;Dhpcm*PRIORECOL;;R;;
+1;0.1965;Dhpcm*PRIORECOL;;S;;
 2;-0.8453;Intercept;A;;;
 2;0.9309;Intercept;B;;;
 2;1.4276;PRIO_RECOL;;C;;

@@ -43,6 +43,6 @@ Equation;Estimate;Variable;Intercept;PrioRecolte;vp;Sdom
 3;-0.3378;Sdom;;;;5EST
 3;0.0064;sum_st_ha;;;;
 3;-0.00049;ptot;;;;
-3;0.0103;sum_st_ha_X_PRIORECOL;;C;;
-3;0.0123;sum_st_ha_X_PRIORECOL;;R;;
-3;0.0128;sum_st_ha_X_PRIORECOL;;S;;
+3;0.0103;sum_st_ha*PRIORECOL;;C;;
+3;0.0123;sum_st_ha*PRIORECOL;;R;;
+3;0.0128;sum_st_ha*PRIORECOL;;S;;

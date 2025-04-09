@@ -24,7 +24,7 @@ de modèles au niveau de l'arbre ou du peuplement. Cette fonction ajuste les pr�
 brutes en tenant compte des effets aléatoires au niveau de l'arbre et de la placette.
 }
 \details{
-La fonction récupère les paramètres du modèle basés sur le type de modèle et l'essence spécifiés,
+La fonction récupère les paramètres du modèle basés sur le type de modèle et l'essence spécifiés,pa
 puis calcule la correction de biais en utilisant les composants de variance-covariance
 des effets aléatoires des modèles ajustés. La correction tient compte de la
 transformation non linéaire utilisée dans la prédiction.

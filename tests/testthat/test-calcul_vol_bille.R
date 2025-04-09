@@ -55,7 +55,7 @@ test_that("calcul_vol_bille retourne une data.table de valeur NA si tous les par
         # Utiliser une tolérance relative de 1.5%
         expect_equal(as.numeric(resultat[[col]]), as.numeric(resultat_attendu[[col]]), tolerance = 0.015)
       } else {
-        # On convertit les NA en char pour les 2 tables, puisque le type ne dérange pas pour les tests(vecteur de NA dans R donne un vecteur logical...)
+        # On convertit les colonnes en char pour les 2 tables, puisque le type ne dérange pas pour les tests(vecteur de NA dans R donne un vecteur logical...)
         expect_equal(as.character(resultat[[col]]), as.character(resultat_attendu[[col]]))
       }
     }
@@ -102,7 +102,7 @@ test_that("calcul_vol_bille retourne une data.table de valeur NA si l'entrée ne
         # Utiliser une tolérance relative de 1.5%
         expect_equal(as.numeric(resultat[[col]]), as.numeric(resultat_attendu[[col]]), tolerance = 0.015)
       } else {
-        # On convertit les NA en char pour les 2 tables, puisque le type ne dérange pas pour les tests(vecteur de NA dans R donne un vecteur logical...)
+        # On convertit les colonnes en char pour les 2 tables, puisque le type ne dérange pas pour les tests(vecteur de NA dans R donne un vecteur logical...)
         expect_equal(as.character(resultat[[col]]), as.character(resultat_attendu[[col]]))
       }
     }
@@ -151,7 +151,7 @@ test_that("calcul_vol_bille retourne une data.table de NA si l'entrée ne contie
         # Utiliser une tolérance relative de 1.5%
         expect_equal(as.numeric(resultat[[col]]), as.numeric(resultat_attendu[[col]]), tolerance = 0.015)
       } else {
-        # On convertit les NA en char pour les 2 tables, puisque le type ne dérange pas pour les tests(vecteur de NA dans R donne un vecteur logical...)
+        # On convertit les colonnes en char pour les 2 tables, puisque le type ne dérange pas pour les tests(vecteur de NA dans R donne un vecteur logical...)
         expect_equal(as.character(resultat[[col]]), as.character(resultat_attendu[[col]]))
       }
     }
@@ -200,7 +200,7 @@ test_that("calcul_vol_bille retourne une data.table de NA si l'entrée ne contie
         # Utiliser une tolérance relative de 1.5%
         expect_equal(as.numeric(resultat[[col]]), as.numeric(resultat_attendu[[col]]), tolerance = 0.015)
       } else {
-        # On convertit les NA en char pour les 2 tables, puisque le type ne dérange pas pour les tests(vecteur de NA dans R donne un vecteur logical...)
+        # On convertit les colonnes en char pour les 2 tables, puisque le type ne dérange pas pour les tests(vecteur de NA dans R donne un vecteur logical...)
         expect_equal(as.character(resultat[[col]]), as.character(resultat_attendu[[col]]))
       }
     }
@@ -653,7 +653,7 @@ test_that("calcul_vol_bille retourne les bons volumes et le bon nombre de billes
         # Utiliser une tolérance relative de 1.5%
         expect_equal(resultat[[col]], resultat_attendu[[col]], tolerance = 0.015)
       } else {
-        # On convertit les NA en char pour les 2 tables, puisque le type ne dérange pas pour les tests(vecteur de NA dans R donne un vecteur logical...)
+        # On convertit les colonnes en char pour les 2 tables, puisque le type ne dérange pas pour les tests(vecteur de NA dans R donne un vecteur logical...)
         expect_equal(as.character(resultat[[col]]), as.character(resultat_attendu[[col]]))
       }
     }
@@ -694,7 +694,7 @@ test_that("calcul_vol_bille retourne les bons volumes et le bon nombre de billes
         # Utiliser une tolérance relative de 1.5%
         expect_equal(resultat[[col]], resultat_attendu[[col]], tolerance = 0.015)
       } else {
-        # On convertit les NA en char pour les 2 tables, puisque le type ne dérange pas pour les tests(vecteur de NA dans R donne un vecteur logical...)
+        # On convertit les colonnes en char pour les 2 tables, puisque le type ne dérange pas pour les tests(vecteur de NA dans R donne un vecteur logical...)
         expect_equal(as.character(resultat[[col]]), as.character(resultat_attendu[[col]]))
       }
     }

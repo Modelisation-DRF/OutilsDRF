@@ -182,9 +182,17 @@ rm(temp_env)
 data_tree1 <- data.frame(essence=rep(c("AUR", "BOP", "EPB", "CAR", "CHX"), 1),#
                          id_pe = seq(1,5,1),#
                          no_arbre = rep(1,5),#
-                         DHP_Ae = rep(35, 5),  ##
+                         dhpcm = rep(35, 5),  ##
                          nbTi_ha = 2000, #/// N
                          st_ha = 15) #/// BA
+
+data_tree2 <- data.frame(essence= c("BOJ", "BOP", "EPN", "ERR", "PET", "PIB", "PIG", "SAB", "THO", "CHR", "ERS", "HEG"),#
+                         id_pe = c(1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2),
+                         no_arbre = seq(1, 12, 1),#
+                         dhpcm = c(12, 12, 12, 12, 24, 24, 24, 24, 24, 12, 12, 24),  ##
+                         nbTi_ha = c(225, 225, 225, 225, 225, 225, 225, 225, 225, 75, 75, 75),
+                         st_ha = c(6.785840132, 6.785840132, 6.785840132, 6.785840132, 6.785840132, 6.785840132, 6.785840132,
+                                   6.785840132, 6.785840132, 1.696460033, 1.696460033, 1.696460033)) #/// BA
 
 
 #load("R/sysdata.rda")

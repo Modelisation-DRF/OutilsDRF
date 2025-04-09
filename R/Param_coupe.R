@@ -1,21 +1,20 @@
-#' Génère les paramètres pour estimer la probabilité de coupe de chacun des arbres regroupés en placettes
+#' Calcule la probabilité de coupe des arbres selon un traitement donné
 #'
-#' @description Génère les paramètres pour estimer la probabilité d'un arbre d'être coupé, où les arbres sont regroupés en placettes.
-#' Les paramètres peuvent être générés de façon déterministe ou stochastique.
-#' Si le mode stochastique est utilisé, les paramètres seront générés pour tous les arbres/itétations/années.
-#' Si le mode déterministe est utilisé, les paramètres seront générés pour les arbres du fichier fourni en entrée.
+#' @description
+#' Cette fonction calcule la probabilité qu'un arbre soit coupé en fonction d'un traitement sylvicole
+#' et de ses caractéristiques. Elle peut fonctionner en mode déterministe ou stochastique.
 #'
-#' @details
-#' Fortin, M., 2014. Using a segmented logistic model to predict trees to be harvested
-#' in forest growth forecasts. Forest Systems(1), 139-152.
-#'
-#' Power, H., 2015. Comparaison des traitements de récolte effectués dans les régions 06 et 07
-#' par l'entreprise "Lauzon-Planchers de bois exclusifs inc." avec les simulations de
-#' traitements génériques CP35_40cm et CP45_40cm. Gouvernement du Québec, Gouvernement du Québec, ministère
-#' des Forêts, de la Faune et des Parcs, Direction de la recherche forestière. Avis technique SSRF-7. 16 p.
-#'
+#' @param data_tree data.table. Table des données d'arbres ayant les colonnes suivantes
+#'   \itemize{
+#'     \item essence - Essence de l'arbre en majuscule, ex: SAB
+#'     \item id_pe - Identifiant de la placette
+#'     \item no_arbre - Numéro de l'arbre dans la placette
+#'     \item dhpcm - Diamètre à hauteur de poitrine de l'arbre (en cm)
+#'     \item nbTi_ha - Nombre d'arbres à l'ha dans la placette
+#'     \item st_ha - Surface terrière en m2/ha dans la placette
+#'   }
 #' @param trt_coupe Le numéro de traitement de coupe, un entier entre 0 et 18
-#' #' \enumerate{
+#' \itemize{
 #'   \item 0: Coupe d'amélioration
 #'   \item 1: Coupe d'éclaircie
 #'   \item 2: Coupe de jardinage avant 1997
@@ -36,169 +35,51 @@
 #'   \item 17: Coupe progressive irrégulière couvert parmanent CIMOTFF
 #'   \item 18: Coupe progressive irrégulière à régénération lente CIMOTFF
 #'   }
-#' @param mode_simul Le mode de simulation (STO = stochastique, DET = déterministe), par défaut "DET".
-#' @param nb_iter Le nombre d'itérations si le mode stochastique est utilisé, doit être > 1. Ignoré si \code{mode_simul="DET"},
-#' @param seed_value Optionnel. La valeur du seed pour la génération de nombres aléatoires. Généralement utilisé pour les tests de la fonction.
+#' @param mode_simul Mode de simulation: "DET" (déterministe) ou "STO" (stochastique).
+#'   Par défaut "DET".
+#' @param nb_iter Nombre d'itérations pour la simulation. Par défaut 1.
+#' @param seed_value Valeur de la graine pour la génération de nombres aléatoires.
+#'   Si NULL, aucune graine n'est définie. Par défaut NULL.
 #'
-#' @return La fonction retourne, pour le mode stochastique, une table avec une liste de paramètres par itérations.
-#' Pour le mode déterministe, la fonction retourne une table de paramètres.
-#' Les variables sont
+#' @return data.table. Table contenant les données d'arbres avec leur probabilité de coupe
+#'   et, en mode stochastique, une décision de coupe (OUI/NON).
 #'
-#' @import data.table
-# #' @export
+#' @details
+#' La fonction fusionne les données d'arbres avec les paramètres du traitement choisi
+#' et calcule la probabilité de coupe à l'aide d'un modèle logistique.
+#' En mode stochastique, la fonction génère une variable aléatoire pour chaque arbre
+#' et détermine si l'arbre est coupé ou non.
+#'
+#' La fonction dépend de variables globales:
+#' \itemize{
+#'   \item coupe_ass_ess - Liste des famille d'essences valides
+#' }
 #'
 #' @examples
 #' \dontrun{
 #' # Mode déterministe
-#' parametre_coupe <- param_coupe()
+#' resultats_det <- prob_coupe(mes_arbres, trt_coupe = 5)
 #'
-#' # Mode stochastique, pour une seule année et 10 itérations
-#' parametre_coupe <- param_coupe(mode_simul='STO', nb_iter=10)
-#'}
+#' # Mode stochastique avec 10 itérations
+#' resultats_sto <- prob_coupe(mes_arbres, trt_coupe = 5, mode_simul = "STO",
+#'                             nb_iter = 10, seed_value = 123)
+#' }
 #'
-param_coupe <- function(trt_coupe, mode_simul='DET', nb_iter=1, seed_value=NULL){
-
-  # trt_coupe=10; mode_simul='DET'; nb_iter=1; seed_value=NULL;
-  # trt_coupe=10; mode_simul='STO'; nb_iter=10; seed_value=NULL;
-
-  if (mode_simul=='STO'){
-    if (nb_iter==1) {stop("Le nombre d'iterations doit etre plus grand que 1 en mode stochastique")}
-  }
-
-  if (length(seed_value)>0) {set.seed(seed_value)}
-
-  # le fichier des tous les paramètres des modèles de coupe est dans: coupe_param
-  # c'est une table avec les paramètre dans une seule colonne
-
-  # le fichier des matrices de covariances des effets fixes : coupe_param_covb
-  # une liste de un élément pas traitement de coupes
-
-  # Assurer que les données sont en data.table
-  if (!is.data.table(coupe_param)) {
-    coupe_param_dt <- as.data.table(coupe_param)
-  } else {
-    coupe_param_dt <- copy(coupe_param)
-  }
-
-  # Sélection des données pour le traitement spécifié
-  param <- coupe_param_dt[num_trt == trt_coupe, .(code_trt, num_trt, essence, effect, estimate)]
-  covb <- coupe_param_covb[[trt_coupe+1]]
-
-  if (mode_simul == 'STO') {
-    # le modèle de coupe n'a pas d'effet alétoire ni d'erreur résiduelle
-    # la seule partie qui est stochastique est celle des effets fixes
-    # les paramètres du modèle pour une itération seront utilisés pour tous les arbres, de toutes les placettes, pour toutes leurs steps
-    # il y aura donc une série de paramètres par itération
-
-    # Extraction des effets fixes du traitement
-    param2 <- param[, .(estimate)]
-
-    # Génération des paramètres d'effets fixes
-    mu <- as.matrix(param2)
-    l_mu <- length(mu)
-    if (nb_iter < l_mu) {
-      nb_iter_temp <- l_mu
-    } else {
-      nb_iter_temp <- nb_iter
-    }
-
-    # Génération par simulation MCMC
-    param_cp <- as.data.frame(matrix(
-      rockchalk::mvrnorm(
-        n = nb_iter_temp,
-        mu = mu,
-        Sigma = covb,
-        empirical = TRUE
-      ),
-      nrow = nb_iter_temp
-    ))[1:nb_iter, ]
-
-    # Préparation des noms de variables et jointure avec les paramètres
-    nom <- data.table(var = names(param_cp))
-    param_a <- cbind(param, nom)[, -"estimate"]
-
-    # Transformation des données du format large au format long
-    param_cp_dt <- as.data.table(param_cp)
-    param_cp_dt[, iter := .I]  # Ajoute un numéro d'itération
-
-    param_cp_long <- melt(
-      param_cp_dt,
-      id.vars = "iter",
-      measure.vars = names(param_cp),
-      variable.name = "var",
-      value.name = "estimate"
-    )
-
-    # Jointure avec les informations sur les paramètres
-    param_cp_tr2 <- merge(param_cp_long, param_a, by = "var")[, -"var"]
-  }
-
-  if (mode_simul == 'DET') {
-    # Mode déterministe - une seule itération
-    param_cp_tr2 <- copy(param)[, iter := 1]
-  }
-
-  # Préparation des paramètres pour l'équation
-
-  # Séparation des paramètres qui dépendent ou non de l'essence
-  ess_non <- param_cp_tr2[is.na(essence)]
-
-  # Transformation des paramètres généraux (non-essence) au format large
-  ess_non_tr <- dcast(
-    ess_non[, .(iter, code_trt, num_trt, effect, estimate)],
-    iter + code_trt + num_trt ~ effect,
-    value.var = "estimate"
-  )
-
-  # Transformation des paramètres spécifiques aux essences au format large
-  param_ess <- dcast(
-    param_cp_tr2[!is.na(essence)],
-    iter + code_trt + num_trt + essence ~ effect,
-    value.var = "estimate"
-  )
-
-  # Jointure des deux types de paramètres
-  param_ess2 <- merge(
-    param_ess,
-    ess_non_tr,
-    by = c("iter", "code_trt", "num_trt"),
-    all.x = TRUE
-  )
-
-  # Ajout des paramètres manquants
-  list_effets <- c("b1_s", "b2_s", "b4_s", "b3_s", "b5_s", "b6_s", "b7_s", "b0", "b4", "b5", "b6", "b3", "b2")
-  effet_presents <- setdiff(names(param_ess2), c("iter", "code_trt", "num_trt", "essence"))
-  effets_manquants <- setdiff(list_effets, effet_presents)
-
-  for (var in effets_manquants) {
-    param_ess2[, (var) := NA_real_]  # Utiliser NA_real_ pour assurer le type double
-  }
-
-  # Copie des paramètres généraux dans les colonnes spécifiques à l'essence
-  param_ess3 <- copy(param_ess2)
-
-  # Mise à jour des paramètres en utilisant ifelse standard
-  param_ess3[, b2_s := ifelse(!is.na(b2), b2, b2_s)]
-  param_ess3[, b3_s := ifelse(!is.na(b3), b3, b3_s)]
-  param_ess3[, b4_s := ifelse(!is.na(b4), b4, b4_s)]
-  param_ess3[, b5_s := ifelse(!is.na(b5), b5, b5_s)]
-  param_ess3[, b6_s := ifelse(!is.na(b6), b6, b6_s)]
-
-  # Suppression des colonnes sources
-  param_ess3[, c("b2", "b3", "b4", "b5", "b6") := NULL]
-
-  # Remplacement des NA par 0
-  for (col in names(param_ess3)) {
-    if (col %in% c("iter", "code_trt", "num_trt", "essence")) next
-    set(param_ess3, which(is.na(param_ess3[[col]])), col, 0)
-  }
-
-  param_ess3_df <- as.data.frame(param_ess3)
-  return(param_ess3)
-
-}
-
+#' @import data.table
+#' @export
 prob_coupe <- function(data_tree, trt_coupe, mode_simul="DET", nb_iter=1, seed_value=NULL) {
+
+  #Conditions à respecter pour la fonction:
+  if (trt_coupe < 0 || trt_coupe > 18) stop("Erreur: Le traitement de coupe doit être entre 0 et 18.")
+
+  if (mode_simul != "DET" && mode_simul != "STO") stop("Erreur: Le mode de simulation doit être DET(déterministe) ou
+                                                       STO(stochastique).")
+
+  if (mode_simul == "STO" && nb_iter < 2) stop("Erreur: Lorsque le mode stochastique est choisi, le nombre d'itération doit
+                                               être de 2 minimum.")
+
+  if (mode_simul == "DET" && nb_iter != 1) stop("Erreur: Lorsque le mode déterministe est choisi, le nombre d'itération doit
+                                               être de 1.")
 
   if(!is.null(seed_value)) {
     set.seed(seed_value)
@@ -208,32 +89,40 @@ prob_coupe <- function(data_tree, trt_coupe, mode_simul="DET", nb_iter=1, seed_v
   data_param <- param_coupe(trt_coupe, mode_simul, nb_iter)
   setDT(data_param)
   setnames(data_param, "essence", "essence_coupe")
-  # Add treatment number to tree data
+
+  # Ajouter le numéro de traitement aux données d'arbres
   temp_table <- data_tree[, num_trt := trt_coupe]
-  # Store the original trees before any merges
+
+  # Stocker les arbres originaux avant les fusions
   data_arbre_complet <- copy(temp_table)
-  # First merge with the essence associations
-  data_mid_table <- merge(temp_table, coupe_ass_ess, by = c("num_trt", "essence"), all.x = FALSE)
-  print(data_mid_table)  # Third print
-  # Second merge with parameters by iteration
+
+  # Première fusion avec les associations d'essences
+  # Ajout de allow.cartesian = TRUE pour permettre les produits cartésiens
+  data_mid_table <- merge(temp_table, coupe_ass_ess, by = c("num_trt", "essence"),
+                          all.x = FALSE, allow.cartesian = TRUE)
+
+  # Deuxième fusion avec les paramètres par itération
+  # Ajout de allow.cartesian = TRUE pour permettre les produits cartésiens
   data_full_table <- merge(data_mid_table, data_param,
-                           by = c("num_trt", "essence_coupe", "code_trt"))
-  print(data_full_table)  # Fourth print
-  # Identify lost trees by comparing original to the final merged data
+                           by = c("num_trt", "essence_coupe", "code_trt"),
+                           allow.cartesian = TRUE)
+
+  # Identifier les arbres perdus en comparant l'original aux données fusionnées finales
   arbre_non_valide <- data_arbre_complet[!paste(id_pe, no_arbre) %in%
-                                    paste(data_full_table$id_pe, data_full_table$no_arbre)]
-  # If we have lost trees and iterations
+                                           paste(data_full_table$id_pe, data_full_table$no_arbre)]
+
+  # Si nous avons perdu des arbres et qu'il y a des itérations
   if(nrow(arbre_non_valide) > 0 && length(unique(data_param$iter)) > 0) {
-    # Get unique iterations
+    # Obtenir les itérations uniques
     all_iters <- unique(data_param$iter)
-    # Create a list to hold copies of lost trees for each iteration
+    # Créer une liste pour stocker les copies des arbres perdus pour chaque itération
     arbre_non_valide_list <- vector("list", length(all_iters))
-    # For each iteration, create a copy of lost trees with that iteration
+    # Pour chaque itération, créer une copie des arbres perdus
     for(i in seq_along(all_iters)) {
       iter_val <- all_iters[i]
       arbre_non_valide_copy <- copy(arbre_non_valide)
       arbre_non_valide_copy[, iter := iter_val]
-      # Add default values for parameter columns
+      # Ajouter des valeurs par défaut pour les colonnes de paramètres
       param_cols <- setdiff(names(data_full_table), names(arbre_non_valide_copy))
       for(col in param_cols) {
         if(col %in% c("b0", "b1_s", "b2_s", "b3_s", "b4_s", "b5_s", "b6_s", "b7_s")) {
@@ -244,47 +133,53 @@ prob_coupe <- function(data_tree, trt_coupe, mode_simul="DET", nb_iter=1, seed_v
       }
       arbre_non_valide_list[[i]] <- arbre_non_valide_copy
     }
-    # Combine all the lost trees (now with iterations) into one data.table
-    all_arbre_non_valide <- rbindlist(arbre_non_valide_list, fill = TRUE)
+    # Combiner tous les arbres perdus (maintenant avec des itérations) en un seul data.table
+    arbre_non_valide <- rbindlist(arbre_non_valide_list, fill = TRUE)
   }
 
-  # Calculate XB using the equation
-  data_full_table[, d := DHP_Ae - 23]       # d = DHP - 23
-  data_full_table[, m := as.numeric(DHP_Ae > 23)]  # m = 1 if DHP > 23, 0 otherwise
-  data_full_table[, N := nbTi_ha]           # N = number of trees per ha
-  data_full_table[, BA := st_ha]            # BA = basal area (m²/ha)
+  # Calculer XB en utilisant l'équation
+  data_full_table[, d := dhpcm - 23]       # d = dhp - 23
+  data_full_table[, m := as.numeric(dhpcm > 23)]  # m = 1 si dhp > 23, 0 sinon
+  data_full_table[, N := nbTi_ha]           # N = nombre d'arbres par ha
+  data_full_table[, BA := st_ha]            # BA = surface terrière (m²/ha)
 
-  # Calculate XB using the formula
+  # Calculer XB en utilisant la formule
   data_full_table[, XB := b0 + b1_s + (b2_s + b3_s * m) * d +
                     (b4_s + b5_s * m) * d^2 + b6_s * log(N + 1) + b7_s * BA]
 
-  # Calculate probability of cutting
+  # Calculer la probabilité de coupe
   data_full_table[, prob_coupe := exp(XB) / (1 + exp(XB))]
 
+  #Si mode stochastique, on transforme le paramètre pour la coupe à "OUI" ou "NON"
   if(mode_simul == "STO"){
-    data_full_table[, nb_alea := runif(.N)]  # Generate random number for each row
-    data_full_table[, COUPE := ifelse(prob_coupe > nb_alea, "OUI", "NON")]  # Determine cut state
+    data_full_table[, nb_alea := runif(.N)]  # Générer un nombre aléatoire pour chaque ligne
+    data_full_table[, COUPE := ifelse(prob_coupe > nb_alea, "OUI", "NON")]  # Déterminer l'état de coupe
   }
-  # Combine with processed trees
-  all_trees <- rbindlist(list(data_full_table, all_arbre_non_valide), fill = TRUE)
+  # Combiner arbres valides et non-valides
+  all_trees <- rbindlist(list(data_full_table, arbre_non_valide), fill = TRUE)
 
-  return(all_trees)
+  # Réarranger les données en ordre id_pe et no_arbresélectionn
+  setorder(all_trees, id_pe, no_arbre)
+
+  if(mode_simul == "DET"){
+    # Sélectionner uniquement les colonnes désirées pour le mode déterministe
+    cols_to_keep <- c("id_pe", "no_arbre", "essence", "dhpcm", "st_ha", "nbTi_ha", "num_trt", "prob_coupe")
+  }
+
+  if(mode_simul == "STO"){
+    # Sélectionner uniquement les colonnes désirées pour le mode déterministe
+    cols_to_keep <- c("id_pe", "no_arbre", "essence", "dhpcm", "st_ha", "nbTi_ha", "num_trt", "COUPE")
+  }
+
+  # Conserver uniquement les colonnes spécifiées
+  result <- all_trees[, ..cols_to_keep]
+
+  return(result)
 }
-
 
 ##############################################################
 
-#prob_coupe(data_tree1, 10, "STO", 3, seed_value=123)
+#prob_coupe(data_tree1, 5, "DET")
 
-#prob_coupe(data_tree1, 10, "DET", 1, seed_value=100)
-#result_det <- param_coupe(trt_coupe = 3, mode_simul = 'DET')
-
-# Print the first few rows to see the result
-#print(tail(result_det))
-
-# Test with stochastic mode if desired
-#result_sto <- param_coupe(trt_coupe = 10, mode_simul = 'STO', nb_iter = 3)
-
-# Print the first few rows of stochastic results
-#print(tail(result_sto))
+#prob_coupe(data_tree2, 12, "STO", 5, 123)
 

@@ -14,7 +14,7 @@
 #'   \item{pred_mm2_corr}{La prédiction corrigée du biais}
 #'
 #' @details
-#' La fonction récupère les paramètres du modèle basés sur le type de modèle et l'essence spécifiés,
+#' La fonction récupère les paramètres du modèle basés sur le type de modèle et l'essence spécifiés,pa
 #' puis calcule la correction de biais en utilisant les composants de variance-covariance
 #' des effets aléatoires des modèles ajustés. La correction tient compte de la
 #' transformation non linéaire utilisée dans la prédiction.

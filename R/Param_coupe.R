@@ -158,7 +158,7 @@ prob_coupe <- function(data_tree, trt_coupe, mode_simul="DET", nb_iter=1, seed_v
   # Combiner arbres valides et non-valides
   all_trees <- rbindlist(list(data_full_table, arbre_non_valide), fill = TRUE)
 
-  # Réarranger les données en ordre id_pe et no_arbresélectionn
+  # Réarranger les données en ordre id_pe et no_arbre
   setorder(all_trees, id_pe, no_arbre)
 
   if(mode_simul == "DET"){

@@ -699,4 +699,31 @@ test_that("prob_coupe retourne une data.table avec les bonnes valeurs pour le tr
   expect_equal(nrow(resultat), nrow(resultat_attendu))
 })
 
+test_that("prob_coupe retourne une data.table avec les bonnes valeurs avec des essences sans eq et/ou sans association", {
+  data_tree <- data.frame(essence= c("BOJ", "BOP", "PRP", "PRP", "PET", "ABC"),#
+                          id_pe = rep(1,6),
+                          no_arbre = seq(1, 6, 1),
+                          dhpcm = c(22, 32, 12, 12, 24, 12),
+                          nbTi_ha = rep(225, 6),
+                          st_ha = rep(6.785840132,6),
+                          stringsAsFactors = FALSE)
+
+  resultat <- prob_coupe(data_tree, 0)
+  nb_na <- nrow(resultat %>% filter(is.na(prob_coupe)))
+
+  expect_equal(nb_na, 3)
+})
+
+test_that("prob_coupe retourne une data.table avec les bonnes valeurs en mode STO", {
+  data_tree <- readRDS(test_path("fixtures", "data_tree_coupe.rds"))
+  attendu <- readRDS(test_path("fixtures", "resultat_coupe_STO.rds"))
+
+  resultat <- prob_coupe(data_tree=data_tree, trt_coupe=0, mode_simul="STO", seed_value=3)
+
+  nom_obtenu <- names(resultat)
+  nom_attendu <- c("prob_coupe", "COUPE")
+  expect_true(nom_attendu[1] %in% nom_obtenu & nom_attendu[2] %in% nom_obtenu)
+
+  expect_equal(resultat, attendu)
+})
 

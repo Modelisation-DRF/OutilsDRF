@@ -634,13 +634,13 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
 
 ##################################################
 #tic()
-#calcul_vol_bille(data_diam13, dhs = 0.15, nom_grade1 = "sciage long",
+#calcul_vol_bille(data_diam7, dhs = 0.15, nom_grade1 = "sciage long",
 #                 long_grade1 = 10,
-#                 diam_grade1 = NA,
+#                 diam_grade1 = 12,
 #                 nom_grade2 = "sciage court",
 #                 long_grade2 = 6,
-#                 diam_grade2 = NA)
+#                 diam_grade2 = 8,
 #                 nom_grade3 = "pate",
 #                 long_grade3 = 4,
-#                 diam_grade3 = NA)
+#                 diam_grade3 = 4)
 #toc()

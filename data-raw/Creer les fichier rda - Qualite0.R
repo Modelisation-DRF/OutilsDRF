@@ -27,6 +27,7 @@ for (i in 1:length(liste_ess)) {
 
   # lecture fichier des bi
   param <- read_delim(paste0(chemin, liste_ess[i], "/", fic), delim = ";")
+  param <- param %>% mutate(Variable = stringr::str_replace(Variable, pattern = fixed("*"), replacement = "_x_"))
   param <- param %>% mutate(
     Variable = tolower(Variable),
     Variable = ifelse(Variable == "prio_recol", "priorecol", Variable), # mettre le même nom de variable partout
@@ -42,6 +43,7 @@ for (i in 1:length(liste_ess)) {
   # lecture du fichier de la matrice covb
   liste_cov[[i]] <- read_delim(paste0(chemin, liste_ess[i], "/", covar), delim = ";")
 }
+
 liste_param <- bind_rows(liste_param)
 liste_param <- liste_param %>%
   mutate(
@@ -54,8 +56,8 @@ liste_param <- liste_param %>%
       )
     ),
     # concaténer la variable et son niveau
-    var_i = ifelse(Variable %in% c("intercept", "dhpcm*intercept"), paste(Variable, Intercept, sep = "_"),
-      ifelse(Variable %in% c("priorecol", "dhpcm*priorecol", "sum_st_ha*priorecol"), paste(Variable, PrioRecolte, sep = "_"),
+    var_i = ifelse(Variable %in% c("intercept", "dhpcm_x_intercept"), paste(Variable, Intercept, sep = "_"),
+      ifelse(Variable %in% c("priorecol", "dhpcm_x_priorecol", "sum_st_ha_x_priorecol"), paste(Variable, PrioRecolte, sep = "_"),
         ifelse(Variable == "sdom", paste(Variable, Sdom, sep = "_"),
           Variable
         )
@@ -94,23 +96,23 @@ for (i in 1:length(liste_ess)) {
 # [1] "essence"           "intercept_A"       "priorecol_C"       "priorecol_R"       "priorecol_S"       "dhpcm"
 # [7] "sdom_1"            "sdom_2EST"         "sdom_2OUEST"       "sdom_3EST"         "sdom_3OUEST"       "sdom_4EST"
 # [13] "sdom_4OUEST"       "sdom_5EST"         "sum_st_ha"         "sdom_5OUEST"       "sdom_6EST"         "tmoy"
-# [19] "dhpcm*priorecol_C" "dhpcm*priorecol_R" "dhpcm*priorecol_S" "coupe"             "dhpcm*sum_st_ha"
+# [19] "dhpcm_x_priorecol_C" "dhpcm_x_priorecol_R" "dhpcm_x_priorecol_S" "coupe"             "dhpcm_x_sum_st_ha"
 # # eq1 une simple régression logistique
 #
 #
 # [1] "essence"               "intercept_A"           "intercept_B"           "priorecol_C"           "priorecol_R"
 # [6] "priorecol_S"           "dhpcm"                 "sdom_2EST"             "sdom_2OUEST"           "sdom_3EST"
 # [11] "sdom_3OUEST"           "sdom_4EST"             "sdom_4OUEST"           "sdom_5EST"             "sum_st_ha"
-# [16] "tmoy"                  "sum_st_ha*priorecol_C" "sum_st_ha*priorecol_R" "sum_st_ha*priorecol_S" "sdom_1"
+# [16] "tmoy"                  "sum_st_ha_x_priorecol_C" "sum_st_ha_x_priorecol_R" "sum_st_ha_x_priorecol_S" "sdom_1"
 # [21] "coupe"
 # # eq 2: multinomiale à 3 niveaux, donc 2 équations, seuls les intercepts changent, les paramètres des effets fixes sont les mêmes
 #
 # [1] "essence"               "intercept_A"           "intercept_B"           "intercept_C"           "priorecol_C"
 # [6] "priorecol_R"           "priorecol_S"           "sdom_2EST"             "sdom_2OUEST"           "sdom_3EST"
 # [11] "sdom_3OUEST"           "sdom_4EST"             "sdom_4OUEST"           "sdom_5EST"             "sum_st_ha"
-# [16] "ptot"                  "sum_st_ha*priorecol_C" "sum_st_ha*priorecol_R" "sum_st_ha*priorecol_S" "dhpcm"
-# [21] "dhpcm*priorecol_C"     "dhpcm*priorecol_R"     "dhpcm*priorecol_S"     "dhpcm*intercept_A"     "dhpcm*intercept_B"
-# [26] "dhpcm*intercept_C"     "tmoy"                  "sdom_1"
+# [16] "ptot"                  "sum_st_ha_x_priorecol_C" "sum_st_ha_x_priorecol_R" "sum_st_ha_x_priorecol_S" "dhpcm"
+# [21] "dhpcm_x_priorecol_C"     "dhpcm_x_priorecol_R"     "dhpcm_x_priorecol_S"     "dhpcm_x_intercept_A"     "dhpcm_x_intercept_B"
+# [26] "dhpcm_x_intercept_C"     "tmoy"                  "sdom_1"
 # # eq 3: multinomiale à 4 niveaux, donc 3 équations, les intercepts changent, les paramètres des effets fixes sont les mêmes, sauf pour dhpcm
 
 ####################################################################
@@ -121,15 +123,7 @@ for (i in 1:length(liste_ess)) {
 # quelques sous-domaines, donc plusieurs placettes
 # tous les M-S-C-R
 
-plot <- data.frame(id_pe = c(1, 2, 3), sdom = c("2EST", "5OUEST", "4EST"), tmoy = c(2.1, 0.1, 1.2), ptot = c(828, 700, 1022), sum_st_ha = c(29, 22, 25), coupe = c(0, 0, 1))
-
-arbre1 <- data.frame(id_pe = rep(1, 3), no_arbre = seq(1, 3, 1), dhpcm = c(24.0, 33.5, 40.2), essence = c("ERS", "BOJ", "CHX"), priorecol = c("M", "S", "C"))
-arbre2 <- data.frame(id_pe = rep(2, 4), no_arbre = seq(1, 4, 1), dhpcm = c(16.1, 26.0, 35.5, 41.3), essence = c("BOP", "PEU", "ERR", "EPN"), priorecol = c("R", "S", "C", NA))
-arbre3 <- data.frame(id_pe = rep(3, 4), no_arbre = seq(1, 4, 1), dhpcm = c(26.1, 27.0, 38.5, 39.2), essence = c("FEN", "HEG", "ERR", "ERS"), priorecol = c("R", "S", "C", "M"))
-
-arbres <- bind_rows(arbre1, arbre2, arbre3)
-
-ex_qualite <- left_join(plot, arbres)
+ex_qualite <- read_delim(paste0(chemin, "ex_qualite.csv"), delim = ";")
 
 usethis::use_data(ex_qualite,
   internal = FALSE, overwrite = TRUE

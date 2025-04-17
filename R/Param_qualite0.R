@@ -94,7 +94,7 @@ param_qualite0 <- function(mode_simul = "DET", nb_iter = 1, seed_value = NULL) {
         bi_qual_tr <- bi_qual %>%
           mutate(iter = row_number()) %>%
           group_by(iter) %>%
-          pivot_longer(cols = all_of(names(bi_qual)), names_to = "var", values_to = "bi")
+          pivot_longer(cols = all_of(names(bi_qual)), names_to = "var", values_to = "b_i")
         bi_qual_tr2 <- left_join(bi_qual_tr, bi_a, by = "var") %>% dplyr::select(-var)
 
         # accumuler les bi des 3 équations
@@ -112,7 +112,6 @@ param_qualite0 <- function(mode_simul = "DET", nb_iter = 1, seed_value = NULL) {
     # le fichier aura autant de lignes que d'essences
     bi_qual_8ess <- qualite0_param %>% mutate(iter = 1)
   }
-
 
   # transposer le data des bi par separément pour chacune des equations pour que toutes les variables soient présentes pour toutes les essences
   bi_qual_8ess <- bi_qual_8ess %>% mutate(var_i = paste0("b_", var_i)) # ajouter b_ en avant du nom du bi
@@ -132,14 +131,7 @@ param_qualite0 <- function(mode_simul = "DET", nb_iter = 1, seed_value = NULL) {
     pivot_wider(values_from = "b_i", names_from = "var_i") %>%
     ungroup()
 
-  # mettre bi=0 si la variable était absente pour une essence
-  bi_eq1 <- bi_eq1 %>% replace(is.na(.), 0)
-  bi_eq2 <- bi_eq2 %>% replace(is.na(.), 0)
-  bi_eq3 <- bi_eq3 %>% replace(is.na(.), 0)
-
-
   # ici, ajouter du code au besoin pour modifier les dataframes bi_eq1, bi_eq2, bi_eq3 pour qu'ils soient structurés de façon à faciliter son utiliser dans la fonction qui appliquera les équations
-
 
   return(list(bi_eq1, bi_eq2, bi_eq3))
 }

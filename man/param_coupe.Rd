@@ -32,7 +32,8 @@ param_coupe(trt_coupe, mode_simul = "DET", nb_iter = 1, seed_value = NULL)
 
 \item{mode_simul}{Le mode de simulation (STO = stochastique, DET = déterministe), par défaut "DET".}
 
-\item{nb_iter}{Le nombre d'itérations si le mode stochastique est utilisé, doit être > 1. Ignoré si \code{mode_simul="DET"},}
+\item{nb_iter}{Le nombre d'itérations si le mode stochastique est utilisé reste à 1, puisque nous faisons la simulation
+pour un pas à la fois. Ignoré si \code{mode_simul="DET"},}
 
 \item{seed_value}{Optionnel. La valeur du seed pour la génération de nombres aléatoires. Généralement utilisé pour les tests de la fonction.}
 }
@@ -62,7 +63,7 @@ des Forêts, de la Faune et des Parcs, Direction de la recherche forestière. Av
 parametre_coupe <- param_coupe()
 
 # Mode stochastique, pour une seule année et 10 itérations
-parametre_coupe <- param_coupe(mode_simul='STO', nb_iter=10)
+parametre_coupe <- param_coupe(mode_simul = "STO", nb_iter = 10)
 }
 
 }

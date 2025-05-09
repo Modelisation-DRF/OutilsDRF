@@ -25,5 +25,8 @@ Depends:
     tidyverse,
     data.table,
     dplyr,
+    xlsx,
+    testthat,
+    devtools,
     dtplyr,
-    R (>= 2.10)
+    R (>= 3.5)

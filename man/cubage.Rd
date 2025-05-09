@@ -59,19 +59,19 @@ For. Chron. 83: 754-765.
 \dontrun{
 # Exemple 1: DETERMINISTE: une seule année par arbre ----------------------------------------
 # Estimer la hauteur et ensuite le volume
-DataHt <- relation_h_d(fic_arbres=fic_arbres_test)
-DataHtVol <- cubage(fic_arbres=DataHt)
+DataHt <- relation_h_d(fic_arbres = fic_arbres_test)
+DataHtVol <- cubage(fic_arbres = DataHt)
 
 # Exemple 2: DETERMINISTE: plusieurs années par arbre -------------------------------------
 # Estimer la hauteur et ensuite le volume
-DataHt <- relation_h_d(fic_arbres=fic_artemis_det, grouping_vars = 'annee')
-DataHtVol <- cubage(fic_arbres=DataHt)
+DataHt <- relation_h_d(fic_arbres = fic_artemis_det, grouping_vars = "annee")
+DataHtVol <- cubage(fic_arbres = DataHt)
 
 # Exemple 3: STOCHASTIQUE: plusieurs itérations et plusieurs step -------------------------------
 nb_iter <- length(unique(fic_artemis_sto$iter)) # 10
 nb_step <- length(unique(fic_artemis_sto$annee)) # 5
-ht <- relation_h_d(fic_arbres=fic_artemis_sto, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_step)
-vol <- cubage(fic_arbres=ht, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_step)
+ht <- relation_h_d(fic_arbres = fic_artemis_sto, mode_simul = "STO", nb_iter = nb_iter, nb_step = nb_step)
+vol <- cubage(fic_arbres = ht, mode_simul = "STO", nb_iter = nb_iter, nb_step = nb_step)
 }
 
 }

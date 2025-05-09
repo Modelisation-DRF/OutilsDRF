@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(TarifQC)
+library(OutilsDRF)
 
-test_check("TarifQC")
+test_check("OutilsDRF")

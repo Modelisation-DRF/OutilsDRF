@@ -63,7 +63,7 @@ des Forêts, de la Faune et des Parcs, Direction de la recherche forestière. Av
 parametre_coupe <- param_coupe()
 
 # Mode stochastique, pour une seule année et 10 itérations
-parametre_coupe <- param_coupe(mode_simul='STO', nb_iter=10)
+parametre_coupe <- param_coupe(mode_simul = "STO", nb_iter = 10)
 }
 
 }

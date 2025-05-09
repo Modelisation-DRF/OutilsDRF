@@ -55,6 +55,7 @@ remotes::install_github("Modelisation-DRF/OutilsDRF")
 
 | Date |  Version  | Issues |      Détails     |
 |:-----|:---------:|:-------|:-----------------|
+| 2025-01-29 | 2.1.0 |  | ajout parametre use_ass_ess dans cubage et relation_h_d et calcul var dendro maintenant optionnel dans relation_h_d |
 | 2025-01-08 | 2.0.0 |  | changement de nom package pour OutilsDRF et ajout équation de défilement et probablité de coupe |
 | 2024-12-20 | 1.2.0 |  | utiliser package data.table au lieu de dplyr pour augmenter la vitesse des gros fichiers |
 | 2024-05-23 | 1.1.6 |  | corriger fichier association du milieu pour le PEG, il manquait le milieu 9 |

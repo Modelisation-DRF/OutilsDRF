@@ -54,11 +54,10 @@
 #' parametre_coupe <- param_coupe()
 #'
 #' # Mode stochastique, pour une seule année et 10 itérations
-#' parametre_coupe <- param_coupe(mode_simul='STO', nb_iter=10)
-#'}
+#' parametre_coupe <- param_coupe(mode_simul = "STO", nb_iter = 10)
+#' }
 #'
-param_coupe <- function(trt_coupe, mode_simul='DET', nb_iter=1, seed_value=NULL){
-
+param_coupe <- function(trt_coupe, mode_simul = "DET", nb_iter = 1, seed_value = NULL) {
   # trt_coupe=10; mode_simul='DET'; nb_iter=1; seed_value=NULL;
   # trt_coupe=10; mode_simul='STO'; nb_iter=10; seed_value=NULL;
 
@@ -66,7 +65,9 @@ param_coupe <- function(trt_coupe, mode_simul='DET', nb_iter=1, seed_value=NULL)
     if (nb_iter < 1) {stop("Le nombre d'iterations doit etre plus grand ou égal à 1 en mode stochastique")}
   }
 
-  if (length(seed_value)>0) {set.seed(seed_value)}
+  if (length(seed_value) > 0) {
+    set.seed(seed_value)
+  }
 
   # le fichier des tous les paramètres des modèles de coupe est dans: coupe_param
   # c'est une table avec les paramètre dans une seule colonne
@@ -94,7 +95,9 @@ param_coupe <- function(trt_coupe, mode_simul='DET', nb_iter=1, seed_value=NULL)
     # Extraction des effets fixes du traitement
     param2 <- param[, .(estimate)]
 
-    # Génération des paramètres d'effets fixes
+    # # Génération des paramètres d'effets fixes, une par itération
+    # il faut donc autant de séries qu'il y a d'itérations, les itérations sont en lignes, les effets fixes en colonne
+    # pour que mvrnorm() fonctionne avec empirical=T, il faut au moins autant de n que la longueur du vecteur mu à simuler
     mu <- as.matrix(param2)
     l_mu <- length(mu)
     if (nb_iter < l_mu) {
@@ -140,7 +143,6 @@ param_coupe <- function(trt_coupe, mode_simul='DET', nb_iter=1, seed_value=NULL)
   }
 
   # Préparation des paramètres pour l'équation
-
   # Séparation des paramètres qui dépendent ou non de l'essence
   ess_non <- param_cp_tr2[is.na(essence)]
 
@@ -196,5 +198,4 @@ param_coupe <- function(trt_coupe, mode_simul='DET', nb_iter=1, seed_value=NULL)
 
   param_ess3_df <- as.data.frame(param_ess3)
   return(param_ess3_df)
-
 }

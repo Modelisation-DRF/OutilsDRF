@@ -12,7 +12,8 @@ relation_h_d(
   dt = 10,
   seed_value = NULL,
   grouping_vars = NULL,
-  reg_eco = FALSE
+  reg_eco = FALSE,
+  use_ass_ess = TRUE
 )
 }
 \arguments{
@@ -30,6 +31,8 @@ relation_h_d(
    \item t_ma: température annuelle moyenne sur la période 1980-2010 (Celcius)
    \item altitude: altitude (m)
    \item reg_eco: Optionnel. Code de la région écologique. Vous pouvez fournir la région au lieu du sous-domaine, alors mettre le paramètre \code{reg_eco=TRUE}
+   \item sum_st_ha: Optionel. Surface terrière marchande de la placette (m2/ha). Si non fournie, elle sera calculée à partir des arbres du fichier \code{fic_arbres}
+   \item dhp_moy: Optionel. Diamètre quadratique moyen des arbres marchands de la placette (cm). Si non fourni, il sera calculé à partir des arbres du fichier \code{fic_arbres}
    \item iter: numéro de l'itération, seulement si mode stochastique, doit être numéroté de 1 à nb_iter
    \item step: numéro de la step, seulement si mode stochastique, doit être numéroté de 1 à nb_step. Obligatoire même si le fichier n'est qu'une liste d'arbres à un moment donné.
 }}
@@ -45,10 +48,16 @@ relation_h_d(
 \item{seed_value}{Optionnel. La valeur du seed pour la génération de nombres aléatoires. Généralement utilisé pour les tests de la fonction.}
 
 \item{grouping_vars}{Optionel. Si \code{mode_simul}='DET', les colonnes à ajouter comme variables de groupement, en plus de id_pe, pour calculer la surface terrière d'une placette.
-Par exemple, si le fichier des arbres contient plus d'une année par arbre, ajouter le colonne identifiant l'année comme variable de groupement: grouping_vars='var1'.
+Par exemple, si le fichier des arbres contient plus d'une année par arbre, ajouter la colonne identifiant l'année comme variable de groupement: grouping_vars='var1'.
 S'il y a plusieurs variables de groupement: grouping_vars=c('var1','var2').}
 
 \item{reg_eco}{Optionel. Mettre à \code{TRUE} si reg_eco est fourni dans \code{fic_arbres} au lieu de sdom_bio. reg_eco sera converti en sdom_bio. La colonne sdom_bio ne doit pas être dans \code{fic_arbres}.}
+
+\item{use_ass_ess}{binaire
+\itemize{
+   \item TRUE: Par défaut. les essences sans relation h-d seront associées à une des 27 essences avec le fichier d'association interne.
+   \item FALSE: les essences sans relation h-d n'auront pas de hauteur estimée
+   }}
 }
 \value{
 La table \code{fic_arbres} avec une colonne contenant la hauteur estimée en mètres (hauteur_pred).
@@ -70,16 +79,18 @@ des Forêts, de la Faune et des Parcs, Direction de la recherche forestière. No
 \examples{
 \dontrun{
 # Exemple 1: DETERMINISTE: un seule année par arbre ---------------------------------------
-DataHt <- relation_h_d(fic_arbres=fic_arbres_test)
+DataHt <- relation_h_d(fic_arbres = fic_arbres_test)
 
 # Exemple 2: DETERMINISTE: avec grouping_vars, plusieurs années par arbre ----------------
-DataHt <- relation_h_d(fic_arbres=fic_artemis_det, grouping_vars='annee')
+DataHt <- relation_h_d(fic_arbres = fic_artemis_det, grouping_vars = "annee")
 
 # Exemple 3: STOCHASTIQUE: plusieurs années par arbre ------------------------------------
 nb_iter <- length(unique(fic_artemis_sto$iter))
 nb_step <- length(unique(fic_artemis_sto$step))
-DataHt <- relation_h_d(fic_arbres=fic_artemis_sto, mode_simul='STO',
-                       nb_iter=nb_iter, nb_step=nb_step)
+DataHt <- relation_h_d(
+  fic_arbres = fic_artemis_sto, mode_simul = "STO",
+  nb_iter = nb_iter, nb_step = nb_step
+)
 }
 
 }

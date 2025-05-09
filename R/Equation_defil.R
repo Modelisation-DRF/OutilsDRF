@@ -164,7 +164,6 @@ get_modele <- function(type_modele, essence) {
 #' @import data.table
 #' @export
 
-
 get_diam <- function(fic) {
   # Assure que l'objet est bien une data.table pour optimiser les opérations
   setDT(fic)

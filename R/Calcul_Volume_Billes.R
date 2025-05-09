@@ -80,7 +80,6 @@
 #'       cl_drai = rep(NA, 3),
 #'       veg_pot = rep('MS2', 3),
 #'       DHP_Ae = c(120, 150, 300),
-#'       HT_REELLE_M = rep(0, 3),
 #'       HAUTEUR_M = c(13, 20, 28),
 #'       nbTi_ha = NA,
 #'       st_ha = NA,
@@ -634,7 +633,7 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
 
 ##################################################
 #tic()
-#calcul_vol_bille(data_diam7, dhs = 0.15, nom_grade1 = "sciage long",
+#calcul_vol_bille(data_diam12, dhs = 0.15, nom_grade1 = "sciage long",
 #                 long_grade1 = 10,
 #                 diam_grade1 = 12,
 #                 nom_grade2 = "sciage court",

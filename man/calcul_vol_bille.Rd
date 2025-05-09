@@ -110,7 +110,6 @@ La fonction dépend de variables globales:
       cl_drai = rep(NA, 3),
       veg_pot = rep('MS2', 3),
       DHP_Ae = c(120, 150, 300),
-      HT_REELLE_M = rep(0, 3),
       HAUTEUR_M = c(13, 20, 28),
       nbTi_ha = NA,
       st_ha = NA,

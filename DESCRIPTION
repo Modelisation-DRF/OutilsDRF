@@ -24,4 +24,8 @@ Imports:
 Depends: 
     tidyverse,
     data.table,
+    dplyr,
+    xlsx,
+    testthat,
+    devtools,
     R (>= 3.5)

@@ -54,109 +54,97 @@
 #' \dontrun{
 #' # Exemple 1: DETERMINISTE: une seule année par arbre ----------------------------------------
 #' # Estimer la hauteur et ensuite le volume
-#' DataHt <- relation_h_d(fic_arbres=fic_arbres_test)
-#' DataHtVol <- cubage(fic_arbres=DataHt)
+#' DataHt <- relation_h_d(fic_arbres = fic_arbres_test)
+#' DataHtVol <- cubage(fic_arbres = DataHt)
 #'
 #' # Exemple 2: DETERMINISTE: plusieurs années par arbre -------------------------------------
 #' # Estimer la hauteur et ensuite le volume
-#' DataHt <- relation_h_d(fic_arbres=fic_artemis_det, grouping_vars = 'annee')
-#' DataHtVol <- cubage(fic_arbres=DataHt)
+#' DataHt <- relation_h_d(fic_arbres = fic_artemis_det, grouping_vars = "annee")
+#' DataHtVol <- cubage(fic_arbres = DataHt)
 #'
 #' # Exemple 3: STOCHASTIQUE: plusieurs itérations et plusieurs step -------------------------------
 #' nb_iter <- length(unique(fic_artemis_sto$iter)) # 10
 #' nb_step <- length(unique(fic_artemis_sto$annee)) # 5
-#' ht <- relation_h_d(fic_arbres=fic_artemis_sto, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_step)
-#' vol <- cubage(fic_arbres=ht, mode_simul='STO', nb_iter=nb_iter, nb_step=nb_step)
+#' ht <- relation_h_d(fic_arbres = fic_artemis_sto, mode_simul = "STO", nb_iter = nb_iter, nb_step = nb_step)
+#' vol <- cubage(fic_arbres = ht, mode_simul = "STO", nb_iter = nb_iter, nb_step = nb_step)
 #' }
 #'
-cubage <- function (fic_arbres, mode_simul='DET', nb_iter=1, nb_step=1, seed_value=NULL, use_ass_ess=T){
-
+cubage <- function(fic_arbres, mode_simul = "DET", nb_iter = 1, nb_step = 1, seed_value = NULL, use_ass_ess = T) {
   # en mode stochastique, les variables iter et step sont obligatoires
-  if (mode_simul=='STO'){
-     if (length(setdiff(c("iter","step"), names(fic_arbres))) >0) { stop("les colonnes iter et step doivent etre dans fic_arbres avec mode_simul=STO")}
+  if (mode_simul == "STO") {
+    if (length(setdiff(c("iter", "step"), names(fic_arbres))) > 0) {
+      stop("les colonnes iter et step doivent etre dans fic_arbres avec mode_simul=STO")
+    }
   }
 
   # générer les paramètres du tarif de cubage
-  parametre_vol <- param_vol(fic_arbres=fic_arbres, mode_simul=mode_simul, nb_iter=nb_iter, nb_step=nb_step, seed_value=seed_value)
+  parametre_vol <- param_vol(fic_arbres = fic_arbres, mode_simul = mode_simul, nb_iter = nb_iter, nb_step = nb_step, seed_value = seed_value)
 
   setDT(fic_arbres)
 
   # association des essences aux essences du tarif de cubage (tarif_ass_ess.rda)
-  if (use_ass_ess==T) {
-
+  if (use_ass_ess == T) {
     tarif_ass_ess2 <- tarif_ass_ess
     setDT(tarif_ass_ess2)
-    arbre_vol <- merge(fic_arbres, tarif_ass_ess2, by = "essence", all.x=T) # un vrai left_join
+    arbre_vol <- merge(fic_arbres, tarif_ass_ess2, by = "essence", all.x = T) # un vrai left_join
     arbre_vol[
       , `:=`(
         essence_orig = essence,
         essence = essence_volume
       )
-    ][, essence_volume := NULL
-    ]
-
+    ][, essence_volume := NULL]
   } else {
-
     arbre_vol <- fic_arbres[, `:=`(essence_orig = essence)]
-
   }
 
-if (mode_simul=='DET'){
-  # Ajout des paramètres des effets fixes du tarif au fichier des arbres
-  # dans le fichier parametre_vol, essence est le code de l'essence du modèle de hauteur, une des 26
-  # dans le fichier arbre_vol, essence est l'essence original et essence_volume est l'essence du modele
-   arbre_vol2 <- merge(arbre_vol, parametre_vol$effet_fixe, by = "essence", all.x=T)
-}
-
-if (mode_simul=='STO'){
-
-  liste_ess <- unique(tarif_ass_ess$essence_volume) # liste des essences
-
-  # ajouter les effets fixes
-  arbre_vol2a <- merge(arbre_vol, parametre_vol$effet_fixe, by = c("iter","essence"), all.x=T)
-
-  # ajouter de l'effet aléatoire de placette et l'erreur residuelle à tous les arbres
-  arbre_vol2 <- merge(arbre_vol2a, parametre_vol$random, by = c("iter", "step", "id_pe", "no_arbre", "essence"), all.x=T)
-  arbre_vol2[,`:=`(resid = 0)]
-
-  # garder la colonne de l'erreur residuelle de l'essence
-  for (ess in liste_ess) {  # liste_ess contient les noms des essences (comme 'BOJ')
-    arbre_vol2[essence == ess, resid := .SD[[ess]]]
+  if (mode_simul == "DET") {
+    # Ajout des paramètres des effets fixes du tarif au fichier des arbres
+    # dans le fichier parametre_vol, essence est le code de l'essence du modèle de hauteur, une des 26
+    # dans le fichier arbre_vol, essence est l'essence original et essence_volume est l'essence du modele
+    arbre_vol2 <- merge(arbre_vol, parametre_vol$effet_fixe, by = "essence", all.x = T)
   }
 
-  arbre_vol2[, (liste_ess) := NULL]
+  if (mode_simul == "STO") {
+    liste_ess <- unique(tarif_ass_ess$essence_volume) # liste des essences
 
+    # ajouter les effets fixes
+    arbre_vol2a <- merge(arbre_vol, parametre_vol$effet_fixe, by = c("iter", "essence"), all.x = T)
+
+    # ajouter de l'effet aléatoire de placette et l'erreur residuelle à tous les arbres
+    arbre_vol2 <- merge(arbre_vol2a, parametre_vol$random, by = c("iter", "step", "id_pe", "no_arbre", "essence"), all.x = T)
+    arbre_vol2[, `:=`(resid = 0)]
+
+    # garder la colonne de l'erreur residuelle de l'essence
+    for (ess in liste_ess) { # liste_ess contient les noms des essences (comme 'BOJ')
+      arbre_vol2[essence == ess, resid := .SD[[ess]]]
+    }
+
+    arbre_vol2[, (liste_ess) := NULL]
+  }
+
+  # Calcul du volume
+
+  # volume en dm3;
+  # dhp en cm;
+  # hauteur en m;
+  # dres=1 pour résineux;
+  # ht_dhp = hauteur_pred/dhp;
+  # cylindre = pi*dhp**2*hauteur_pred/40;
+  # vol = -b1 x ht_dhp + (b2m + b3m*dres*dhp)*cylindre (mais le négatif est déjà appliqué au b1)
+
+  arbre_vol2[, `:=`(
+    cylindre = (pi * dhpcm * dhpcm * hauteur_pred) / 40,
+    vol_dm3 = b1 * (hauteur_pred / dhpcm) + (b2 + b3 * as.integer(essence %in% c("EPB", "EPN", "EPR", "MEL", "PIB", "PIG", "PIR", "PRU", "SAB", "THO")) * dhpcm) * ((pi * dhpcm * dhpcm * hauteur_pred) / 40) + random_plot + resid
+  )]
+
+  # Mettre un minimum de 4 à `vol_dm3`
+  arbre_vol2[vol_dm3 < 4, vol_dm3 := 4]
+
+  # Supprimer les colonnes inutiles
+  arbre_vol2[, c("cylindre", "essence", "b1", "b2", "b3", "random_plot", "resid") := NULL]
+
+  # Renommer `essence_orig` en `essence`
+  setnames(arbre_vol2, "essence_orig", "essence")
+
+  return(arbre_vol2)
 }
-
-# Calcul du volume
-
-# volume en dm3;
-# dhp en cm;
-# hauteur en m;
-# dres=1 pour résineux;
-# ht_dhp = hauteur_pred/dhp;
-# cylindre = pi*dhp**2*hauteur_pred/40;
-# vol = -b1 x ht_dhp + (b2m + b3m*dres*dhp)*cylindre (mais le négatif est déjà appliqué au b1)
-
-arbre_vol2[, `:=`(
-  cylindre = (pi * dhpcm * dhpcm * hauteur_pred) / 40,
-  vol_dm3 = b1 * (hauteur_pred / dhpcm) + (b2 + b3 * as.integer(essence %in% c('EPB', 'EPN', 'EPR', 'MEL', 'PIB', 'PIG', 'PIR', 'PRU', 'SAB', 'THO')) * dhpcm) * ((pi * dhpcm * dhpcm * hauteur_pred) / 40) + random_plot + resid
-)]
-
-# Mettre un minimum de 4 à `vol_dm3`
-arbre_vol2[vol_dm3 < 4, vol_dm3 := 4]
-
-# Supprimer les colonnes inutiles
-arbre_vol2[, c("cylindre", "essence", "b1", "b2", "b3", "random_plot", "resid") := NULL]
-
-# Renommer `essence_orig` en `essence`
-setnames(arbre_vol2, "essence_orig", "essence")
-
-return (arbre_vol2)
-}
-
-
-
-
-
-

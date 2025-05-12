@@ -58,13 +58,13 @@ des Forêts, de la Faune et des Parcs, Direction de la recherche forestière. No
 \examples{
 \dontrun{
 # Mode déterministe
-parametre_ht_dhp <- param_ht(fic_arbres=fic_arbres_test)
+parametre_ht_dhp <- param_ht(fic_arbres = fic_arbres_test)
 
 # Mode stochastique, pour une seule année et 10 itérations
-parametre_ht_dhp <- param_ht(fic_arbres=fic_arbres_test, mode_simul='STO', nb_iter=10)
+parametre_ht_dhp <- param_ht(fic_arbres = fic_arbres_test, mode_simul = "STO", nb_iter = 10)
 
 # Mode stochastique, plusieurs années et plusieurs itérations
-parametre_ht_dhp <- param_ht(fic_arbres=fic_arbres_test, mode_simul='STO', nb_iter=10, nb_step=5)
+parametre_ht_dhp <- param_ht(fic_arbres = fic_arbres_test, mode_simul = "STO", nb_iter = 10, nb_step = 5)
 }
 
 }

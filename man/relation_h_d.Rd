@@ -79,16 +79,18 @@ des Forêts, de la Faune et des Parcs, Direction de la recherche forestière. No
 \examples{
 \dontrun{
 # Exemple 1: DETERMINISTE: un seule année par arbre ---------------------------------------
-DataHt <- relation_h_d(fic_arbres=fic_arbres_test)
+DataHt <- relation_h_d(fic_arbres = fic_arbres_test)
 
 # Exemple 2: DETERMINISTE: avec grouping_vars, plusieurs années par arbre ----------------
-DataHt <- relation_h_d(fic_arbres=fic_artemis_det, grouping_vars='annee')
+DataHt <- relation_h_d(fic_arbres = fic_artemis_det, grouping_vars = "annee")
 
 # Exemple 3: STOCHASTIQUE: plusieurs années par arbre ------------------------------------
 nb_iter <- length(unique(fic_artemis_sto$iter))
 nb_step <- length(unique(fic_artemis_sto$step))
-DataHt <- relation_h_d(fic_arbres=fic_artemis_sto, mode_simul='STO',
-                       nb_iter=nb_iter, nb_step=nb_step)
+DataHt <- relation_h_d(
+  fic_arbres = fic_artemis_sto, mode_simul = "STO",
+  nb_iter = nb_iter, nb_step = nb_step
+)
 }
 
 }

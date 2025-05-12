@@ -126,6 +126,7 @@ arbres <- bind_rows(arbre1, arbre2, arbre3)
 
 ex_qualite <- left_join(plot, arbres)
 
+write_delim(ex_qualite, "P:\\F1272\\CPF\\_Simulateurs\\QualiteArbres\\AttributionQualite\\ex_qualite.csv", delim=';') # pour faire les calcul à la main
 usethis::use_data(ex_qualite,
                   internal=FALSE, overwrite = TRUE)
 
@@ -138,6 +139,11 @@ qualite0_param <- liste_param %>% select(essence, Equation, var_i, Estimate) %>%
 qualite0_ass_sdom <- liste_sd
 qualite0_ess = toupper(c('boj','bop','chx','err','ers','fen','heg','peu'))
 
+write_delim(qualite0_param, "P:\\F1272\\CPF\\_Simulateurs\\QualiteArbres\\AttributionQualite\\qualite0_param.csv", delim=';') # pour faire les calcul à la main
+# fichiers généras dans param_qualite0()
+#write_delim(bi_eq1, "P:\\F1272\\CPF\\_Simulateurs\\QualiteArbres\\AttributionQualite\\bi_eq1.csv", delim=';') # pour faire les calcul à la main
+#write_delim(bi_eq2, "P:\\F1272\\CPF\\_Simulateurs\\QualiteArbres\\AttributionQualite\\bi_eq2.csv", delim=';') # pour faire les calcul à la main
+#write_delim(bi_eq3, "P:\\F1272\\CPF\\_Simulateurs\\QualiteArbres\\AttributionQualite\\bi_eq3.csv", delim=';') # pour faire les calcul à la main
 
 ############################################
 

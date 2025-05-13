@@ -222,7 +222,7 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
 
     # Création d'un identifiant de groupe unique pour chaque arbre
     # Cela permet de traiter les arbres individuellement tout en gardant un lien avec les données d'origine
-    data_filtre[, group_id := .GRP, by = .(id_pe, no_arbre)]
+    data_filtre[, group_id := .I]
 
     # Division de chaque arbre en sections de 2 pieds (convertis en mètres)
     # Pour chaque arbre (group_id), on crée une séquence de hauteurs, de la souche jusqu'à la hauteur totale
@@ -633,7 +633,7 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
 
 ##################################################
 #tic()
-#calcul_vol_bille(data_diam12, dhs = 0.15, nom_grade1 = "sciage long",
+#calcul_vol_bille(data_diam13, dhs = 0.15, nom_grade1 = "sciage long",
 #                 long_grade1 = 10,
 #                 diam_grade1 = 12,
 #                 nom_grade2 = "sciage court",

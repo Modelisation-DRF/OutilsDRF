@@ -6,10 +6,16 @@
 \alias{OutilsDRF-package}
 \title{OutilsDRF: Un package contenant plusieurs outils de prédiction pour les simulateurs de croissance forestière de la DRF}
 \description{
-Le package contient plusieurs outils de prédiction: Relations hauteur-diamètre pour estimer la hauteur totale en mètre d'un arbre, Tarif de cubage pour estimer le volume marchand brut en dm3 d'un arbre, Simulateur de coupe pour estimer la probabilité d'un arbre d'être coupé lors d'un traitement de récolte (à venir), Billonage à partir d'équations de défilement pour estimer le volume des billes dans un arbre (à venir).
+Le package contient plusieurs outils de prédiction: Relations hauteur-diamètre pour estimer la hauteur totale en mètre d'un arbre, Tarif de cubage pour estimer le volume marchand brut en dm3 d'un arbre, Simulateur de coupe pour estimer la probabilité d'un arbre d'être coupé lors d'un traitement de récolte, Billonnage à partir d'équations de défilement pour estimer le volume des billes dans un arbre. Équations pour estimer la probabilité d'un arbre d'être coupé suite à un traitement sylvicole donné, Équations pour estimer la qualité ABCD d'un arbre à partir de son code MSCR.
 }
 \author{
 \strong{Maintainer}: Isabelle Auger \email{isabelle.auger@mrnf.gouv.qc.ca}
+
+Other contributors:
+\itemize{
+  \item Nadeau Tomy [contributor]
+  \item Boivin Nicholas [contributor]
+}
 
 }
 \keyword{internal}

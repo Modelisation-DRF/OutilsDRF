@@ -8,6 +8,8 @@
 #' Power, H. et Havreljuk, F., 2018. Predicting hardwood quality and its evolution over time in Quebec's forests.
 #' Forestry (91).
 #'
+#' Les essences avec une équations sont  BOJ BOP CHX ERR ERS FEN HEG PEU
+#'
 #' @param fic_arbres Dataframe avec une ligne par placette/arbre et les colonnes suivantes
 #' \itemize{
 #'    \item id_pe: identifiant unique de la placette
@@ -22,11 +24,13 @@
 #'    \item coupe: 0 si pas de coupe partielle dans la placette, 1 si présence de coupe partielle
 #' }
 #' @param mode_simul Le mode de simulation (STO = stochastique, DET = déterministe), par défaut "DET".
-#' @param nb_iter Le nombre d'itérations si le mode stochastique est utilisé, doit être > 1. Ignoré si \code{mode_simul="DET"},
+#' @param nb_iter Le nombre d'itérations si le mode stochastique est utilisé. Ignoré si \code{mode_simul="DET"},
 #' @param seed_value Optionnel. La valeur du seed pour la génération de nombres aléatoires. Généralement utilisé pour les tests de la fonction.
 #'
-#' @return La fonction retourne, pour le mode stochastique, un dataframe avec les colonnes id_pe, no_arbre, iter, qualite (la classe de qualité de l'arbre).
-#' Pour le mode déterministe, la fonction retourne un dataframe avec les colonnes id_pe, no_arbre et les 4 colonnes (prop_A, prop_B, prob_C, prop_B) contenant la proportion de chaque classe de qualité
+#' @return La fonction retourne, pour le mode stochastique, un dataframe avec les colonnes id_pe, no_arbre, iter,
+#' qualite (la classe de qualité de l'arbre). Il y a une ligne par itération pour chaque arbre.
+#' Pour le mode déterministe, la fonction retourne un dataframe avec les colonnes id_pe, no_arbre et les 4 colonnes
+#' (prop_A, prop_B, prob_C, prop_B) contenant la proportion de chaque classe de qualité
 #'
 #' @import data.table
 # #' @export
@@ -42,11 +46,13 @@
 #'
 attrib_qualite <- function(fic_arbres, mode_simul = "DET", nb_iter = 1, seed_value = NULL) {
   # une des variables des équations de qualité est un regroupement de sous-domaines, et ce regroupement change selon
-  # l'essence et selon l'équation 1, 2 ou 3 il fat donc attribuer un groupe de sous-domaines à partir du sous-domaine
+  # l'essence et selon l'équation 1, 2 ou 3 il faut donc attribuer un groupe de sous-domaines à partir du sous-domaine
   # fourni dans fic_arbres, et cette attribution doit être faire par essence et par équation ces associations sont dans
   # la liste qualite0_ass_sdom (un élément par essence), l'élément est un dataframe avec une colonne pour identifier
   # l'équation, la colonne sdom_bio est le lien avec le sdom_bio de fic_arbres, et la colonne sdom est le groupe
   # d'essences pour l'équation
+
+  # fic_arbres=ex_qualite; mode_simul="DET"; nb_iter = 2; seed_value = 0
 
   # ligne de code pour générer les bi, une liste de 3 éléments, un par équation, chacun un dataframe contenant les bi par essence
   bi <- param_qualite0(mode_simul = mode_simul, nb_iter = nb_iter)
@@ -79,6 +85,12 @@ attrib_qualite <- function(fic_arbres, mode_simul = "DET", nb_iter = 1, seed_val
   fic_arbres <- fic_arbres %>%
     lazy_dt() %>%
     mutate(Equation = ifelse(dhpcm > 23 & dhpcm <= 33, 1, ifelse(dhpcm > 33 & dhpcm <= 39, 2, ifelse(dhpcm > 39, 3, NA)))) %>%
+    as.data.frame()
+
+  # Obtenir l'association du sous-domaine, nécessaire car on ne peut pas faire la différence entre une absence de sdom est dû à un sdom manquant dans les données de calibration vs le sdom dans l'intercept
+  fic_arbres <- fic_arbres %>%
+    lazy_dt() %>%
+    left_join(qualite0_ass_sdom, by = c("essence", "Equation", "sdom_bio"), keep = FALSE) %>%
     as.data.frame()
 
   # Joindre chaque placette avec les valeurs BI selon l'essence et l'equation
@@ -363,7 +375,7 @@ attrib_qualite <- function(fic_arbres, mode_simul = "DET", nb_iter = 1, seed_val
         prop_A = ifelse(prob_A == 0, NA, prob_A)
       ) %>%
       # Select des colonnes finales à retourner
-      select(id_pe, sdom, tmoy, ptot, sum_st_ha, coupe, no_arbre, dhpcm, essence, priorecol, prop_A, prop_B, prop_C, prop_D) %>%
+      select(id_pe, sdom_bio, tmoy, ptot, sum_st_ha, coupe, no_arbre, dhpcm, essence, priorecol, prop_A, prop_B, prop_C, prop_D) %>%
       as.data.frame()
   } else {
     # Generer un nombre aleatoire entre 0 et 1 pour chaque placette
@@ -389,7 +401,7 @@ attrib_qualite <- function(fic_arbres, mode_simul = "DET", nb_iter = 1, seed_val
           )
       ) %>%
       # Select des colonnes finales à retourner
-      select(id_pe, sdom, tmoy, ptot, sum_st_ha, coupe, no_arbre, dhpcm, essence, priorecol, iter, qualite) %>%
+      select(id_pe, sdom_bio, tmoy, ptot, sum_st_ha, coupe, no_arbre, dhpcm, essence, priorecol, iter, qualite) %>%
       as.data.frame()
   }
 

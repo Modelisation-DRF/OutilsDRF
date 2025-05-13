@@ -23,13 +23,15 @@ attrib_qualite(fic_arbres, mode_simul = "DET", nb_iter = 1, seed_value = NULL)
 
 \item{mode_simul}{Le mode de simulation (STO = stochastique, DET = déterministe), par défaut "DET".}
 
-\item{nb_iter}{Le nombre d'itérations si le mode stochastique est utilisé, doit être > 1. Ignoré si \code{mode_simul="DET"},}
+\item{nb_iter}{Le nombre d'itérations si le mode stochastique est utilisé. Ignoré si \code{mode_simul="DET"},}
 
 \item{seed_value}{Optionnel. La valeur du seed pour la génération de nombres aléatoires. Généralement utilisé pour les tests de la fonction.}
 }
 \value{
-La fonction retourne, pour le mode stochastique, un dataframe avec les colonnes id_pe, no_arbre, iter, qualite (la classe de qualité de l'arbre).
-Pour le mode déterministe, la fonction retourne un dataframe avec les colonnes id_pe, no_arbre et les 4 colonnes (prop_A, prop_B, prob_C, prop_B) contenant la proportion de chaque classe de qualité
+La fonction retourne, pour le mode stochastique, un dataframe avec les colonnes id_pe, no_arbre, iter,
+qualite (la classe de qualité de l'arbre). Il y a une ligne par itération pour chaque arbre.
+Pour le mode déterministe, la fonction retourne un dataframe avec les colonnes id_pe, no_arbre et les 4 colonnes
+(prop_A, prop_B, prob_C, prop_B) contenant la proportion de chaque classe de qualité
 }
 \description{
 Détermine la classe de qualité des arbres à partir de leur priorité de récolte MSCR
@@ -39,6 +41,8 @@ Les paramètres peuvent être générés de façon déterministe ou stochastique
 \details{
 Power, H. et Havreljuk, F., 2018. Predicting hardwood quality and its evolution over time in Quebec's forests.
 Forestry (91).
+
+Les essences avec une équations sont  BOJ BOP CHX ERR ERS FEN HEG PEU
 }
 \examples{
 \dontrun{

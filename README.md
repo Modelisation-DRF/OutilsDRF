@@ -1,9 +1,9 @@
-[![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0) [![R-CMD-check](https://github.com/Modelisation-DRF/RNatura2014/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Modelisation-DRF/RNatura2014/actions/workflows/R-CMD-check.yaml)
+[![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0) [![R-CMD-check](https://github.com/Modelisation-DRF/OutilsDRF/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Modelisation-DRF/OutilsDRF/actions/workflows/R-CMD-check.yaml)
 ## Le package OutilsDRF
 
 Un package contenant plusieurs outils de prédiction pour les simulateurs de croissance forestière de la DRF
 
-Auteurs: Isabelle Auger - Ministère des Ressources Naturelles et des Forêts du Québec
+Contact: Isabelle Auger - Ministère des Ressources naturelles et des Forêts du Québec
 
 Courriel: isabelle.auger@mrnf.gouv.qc.ca
 
@@ -12,7 +12,9 @@ Le package contient plusieurs outils de prédiction:
 Relations hauteur-diamètre pour estimer la hauteur totale en mètre d'un arbre
 Tarif de cubage pour estimer le volume marchand brut en dm3 d'un arbre
 Simulateur de coupe pour estimer la probabilité d'un arbre d'être coupé lors d'un traitement de récolte
-Billonage à partir d'équations de défilement pour estimer le volume des billes dans un arbre
+Billonnage à partir d'équations de défilement pour estimer le volume des billes dans un arbre
+Équations pour estimer la probabilité d'un arbre d'être coupé suite à un traitement sylvicole donné
+Équations pour estimer la qualité ABCD d'un arbre à partir de son code MSCR
 
 
 ## Documentation et références
@@ -33,6 +35,10 @@ essences commerciales du Québec. Gouvernement du Québec, ministère des Ressou
 Mémoire de recherche forestière no 167. 40 p.
 
 Schneider, R., M. Fortin, J.-P. Saucier, 2013. Équation de défilement pour le pin gris en peuplement naturel au Québec. Gouvernement du Québec, ministère des Ressources naturelles, Direction de la recherche forestière. Note de recherche forestière no 139. 6 p.
+
+Power, H. et F. Havreljuk, 2018. Predicting hardwood quality and its evolution over time in Quebec’s forests. Forestry 91. 259-270.
+
+
 
 ## Dépendences
 Aucune dépendence à des packages externes à CRAN
@@ -55,6 +61,7 @@ remotes::install_github("Modelisation-DRF/OutilsDRF")
 
 | Date |  Version  | Issues |      Détails     |
 |:-----|:---------:|:-------|:-----------------|
+| 2025-05-13 | 2.2.0 |  | Finalisation billonnage et probabilité de coupe et ajout attribution de qualité |
 | 2025-01-29 | 2.1.0 |  | ajout parametre use_ass_ess dans cubage et relation_h_d et calcul var dendro maintenant optionnel dans relation_h_d |
 | 2025-01-08 | 2.0.0 |  | changement de nom package pour OutilsDRF et ajout équation de défilement et probablité de coupe |
 | 2024-12-20 | 1.2.0 |  | utiliser package data.table au lieu de dplyr pour augmenter la vitesse des gros fichiers |

@@ -9,13 +9,14 @@ param_qualite0(mode_simul = "DET", nb_iter = 1, seed_value = NULL)
 \arguments{
 \item{mode_simul}{Le mode de simulation (STO = stochastique, DET = déterministe), par défaut "DET".}
 
-\item{nb_iter}{Le nombre d'itérations si le mode stochastique est utilisé, doit être > 1. Ignoré si \code{mode_simul="DET"},}
+\item{nb_iter}{Le nombre d'itérations si le mode stochastique est utilisé. Ignoré si \code{mode_simul="DET"},}
 
 \item{seed_value}{Optionnel. La valeur du seed pour la génération de nombres aléatoires. Généralement utilisé pour les tests de la fonction.}
 }
 \value{
-La fonction retourne, pour le mode stochastique, un dataframe ...
-Pour le mode déterministe, la fonction retourne un dataframe ...
+La fonction retourne une liste de 3 éléments, chacun étant un dataframe dont les colonnes sont les paramètres
+des équations de qualité et les lignes sont les essences. Le premier contient les paramètres pour les dhp de 23 à 33 cm,
+le 2e pour les dhp de 33 à 39 cm et les 3e pour les dhp>39cm. En mode stochastique, les datframe contient une lignes par essence/iter
 }
 \description{
 Génère les paramètres des équations pour estimer la classe de qualité des arbres, où les arbres sont regroupés en placettes.

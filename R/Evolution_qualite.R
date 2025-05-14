@@ -15,6 +15,7 @@
 #'    \item id_pe: identifiant unique de la placette
 #'    \item no_arbre: identifiant de l'arbre dans la placette
 #'    \item dhpcm: dhp (cm) de l'arbre il y a 10 ans
+#'    \item dhpcm1: dhp (cm) actuel de l'arbre
 #'    \item essence: code d'essence de l'arbre (ex: SAB, EPN, BOP)
 #'    \item qualite: classe de qualite de l'arbre il y a 10 ans: A, B, C ou D
 #'    \item sdom_bio: code du sous-domaine bioclimatique de la placette, en majuscule (ex: 1, 2EST, 4OUEST), seuls les domaines 1 à 6 sont traités
@@ -23,12 +24,6 @@
 #'    \item sum_st_ha: Surface terrière marchande de la placette (m2/ha)
 #'    \item coupe: 0 si pas de coupe partielle dans la placette, 1 si présence de coupe partielle
 #'    \item sum_st_ha_gr: Surface terrière des arbres dont le dhp est plus grand que celui de l'arbre (m2/ha)
-#'    \item ddhpcm: accroissement annuel en dhp de l'arbre dans le dernier 10 ans (cm/an)
-#'    \item transition: 0 si le dhp de l'arbre est dans le même groupe de dhp que son dhp il y a 10 ans,
-#'                      1 si le dhp de l'arbre a chagé de groupe de dhp comparativement à son groupe d'il y a 10 ans.
-#'                         <=23cm il y a 10 ans et >23cm actuel
-#'                         <=33cm il y a 10 ans et >33cm actuel
-#'                         <=39cm il y a 10 ans et >39cm actuel
 #' }
 #' @param mode_simul Le mode de simulation (STO = stochastique, DET = déterministe), par défaut "DET".
 #' @param nb_iter Le nombre d'itérations si le mode stochastique est utilisé. Ignoré si \code{mode_simul="DET"},
@@ -94,7 +89,9 @@ evol_qualite <- function(fic_arbres, mode_simul = "DET", nb_iter = 1, seed_value
   # Obtenir l'equation a utiliser pour chaque placette
   fic_arbres <- fic_arbres %>%
     lazy_dt() %>%
-    mutate(Equation = ifelse(dhpcm > 23 & dhpcm <= 33, 1, ifelse(dhpcm > 33 & dhpcm <= 39, 2, ifelse(dhpcm > 39, 3, NA)))) %>%
+    mutate(Equation = ifelse(dhpcm1 > 23 & dhpcm1 <= 33, 1, ifelse(dhpcm1 > 33 & dhpcm1 <= 39, 2, ifelse(dhpcm1 > 39, 3, NA))),
+           transition = ifelse(dhpcm1 > 23 & dhpcm <= 23 | dhpcm1 > 33 & dhpcm <= 33 | dhpcm1 > 39 & dhpcm <= 39, 1, 0),
+           ddhpcm = (dhpcm1-dhpcm)/10) %>%
     as.data.frame()
 
   # Obtenir l'association du sous-domaine, nécessaire car on ne peut pas faire la différence entre une absence de sdom est dû à un sdom manquant dans les données de calibration vs le sdom dans l'intercept

@@ -96,7 +96,9 @@ ex_qualite_evol <- left_join(plot, arbres)
 
 ex_qualite_evol$ddhpcm <- 0.12
 ex_qualite_evol <- ex_qualite_evol %>%
-  mutate(transition = ifelse(dhpcm %in% c(24, 33.5, 39.2), 1, 0))
+  rename(dhpcm1=dhpcm) %>%
+  mutate(dhpcm = dhpcm1 - ddhpcm*10) %>%
+  select(-ddhpcm)
 
 
 write_delim(ex_qualite_evol, "P:\\F1272\\CPF\\_Simulateurs\\QualiteArbres\\EvolutionQualite\\ex_qualite_evol.csv", delim=';') # pour faire les calcul à la main

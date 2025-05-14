@@ -549,11 +549,11 @@ data_diam12 <- data.frame(essence = rep(c('BOP'), 3),
                           diam_grade3 = 6
                           )
 
-data_diam13 <- data.frame(essence = c('BOP','BOP','BOP'),
+data_diam13 <- data.frame(essence = c('PIB','PIB','BOP'),
                           id_pe = rep(1, 3),
-                          no_arbre = 1:3,
+                          no_arbre = rep(1, 3),
                           sdom_bio = rep(c("3OUEST"), 3),
-                          cl_drai = rep(NA, 3),
+                          cl_drai = rep(30, 3),
                           veg_pot = rep('MS2', 3),
                           DHP_Ae = c(120, 150, 300),
                           HT_REELLE_M = rep(0, 3),
@@ -561,6 +561,8 @@ data_diam13 <- data.frame(essence = c('BOP','BOP','BOP'),
                           nbTi_ha = NA,
                           st_ha = NA,
                           ALTITUDE = NA)
+
+
 
 
 #usethis::use_data(data_diam4, data_diam5, data_diam6, data_diam7, data_diam8, data_diam9, data_diam10, data_diam11, data_diam12,

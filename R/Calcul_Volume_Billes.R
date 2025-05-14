@@ -245,6 +245,7 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
 
     # Calcul du diamètre prédit à chaque hauteur de section pour tous les arbres
     # Utilise la fonction get_diam qui applique des modèles de défilement
+
     diam_all_sections <- get_diam(data_all_sections)
 
     # Conversion du diamètre prédit de mm² en mètres
@@ -584,8 +585,6 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
       long_bille_pied = long_bille_pied
     )]
 
-
-
     # Data pour les résultats finaux:
     # - Algorithme crée une donnée non utilisable(billes de volume 0 dans cas spécial), on doit la retirer
     # - Ajuste avec des valeurs de conversions différentes colonnes pour obtenir les bons résultats à l'écran
@@ -603,26 +602,28 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
   }
 
   if (exists("data_complete")) {
-    # Créer un identifiant unique(comme group_id) pour chaque arbre
-    group_id <- unique(fichier_billes[, .(id_pe, no_arbre)])
+    # Identifier les combinaisons id_pe/no_arbre sans billes
+    combinaisons_sans_billes <- unique(fichier_billes[, .(id_pe, no_arbre)])[
+      !unique(data_complete[, .(id_pe, no_arbre)]),
+      on = .(id_pe, no_arbre)
+    ]
 
-    # Recréer un identifiant du style group_id pour chaque arbre du fichier final
-    id_arbres_billes <- unique(data_complete[, .(id_pe, no_arbre)])
+    # Récupérer les lignes de fichier_billes(fichier de départ) correspondant à ces combinaisons
+    data_no_bille <- fichier_billes[
+      combinaisons_sans_billes,
+      on = .(id_pe, no_arbre),
+      .(
+        id_pe = id_pe,
+        no_arbre = no_arbre,
+        dhpcm = DHP_Ae / ratio_cm_mm,
+        ht = HAUTEUR_M,
+        vol_bille_dm3 = as.numeric(NA),
+        grade_bille = as.character(NA),
+        diam_fb_cm = as.numeric(NA),
+        long_bille_pied = as.numeric(NA)
+      )
+    ]
 
-    # Id des arbres qui ont des essences valides, mais aucune bille valide
-    arbres_sans_billes <- group_id[!id_arbres_billes, on = .(id_pe, no_arbre)]
-
-    # Data.table contenant les arbres qui n'ont pas été traités pour la découpe de billes(essence non-valide ou aucune bille découpée)
-    data_no_bille <- arbres_sans_billes[, .(
-      id_pe = id_pe,
-      no_arbre = no_arbre,
-      dhpcm = fichier_billes[.SD, on = .(id_pe, no_arbre), DHP_Ae / ratio_cm_mm],
-      ht = fichier_billes[.SD, on = .(id_pe, no_arbre), HAUTEUR_M],
-      vol_bille_dm3 = as.numeric(NA),
-      grade_bille = as.character(NA),
-      diam_fb_cm = as.numeric(NA),
-      long_bille_pied = as.numeric(NA)
-    )]
     #Concaténation des différentes tables(présente ou non)
     data_billes <- rbindlist(list(data_complete, data_no_bille), fill = TRUE)
   }
@@ -634,12 +635,6 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
 ##################################################
 #tic()
 #calcul_vol_bille(data_diam13, dhs = 0.15, nom_grade1 = "sciage long",
-#                 long_grade1 = 10,
-#                 diam_grade1 = 12,
-#                 nom_grade2 = "sciage court",
-#                 long_grade2 = 6,
-#                 diam_grade2 = 8,
-#                 nom_grade3 = "pate",
-#                 long_grade3 = 4,
-#                 diam_grade3 = 4)
+#                 long_grade1 = 2,
+#                 diam_grade1 = 1)
 #toc()

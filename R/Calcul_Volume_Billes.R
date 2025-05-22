@@ -8,13 +8,13 @@
 #'
 #' @param fichier_billes Un data.frame ou data.table contenant les données d'arbres avec les colonnes suivantes:
 #'   \itemize{
-#'     \item essence - Essence de l'arbre en majuscule, ex: SAB
+#'     \item essence - Essence de l'arbre en majuscule, ex: "SAB"
 #'     \item id_pe - Identifiant de la placette
 #'     \item no_arbre - Numéro de l'arbre dans la placette
 #'     \item HAUTEUR_M - Hauteur totale de l'arbre (en m)
-#'     \item sdom_bio - Sous-domaine: ex: 2EST
-#'     \item cl_drai - Classe de drainage, ex: '2'
-#'     \item veg_pot - Code de végétation potentielle , ex: 'MS2'
+#'     \item sdom_bio - Sous-domaine: ex: "2EST"
+#'     \item cl_drai - Classe de drainage, ex: "2"
+#'     \item veg_pot - Code de végétation potentielle , ex: "MS2"
 #'     \item DHP_Ae - Diamètre à hauteur de poitrine de l'arbre (en mm)
 #'     \item nbTi_ha - Nombre d'arbres à l'ha dans la placette
 #'     \item st_ha - Surface terrière en m2/ha dans la placette
@@ -22,14 +22,14 @@
 #'   }
 #' @param dhs Hauteur de souche standard en mètres (point de départ des mesures), initialisée à 0.15(15 cm)
 #' @param nom_grade1 Nom du premier type de bille.
-#' @param nom_grade2 Nom du deuxième type de bille.
-#' @param nom_grade3 Nom du troisième type de bille.
+#' @param nom_grade2 Nom du deuxième type de bille.(si besoin)
+#' @param nom_grade3 Nom du troisième type de bille.(si besoin)
 #' @param long_grade1 Longueur de la première bille en pieds.
-#' @param long_grade2 Longueur de la deuxième bille en pieds.
-#' @param long_grade3 Longueur de la troisième bille en pieds.
+#' @param long_grade2 Longueur de la deuxième bille en pieds.(si besoin)
+#' @param long_grade3 Longueur de la troisième bille en pieds.(si besoin)
 #' @param diam_grade1 Diamètre minimal au fin bout de la première bille en cm.
-#' @param diam_grade2 Diamètre minimal au fin bout de la deuxième bille en cm.
-#' @param diam_grade3 Diamètre minimal au fin bout de la troisième bille en cm.
+#' @param diam_grade2 Diamètre minimal au fin bout de la deuxième bille en cm.(si besoin)
+#' @param diam_grade3 Diamètre minimal au fin bout de la troisième bille en cm.(si besoin)
 #'
 #'
 #' @return Une data.table contenant les billes extraites avec les colonnes:

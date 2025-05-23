@@ -537,19 +537,9 @@ data_diam12 <- data.frame(essence = rep(c('BOP'), 3),
                           HAUTEUR_M = c(13, 20, 28),
                           nbTi_ha = NA,
                           st_ha = NA,
-                          ALTITUDE = NA,
-                          nom_grade1 = "sciage long",
-                          long_grade1 = NA,
-                          diam_grade1 = 10,
-                          nom_grade2 = "sciage court",
-                          long_grade2 = NA,
-                          diam_grade2 = 8,
-                          nom_grade3 = "pate",
-                          long_grade3 = NA,
-                          diam_grade3 = 6
-                          )
+                          ALTITUDE = NA)
 
-data_diam13 <- data.frame(essence = c('PIB','PIB','BOP'),
+data_diam13 <- data.frame(essence = c('BOP','BOP','BOP'),
                           id_pe = rep(1, 3),
                           no_arbre = rep(1, 3),
                           sdom_bio = rep(c("3OUEST"), 3),
@@ -560,7 +550,8 @@ data_diam13 <- data.frame(essence = c('PIB','PIB','BOP'),
                           HAUTEUR_M = c(13, 20, 28),
                           nbTi_ha = NA,
                           st_ha = NA,
-                          ALTITUDE = NA)
+                          ALTITUDE = NA,
+                          Annee = rep(2010, 3))
 
 
 

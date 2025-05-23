@@ -16,7 +16,7 @@ correction_biais(type_modele, fic, essence)
 \value{
 Un data.table avec deux colonnes supplémentaires:
   \item{correction}{La valeur de correction calculée pour chaque arbre/mesure}
-  \item{pred_mm2_corr}{La prédiction corrigée du biais}
+  \item{pred_mm2_corr}{La prédiction corrigée avec le biais}
 }
 \description{
 Applique une correction de biais aux prédictions de diamètre générées à l'aide

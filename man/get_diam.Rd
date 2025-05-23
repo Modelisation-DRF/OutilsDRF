@@ -22,13 +22,13 @@ fichier séparé.
 \details{
 Les variables suivantes doivent être présentes dans le paramètre `fic`:
 \itemize{
-  \item essence: code de l'essence en majuscule (ex: SAB)
-  \item sdom_bio: sous-domaine bioclimatique (ex: 2EST)
-  \item cl_drai: classe de drainage (ex: '2')
-  \item veg_pot: code de végétation potentielle (ex: 'MS2')
+  \item essence: code de l'essence en majuscule (ex: "SAB")
+  \item sdom_bio: sous-domaine bioclimatique (ex: "2EST")
+  \item cl_drai: classe de drainage (ex: "2")
+  \item veg_pot: code de végétation potentielle (ex: "MS2")
   \item DHP_Ae: dhp de l'arbre en mm
-  \item HT_REELLE_M: hauteur de l'arbre en m
-  \item HAUTEUR_M: hauteur à laquelle on veut estimer le diamètre (m)
+  \item HT_REELLE_M: hauteur à laquelle on veut estimer le diamètre (m)
+  \item HAUTEUR_M: hauteur de l'arbre en m
   \item nbTi_ha: nombre d'arbres à l'ha dans la placette
   \item st_ha: surface terrière en m2/ha dans la placette
   \item ALTITUDE: altitude de la placette (m)
@@ -46,7 +46,7 @@ Les variables suivantes doivent être présentes dans le paramètre `fic`:
       cl_drai = rep(NA, 3),
       veg_pot = rep('MS2', 3),
       DHP_Ae = c(120, 150, 300),
-      HT_REELLE_M = rep(0, 3),
+      HT_REELLE_M = rep(3, 3),
       HAUTEUR_M = c(13, 20, 28),
       nbTi_ha = NA,
       st_ha = NA,

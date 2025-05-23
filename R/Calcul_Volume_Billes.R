@@ -19,6 +19,7 @@
 #'     \item nbTi_ha - Nombre d'arbres à l'ha dans la placette
 #'     \item st_ha - Surface terrière en m2/ha dans la placette
 #'     \item ALTITUDE - Altitude de la placette (en m)
+#'     \item Annee - Année à laquelle les caractéristiques sont prises(optionnel)
 #'   }
 #' @param dhs Hauteur de souche standard en mètres (point de départ des mesures), initialisée à 0.15(15 cm)
 #' @param nom_grade1 Nom du premier type de bille.
@@ -35,6 +36,7 @@
 #' @return Une data.table contenant les billes extraites avec les colonnes:
 #'   \itemize{
 #'     \item id_pe - Identifiant de la placette
+#'     \item Annee - Année à laquelle les caractéristiques sont prises(optionnel)
 #'     \item no_arbre - Numéro de l'arbre
 #'     \item dhpcm - Diamètre à hauteur de poitrine de l'arbre en cm
 #'     \item ht - Hauteur de l'arbre en m

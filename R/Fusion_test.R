@@ -3,7 +3,6 @@
 #PropEPX <- fread("C:/Users/boini5/OneDrive - BuroVirtuel/Bureau/MRNF Projects/OutilsDRF/data-raw/PropEPX.csv")
 #artemis_test <- SortieSybille(Result, nom_grade1 = "pate", long_grade1 = 4, diam_grade1 = 8) -> Ceci calcule le fichier résultat voulu
 
-
 SortieSybille <- function(Data, dhs = 0.15, nom_grade1 = NA, long_grade1 = NA, diam_grade1 = NA, nom_grade2 = NA, long_grade2 = NA, diam_grade2 = NA,
                           nom_grade3 = NA, long_grade3 = NA, diam_grade3 = NA) {
 
@@ -24,6 +23,7 @@ SortieSybille <- function(Data, dhs = 0.15, nom_grade1 = NA, long_grade1 = NA, d
   # Faire le merge sur Veg_Pot
   Data <- merge(Data, PropEPX_copy, by = "Veg_Pot", all.x = TRUE)
 
+  Data[Espece == "" | trimws(Espece) == "", Espece := NA]
   # Appliquer la logique pour les différents cas
   Data_temp <- Data[, EssenceFinale := ifelse(
     #
@@ -38,7 +38,7 @@ SortieSybille <- function(Data, dhs = 0.15, nom_grade1 = NA, long_grade1 = NA, d
 
   # Renommer les colonnes pour préparer le Data dans Sybille
   setnames(Data_temp, c("Veg_Pot", "PlacetteID", "DHPcm", "Altitude", "hauteur_pred", "origTreeID", "EssenceFinale", "Cl_Drai"),
-           c("veg_pot", "id_pe", "DHP_Ae", "ALTITUDE", "HAUTEUR_M", "no_arbre", "essence", "cl_drai"))
+             c("veg_pot", "id_pe", "DHP_Ae", "ALTITUDE", "HAUTEUR_M", "no_arbre", "essence", "cl_drai"))
 
   # Ajouter les colonnes manquantes et effectuer les traitements de préparation de données
   Data_temp[, HT_REELLE_M := 0]
@@ -79,7 +79,6 @@ SortieSybille <- function(Data, dhs = 0.15, nom_grade1 = NA, long_grade1 = NA, d
 
   merged_data[, c("PropEPB", "HT_REELLE_M", "DHP_Ae", "essence", "ht", "st_ha", "nbTi_ha") := NULL]
 
-  #Retour de sortie sybille, changer pour data_treated si on beut un fichier pour tester calcul_vol_bille
   return(merged_data)
 
 }

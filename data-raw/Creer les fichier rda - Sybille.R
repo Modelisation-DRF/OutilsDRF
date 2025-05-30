@@ -488,21 +488,18 @@ data_diam9 <- data.frame(essence=rep(c('BOP','EPB','EPN','EPR','PEG','PET','PIB'
                          long_grade2 = 6,
                          diam_grade2 = 5)
 
-data_diam10 <- data.frame(essence=rep(c('BOP','EPB','EPN','EPR','PEG','PET','PIB','PIG','SAB','THO','ERS'), 50),
+data_diam10 <- data.frame(essence=rep(c("EPB"), 550),
                          id_pe = seq(1, 550, 1),
                          no_arbre = seq(1, 550, 1),
                          sdom_bio = rep(c('2EST','2OUEST','3EST','3OUEST','4EST','4OUEST','5EST','5OUEST','6EST','6OUEST','1'), 50),
                          cl_drai = rep(c('2','4','1','3','5','6','0','1','2','3','4'), 50),
                          veg_pot = rep(c('MS2','RE3','MJ2','FE2','RE2','RE1','MJ1','RB2','MS1','RS2','FE2'), 50),
                          DHP_Ae = rep(150, 550),
-                         HT_REELLE_M = rep(1, 550),
+                         HT_REELLE_M = rep(5, 550),
                          HAUTEUR_M = rep(10, 550),
                          nbTi_ha = 2000,
                          st_ha = 15,
-                         ALTITUDE = 200,
-                         nom_grade1 = "sciage court",
-                         long_grade1 = NA,
-                         diam_grade1 = 10)
+                         ALTITUDE = 200)
 
 data_diam11 <- data.frame(essence=rep(c('BOP','EPB','EPN','EPR','PEG','PET','PIG','SAB','THO'), 100),
                                         id_pe = seq(1,900,1),
@@ -553,7 +550,57 @@ data_diam13 <- data.frame(essence = c('BOP','BOP','BOP'),
                           ALTITUDE = NA,
                           Annee = rep(2010, 3))
 
+data1 <- data.frame(essence = rep("EPB", 22),
+                   id_pe = rep(1, 22),
+                   no_arbre = rep(1, 22),
+                   sdom_bio = rep("3EST", 22),
+                   cl_drai = rep(3, 22),
+                   veg_pot = rep('FE2', 22),
+                   DHP_Ae = rep(150, 22),
+                   HT_REELLE_M = c(0.15, 0.77, 1.39, 2.01, 2.63, 3.26, 3.88, 4.50, 5.12, 5.75, 6.37, 6.99, 7.61, 8.23, 8.86, 9.48, 10.10, 10.72, 11.35, 11.97, 12.59, 12.90),
+                   HAUTEUR_M = rep(12.90, 22),
+                   nbTi_ha = rep(375, 22),
+                   st_ha = rep(6.626797, 22),
+                   ALTITUDE = rep(250, 22))
 
+data2 <- data.frame(essence = rep("BOP", 29),
+                    id_pe = rep(1, 29),
+                    no_arbre = rep(1, 29),
+                    sdom_bio = rep("3EST", 29),
+                    cl_drai = rep(3, 29),
+                    veg_pot = rep('FE2', 29),
+                    DHP_Ae = rep(150, 29),
+                    HT_REELLE_M = c(0.15, 0.772, 1.394, 2.016, 2.639, 3.261, 3.883, 4.506, 5.128, 5.750, 6.373, 6.995, 7.617, 8.239, 8.862, 9.484, 10.10, 10.72, 11.35, 11.97, 12.59, 13.21, 13.84, 14.46, 15.08, 15.70, 16.32, 16.95, 17.46),
+                    HAUTEUR_M = rep(17.465, 29),
+                    nbTi_ha = rep(375, 29),
+                    st_ha = rep(6.626797, 29),
+                    ALTITUDE = rep(250, 29))
+
+data3 <- data.frame(essence = rep("BOP", 26),
+                    id_pe = rep(1, 26),
+                    no_arbre = rep(1, 26),
+                    sdom_bio = rep("3EST", 26),
+                    cl_drai = rep(3, 26),
+                    veg_pot = rep('FE2', 26),
+                    DHP_Ae = rep(112.56, 26),
+                    HT_REELLE_M = c(0.15, 0.772, 1.394, 2.016, 2.639, 3.261, 3.883, 4.506, 5.128, 5.750, 6.373, 6.995, 7.617, 8.239, 8.862, 9.484, 10.10, 10.72, 11.35, 11.97, 12.59, 13.21, 13.84, 14.46, 15.08, 15.45),
+                    HAUTEUR_M = rep(15.45, 26),
+                    nbTi_ha = rep(375, 26),
+                    st_ha = rep(6.626797, 26),
+                    ALTITUDE = rep(250, 26))
+
+data4 <- data.frame(essence = rep("EPB", 23),
+                    id_pe = rep(1, 23),
+                    no_arbre = rep(1, 23),
+                    sdom_bio = rep("3EST", 23),
+                    cl_drai = rep(3, 23),
+                    veg_pot = rep('MJ1', 23),
+                    DHP_Ae = rep(150, 23),
+                    HT_REELLE_M = c(0.15, 0.772, 1.394, 2.016, 2.639, 3.261, 3.883, 4.506, 5.128, 5.750, 6.373, 6.995, 7.617, 8.239, 8.862, 9.484, 10.10, 10.72, 11.35, 11.97, 12.59, 13.21, 13.29),
+                    HAUTEUR_M = rep(13.29, 23),
+                    nbTi_ha = rep(400, 23),
+                    st_ha = rep(7.068, 23),
+                    ALTITUDE = rep(250, 23))
 
 
 #usethis::use_data(data_diam4, data_diam5, data_diam6, data_diam7, data_diam8, data_diam9, data_diam10, data_diam11, data_diam12,

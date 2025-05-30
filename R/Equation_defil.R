@@ -348,5 +348,3 @@ get_diam <- function(fic) {
     return(data.table())  # Retourne une data.table vide si aucun résultat
   }
 }
-
-#get_diam(data_diam13)

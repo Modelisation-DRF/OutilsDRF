@@ -104,13 +104,8 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
   # Conversion en data.table pour optimiser les opérations
   setDT(fichier_billes)
 
-  # Drapeau pour Annee fichier original:
-  flag_annee <- "Annee" %in% names(fichier_billes)
-
-  # Créer la colonne Annee si elle est présente
-  if(!flag_annee) {
-    fichier_billes[, Annee := 0]
-  }
+  # Drapeau pour vérifier si Annee dans colonne de fichier_billes(que l'on va réutiliser tout au long(à améliorer lorsque possible))
+  has_annee <- "Annee" %in% names(fichier_billes)
 
   # Initialisation de la table de résultats
   data_billes <- data.table()
@@ -207,12 +202,13 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
   # S'assure que le résultat est toujours une data.table
   setDT(data_filtre)
 
-  #On récupère les arbres qui ne sont pas dans les essences d'arbres valides
+  # On récupère les arbres qui ne sont pas dans les essences d'arbres valides
   data_filtre_NA <- fichier_billes[!(essence %in% defil_liste_ess)]
 
-  #Au cas où on aurait un fichier qu'avec des essences d'arbres non-valides
+  # Au cas où on aurait un fichier qu'avec des essences d'arbres non-valides
   if(nrow(data_filtre_NA) > 0) {
-    data_incomplete <- data_filtre_NA[, .(id_pe = id_pe,
+    if(has_annee) {
+      data_incomplete <- data_filtre_NA[, .(id_pe = id_pe,
                                             Annee = Annee,
                                             no_arbre = no_arbre,
                                             dhpcm = DHP_Ae / ratio_cm_mm,
@@ -221,10 +217,19 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
                                             grade_bille = as.character(NA),
                                             diam_fb_cm = as.numeric(NA),
                                             long_bille_pied = as.numeric(NA)
-                                      )]
-
+      )]
+    } else {
+      data_incomplete <- data_filtre_NA[, .(id_pe = id_pe,
+                                            no_arbre = no_arbre,
+                                            dhpcm = DHP_Ae / ratio_cm_mm,
+                                            ht = HAUTEUR_M,
+                                            vol_bille_dm3 = as.numeric(NA),
+                                            grade_bille = as.character(NA),
+                                            diam_fb_cm = as.numeric(NA),
+                                            long_bille_pied = as.numeric(NA)
+      )]
+    }
   }
-
   # Commence le traitement uniquement s'il y a des données après filtrage
   if (nrow(data_filtre) > 0) {
 
@@ -235,10 +240,9 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
 
     # Création d'un identifiant de groupe unique pour chaque arbre
     # Cela permet de traiter les arbres individuellement tout en gardant un lien avec les données d'origine
-    data_filtre[, group_id := .I]
+    setkey(data_filtre, essence)
 
-    # On crée une correspondance entre l'id unique créé et Annee
-    correspondance_annee <- data_filtre[, .(group_id, Annee)]
+    data_filtre[, group_id := .I]
 
     # Division de chaque arbre en sections de 2 pieds (convertis en mètres)
     # Pour chaque arbre (group_id), on crée une séquence de hauteurs, de la souche jusqu'à la hauteur totale
@@ -254,27 +258,61 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
 
     # Jointure pour récupérer les informations nécessaires de l'arbre pour chaque section
     # On garde uniquement les colonnes nécessaires au calcul du diamètre
-    data_all_sections <- data_all_sections[data_filtre,
-                                           on = "group_id",
-                                           .(essence, group_id, id_pe, no_arbre, sdom_bio, cl_drai, veg_pot, DHP_Ae,
-                                             HAUTEUR_M, nbTi_ha, st_ha, ALTITUDE, HT_REELLE_M)]
+    if(has_annee) {
+      data_all_sections <- data_all_sections[data_filtre,
+                                             on = "group_id",
+                                             .(essence, group_id, id_pe, Annee, no_arbre, sdom_bio, cl_drai, veg_pot, DHP_Ae,
+                                               HAUTEUR_M, nbTi_ha, st_ha, ALTITUDE, HT_REELLE_M)]
+    } else {
+      data_all_sections <- data_all_sections[data_filtre,
+                                             on = "group_id",
+                                             .(essence, group_id, id_pe, no_arbre, sdom_bio, cl_drai, veg_pot, DHP_Ae,
+                                               HAUTEUR_M, nbTi_ha, st_ha, ALTITUDE, HT_REELLE_M)]
+    }
 
     # Calcul du diamètre prédit à chaque hauteur de section pour tous les arbres
     # Utilise la fonction get_diam qui applique des modèles de défilement
+    # Traitement avec merge pour réajuster les lignes lors du retour de get_diam(bugfix)
+    original_sections <- copy(data_all_sections)
 
     diam_all_sections <- get_diam(data_all_sections)
 
-    # Conversion du diamètre prédit de mm² en mètres
-    # pred_mm2_corr est en mm², on prend la racine carrée puis on convertit en mètres
-    data_all_sections[, DIAM_PREDICT := diam_all_sections[, sqrt(pred_mm2_corr) / ratio_mm_metre]]
+    if(has_annee) {
+      final_data <- merge(original_sections,
+                          diam_all_sections[, .(group_id, id_pe, Annee, no_arbre, HT_REELLE_M, pred_mm2_corr)],
+                          by = c("group_id", "id_pe", "Annee", "no_arbre", "HT_REELLE_M"),
+                          all.x = TRUE)
+    } else {
+      final_data <- merge(original_sections,
+                          diam_all_sections[, .(group_id, id_pe, no_arbre, HT_REELLE_M, pred_mm2_corr)],
+                          by = c("group_id", "id_pe", "no_arbre", "HT_REELLE_M"),
+                          all.x = TRUE)
+    }
 
-    # Extraction des colonnes essentielles pour l'algorithme de sélection des billes
-    data_treatment <- data_all_sections[, .(
-      id_pe = id_pe,
-      no_arbre = no_arbre,
-      HT_REELLE_M = HT_REELLE_M,
-      DIAM_PREDICT = DIAM_PREDICT
-    ), by = group_id]
+    # Ajustement du diamètre avec la valeur en mètres
+    final_data[, DIAM_PREDICT := sqrt(pred_mm2_corr) / ratio_mm_metre]
+
+    # Libérez l'espace à cause de la copie original_sections
+    rm(original_sections)
+    gc()
+
+    # Continuer avec final_data
+    if(has_annee) {
+      data_treatment <- final_data[, .(
+        id_pe = id_pe,
+        Annee = Annee,  # Add this line
+        no_arbre = no_arbre,
+        HT_REELLE_M = HT_REELLE_M,
+        DIAM_PREDICT = DIAM_PREDICT
+      ), by = group_id]
+    } else {
+      data_treatment <- final_data[, .(
+        id_pe = id_pe,
+        no_arbre = no_arbre,
+        HT_REELLE_M = HT_REELLE_M,
+        DIAM_PREDICT = DIAM_PREDICT
+      ), by = group_id]
+    }
 
     # Calcul du volume pour chaque section d'arbre
     # - diam_hauteur_fb: diamètre au fin bout (à l'extrémité de la section)
@@ -579,23 +617,31 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
       result
     }]
 
-    # On crée une table temporaire avec les colonnes nécessaires à la table finale
-    final_join <- unique(data_filtre[, .(group_id, DHP_Ae, HAUTEUR_M)])
+    #On crée une table temporaire avec les colonnes nécessaires à la table finale
+    if(has_annee) {
+      final_join <- unique(data_filtre[, .(group_id, Annee, DHP_Ae, HAUTEUR_M)])
+    } else {
+      final_join <- unique(data_filtre[, .(group_id, DHP_Ae, HAUTEUR_M)])
+    }
     setkey(final_join, group_id)  # Set key for faster joins
 
-    # On fait un join avec les colonnes DHP_Ae et HAUTEUR_M pour la table finale
-    cuts_data[final_join, `:=`(
-      DHP_Ae = i.DHP_Ae,
-      HAUTEUR_M = i.HAUTEUR_M
-    ), on = "group_id"]
-
-    # On récupère l'Annee si elle est présente pour la table finale
-    cuts_data <- merge(cuts_data, correspondance_annee, by = "group_id", all.x = TRUE)
+    #On fait un join avec les colonnes DHP_Ae et HAUTEUR_M pour la table finale
+    if(has_annee) {
+      cuts_data[final_join, `:=`(
+        Annee = i.Annee,  # Add this line
+        DHP_Ae = i.DHP_Ae,
+        HAUTEUR_M = i.HAUTEUR_M
+      ), on = "group_id"]
+    } else {
+      cuts_data[final_join, `:=`(
+        DHP_Ae = i.DHP_Ae,
+        HAUTEUR_M = i.HAUTEUR_M
+      ), on = "group_id"]
+    }
 
     # Nettoie les données et garde seulement les colonnes essentielles
     cuts_data[, `:=`(
       id_pe = id_pe,
-      Annee = Annee,
       no_arbre = no_arbre,
       dhpcm = DHP_Ae,
       ht = HAUTEUR_M,
@@ -610,10 +656,17 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
     # - Ajuste avec des valeurs de conversions différentes colonnes pour obtenir les bons résultats à l'écran
     # - Ajuste la valeur de diam_fb_cm à 0 si besoin
     # - Remultiplie les volumes par le facteur d'échelle
-    data_complete <- cuts_data[!is.na(volume) & !is.na(id_pe)& !is.na(Annee) & !is.na(no_arbre) & !is.na(DHP_Ae) & !is.na(ht)
-                               & !is.na(grade_bille) & volume > 0,
-                               .(id_pe, Annee, no_arbre, dhpcm = dhpcm / ratio_cm_mm , ht, vol_bille_dm3 = volume * scale,
-                                 grade_bille, diam_fb_cm = fifelse(diam_fb_cm * ratio_cm_metre < 0.001, 0, diam_fb_cm * ratio_cm_metre), long_bille_pied)]
+    if(has_annee) {
+      data_complete <- cuts_data[!is.na(volume) & !is.na(id_pe) & !is.na(no_arbre) & !is.na(DHP_Ae) & !is.na(ht)
+                                 & !is.na(grade_bille) & volume > 0,
+                                 .(id_pe, Annee, no_arbre, dhpcm = dhpcm / ratio_cm_mm , ht, vol_bille_dm3 = volume * scale,
+                                   grade_bille, diam_fb_cm = fifelse(diam_fb_cm * ratio_cm_metre < 0.001, 0, diam_fb_cm * ratio_cm_metre), long_bille_pied)]
+    } else {
+      data_complete <- cuts_data[!is.na(volume) & !is.na(id_pe) & !is.na(no_arbre) & !is.na(DHP_Ae) & !is.na(ht)
+                                 & !is.na(grade_bille) & volume > 0,
+                                 .(id_pe, no_arbre, dhpcm = dhpcm / ratio_cm_mm , ht, vol_bille_dm3 = volume * scale,
+                                   grade_bille, diam_fb_cm = fifelse(diam_fb_cm * ratio_cm_metre < 0.001, 0, diam_fb_cm * ratio_cm_metre), long_bille_pied)]
+    }
   }
 
   #Si data_incomplete existe, on la retourne, et si data_complete existe, les données seront effacées et réécrite par le code du bloc suivant.
@@ -623,42 +676,57 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
 
   if (exists("data_complete")) {
     # Identifier les combinaisons id_pe/no_arbre sans billes
-    combinaisons_sans_billes <- unique(fichier_billes[, .(id_pe, no_arbre)])[
-      !unique(data_complete[, .(id_pe, no_arbre)]),
-      on = .(id_pe, no_arbre)
-    ]
+    if(has_annee) {
+      combinaisons_sans_billes <- unique(fichier_billes[, .(id_pe, Annee, no_arbre)])[
+        !unique(data_complete[, .(id_pe, Annee, no_arbre)]),
+        on = .(id_pe, Annee, no_arbre)
+      ]
 
-    # Récupérer les lignes de fichier_billes(fichier de départ) correspondant à ces combinaisons
-    data_no_bille <- fichier_billes[
-      combinaisons_sans_billes,
-      on = .(id_pe, no_arbre),
-      .(
-        id_pe = id_pe,
-        Annee = Annee,
-        no_arbre = no_arbre,
-        dhpcm = DHP_Ae / ratio_cm_mm,
-        ht = HAUTEUR_M,
-        vol_bille_dm3 = as.numeric(NA),
-        grade_bille = as.character(NA),
-        diam_fb_cm = as.numeric(NA),
-        long_bille_pied = as.numeric(NA)
-      )
-    ]
+      data_no_bille <- fichier_billes[
+        combinaisons_sans_billes,
+        on = .(id_pe, Annee, no_arbre),
+        .(
+          id_pe = id_pe,
+          Annee = Annee,  # Add this line
+          no_arbre = no_arbre,
+          dhpcm = DHP_Ae / ratio_cm_mm,
+          ht = HAUTEUR_M,
+          vol_bille_dm3 = as.numeric(NA),
+          grade_bille = as.character(NA),
+          diam_fb_cm = as.numeric(NA),
+          long_bille_pied = as.numeric(NA)
+        )
+      ]
+    } else {
+      combinaisons_sans_billes <- unique(fichier_billes[, .(id_pe, no_arbre)])[
+        !unique(data_complete[, .(id_pe, no_arbre)]),
+        on = .(id_pe, no_arbre)
+      ]
 
-    # Concaténation des différentes tables(présente ou non)
+      data_no_bille <- fichier_billes[
+        combinaisons_sans_billes,
+        on = .(id_pe, no_arbre),
+        .(
+          id_pe = id_pe,
+          no_arbre = no_arbre,
+          dhpcm = DHP_Ae / ratio_cm_mm,
+          ht = HAUTEUR_M,
+          vol_bille_dm3 = as.numeric(NA),
+          grade_bille = as.character(NA),
+          diam_fb_cm = as.numeric(NA),
+          long_bille_pied = as.numeric(NA)
+        )
+      ]
+    }
+
+    #Concaténation des différentes tables(présente ou non)
     data_billes <- rbindlist(list(data_complete, data_no_bille), fill = TRUE)
-  }
-
-  # Si le drapeau est à faux(donc Annee n'est pas dans les données), on enlève Annee
-  if(!flag_annee && "Annee" %in% names(data_billes)) {
-    data_billes[, Annee := NULL]
   }
 
   # Retourne la table finale des billes avec leurs volumes
   return(data_billes)
 }
-
 ##################################################
 #tic()
-#result1 <- calcul_vol_bille(data_diam13, dhs = 0.15, nom_grade1 = "sciage long", long_grade1 = 4, diam_grade1 = 8)
+#result_test <- calcul_vol_bille(data_diam13, dhs = 0.15, nom_grade1 = "sciage long", long_grade1 = 4, diam_grade1 = 8)
 #toc()

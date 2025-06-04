@@ -603,9 +603,9 @@ data4 <- data.frame(essence = rep("EPB", 23),
                     ALTITUDE = rep(250, 23))
 
 
-#usethis::use_data(data_diam4, data_diam5, data_diam6, data_diam7, data_diam8, data_diam9, data_diam10, data_diam11, data_diam12,
-#                  defil_liste_ess,
-#                  overwrite = TRUE,
-#                  internal = FALSE)
+usethis::use_data(data_diam4, data_diam5, data_diam6, data_diam7, data_diam8, data_diam9, data_diam10, data_diam11, data_diam12,
+                  defil_liste_ess,
+                  overwrite = TRUE,
+                  internal = FALSE)
 
 # ces fichiers seront sous data/ et toujours accessible quand le package est loadé

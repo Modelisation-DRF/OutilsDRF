@@ -128,23 +128,23 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
   factor <- as.double(1 / 8 * 1000)
 
   # Vérification des valeures entrées par l'utilisateur
-  if (!is.character(nom_grade1) && !is.na(nom_grade1)) stop("Erreur: nom_grade1 doit être une chaîne de caractère")
-  if (!is.numeric(long_grade1) && !is.na(long_grade1)) stop("Erreur: long_grade1 doit être une valeur numérique")
-  if (!is.numeric(diam_grade1) && !is.na(diam_grade1)) stop("Erreur: diam_grade1 doit être une valeur numérique")
-  if (long_grade1 <= 0 && !is.na(long_grade1)) stop("Erreur: long_grade1 doit être une valeur positive")
-  if (diam_grade1 < 0 && !is.na(diam_grade1)) stop("Erreur: diam_grade1 doit être une valeur positive")
+  if (!is.character(nom_grade1) && !is.na(nom_grade1)) stop("Le nom du grade 1 doit être une chaîne de caractère")
+  if (!is.numeric(long_grade1) && !is.na(long_grade1)) stop("La longueur du type 1 doit être une valeur numérique")
+  if (!is.numeric(diam_grade1) && !is.na(diam_grade1)) stop("Le diamètre du type 1 doit être une valeur numérique")
+  if (long_grade1 <= 0 && !is.na(long_grade1)) stop("La longueur du type 1 doit être une valeur positive")
+  if (diam_grade1 < 0 && !is.na(diam_grade1)) stop("Le diamètre du type 1 doit être une valeur positive")
 
-  if (!is.character(nom_grade2) && !is.na(nom_grade2)) stop("Erreur: nom_grade2 doit être une chaîne de caractère")
-  if (!is.numeric(long_grade2) && !is.na(long_grade2)) stop("Erreur: long_grade2 doit être une valeur numérique")
-  if (!is.numeric(diam_grade2) && !is.na(diam_grade2)) stop("Erreur: diam_grade2 doit être une valeur numérique")
-  if (long_grade2 <= 0 && !is.na(long_grade2)) stop("Erreur: long_grade2 doit être une valeur positive")
-  if (diam_grade2 < 0 && !is.na(diam_grade2)) stop("Erreur: diam_grade2 doit être une valeur positive")
+  if (!is.character(nom_grade2) && !is.na(nom_grade2)) stop("Le nom du grade 2 doit être une chaîne de caractère")
+  if (!is.numeric(long_grade2) && !is.na(long_grade2)) stop("La longueur du type 2 doit être une valeur numérique")
+  if (!is.numeric(diam_grade2) && !is.na(diam_grade2)) stop("Le diamètre du type 2 doit être une valeur numérique")
+  if (long_grade2 <= 0 && !is.na(long_grade2)) stop("La longueur du type  doit être une valeur positive > 0 ou NA")
+  if (diam_grade2 < 0 && !is.na(diam_grade2)) stop("Le diamètre du type 2 doit être une valeur positive >= 0")
 
-  if (!is.character(nom_grade3) && !is.na(nom_grade3)) stop("Erreur: nom_grade3 doit être une chaîne de caractère")
-  if (!is.numeric(long_grade3) && !is.na(long_grade3)) stop("Erreur: long_grade3 doit être une valeur numérique")
-  if (!is.numeric(diam_grade3) && !is.na(diam_grade3)) stop("Erreur: diam_grade3 doit être une valeur numérique")
-  if (long_grade3 <= 0 && !is.na(long_grade3)) stop("Erreur: long_grade3 doit être une valeur positive")
-  if (diam_grade3 < 0 && !is.na(diam_grade3)) stop("Erreur: diam_grade3 doit être une valeur positive")
+  if (!is.character(nom_grade3) && !is.na(nom_grade3)) stop("Le nom du grade 3 doit être une chaîne de caractère")
+  if (!is.numeric(long_grade3) && !is.na(long_grade3)) stop("La longueur du type 3 doit être une valeur numérique")
+  if (!is.numeric(diam_grade3) && !is.na(diam_grade3)) stop("Le diamètre du type 3 doit être une valeur numérique")
+  if (long_grade3 <= 0 && !is.na(long_grade3)) stop("La longueur du type3 doit être une valeur positive > 0 ou NA")
+  if (diam_grade3 < 0 && !is.na(diam_grade3)) stop("Le diamètre du type 3 doit être une valeur positive >= 0")
 
   if (!is.numeric(dhs) && dhs <= 0) stop("Erreur: dhs doit être une valeur numérique positive")
 
@@ -174,18 +174,6 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
 
   if (is.na(diam_grade2) && !is.na(diam_grade3)) {
     stop("Erreur: Le cas où diam_grade2 est indéfini et diam_grade3 est défini n'est pas valide.")
-  }
-
-  if ((is.na(nom_grade1) | is.na(long_grade1) | is.na(diam_grade1)) & !((is.na(nom_grade1)) & (is.na(long_grade1)) & (is.na(diam_grade1)))) {
-    stop("Erreur: Une des 3 valeurs pour le type 1 est manquante.")
-  }
-
-  if ((is.na(nom_grade2) | is.na(long_grade2) | is.na(diam_grade2)) & !((is.na(nom_grade2)) & (is.na(long_grade2)) & (is.na(diam_grade2)))) {
-    stop("Erreur: Une ou deux des 3 valeurs pour le type 2 est manquante.")
-  }
-
-  if ((is.na(nom_grade3) | is.na(long_grade3) | is.na(diam_grade3)) & !((is.na(nom_grade3)) & (is.na(long_grade3)) & (is.na(diam_grade3)))) {
-    stop("Erreur: Une ou deux des 3 valeurs pour le type 3 est manquante.")
   }
 
   # Remplacer 0 par une valeur minimale positive afin de ne pas dépasser la dernière ligne

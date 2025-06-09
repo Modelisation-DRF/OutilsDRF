@@ -45,7 +45,7 @@ SortieSybille <- function(Data, dhs = 0.15, nom_grade1 = NA, long_grade1 = NA, d
   # Multiplier par 10 pour satisfaire le calcul avec DHP_Ae
   Data_temp[, DHP_Ae := DHP_Ae * 10]
   # Prendre que le premier caractère de cl_drai
-  Data_temp[, cl_drai := str_sub(cl_drai, 1, 1)]
+  Data_temp[, cl_drai := substr(cl_drai, 1, 1)]
   # Tranformation du caractère E ou O en Est/Ouest pour sdom_bio si besoin, sinon on ne fait rien
   Data_temp[, cl_drai := as.character(cl_drai)]
   Data_temp[, sdom_bio := ifelse(

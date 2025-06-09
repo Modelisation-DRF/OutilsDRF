@@ -176,6 +176,18 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
     stop("Erreur: Le cas où diam_grade2 est indéfini et diam_grade3 est défini n'est pas valide.")
   }
 
+  if ((is.na(nom_grade1) | is.na(long_grade1) | is.na(diam_grade1)) & !((is.na(nom_grade1)) & (is.na(long_grade1)) & (is.na(diam_grade1)))) {
+    stop("Erreur: Une des 3 valeurs pour le type 1 est manquante.")
+  }
+
+  if ((is.na(nom_grade2) | is.na(long_grade2) | is.na(diam_grade2)) & !((is.na(nom_grade2)) & (is.na(long_grade2)) & (is.na(diam_grade2)))) {
+    stop("Erreur: Une ou deux des 3 valeurs pour le type 2 est manquante.")
+  }
+
+  if ((is.na(nom_grade3) | is.na(long_grade3) | is.na(diam_grade3)) & !((is.na(nom_grade3)) & (is.na(long_grade3)) & (is.na(diam_grade3)))) {
+    stop("Erreur: Une ou deux des 3 valeurs pour le type 3 est manquante.")
+  }
+
   # Remplacer 0 par une valeur minimale positive afin de ne pas dépasser la dernière ligne
   if (!is.na(diam_grade1) && diam_grade1 == 0) {
     diam_grade1 <- 0.00001
@@ -728,5 +740,5 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
 }
 ##################################################
 #tic()
-#result_test <- calcul_vol_bille(data_diam13, dhs = 0.15, nom_grade1 = "sciage long", long_grade1 = 4, diam_grade1 = 8)
+result_test <- calcul_vol_bille(data_diam13, dhs = 0.15, nom_grade1 = "sciage long", long_grade1 = 4, diam_grade1 = 8, nom_grade2 = "sciage long", long_grade2 = , diam_grade2 = 8)
 #toc()

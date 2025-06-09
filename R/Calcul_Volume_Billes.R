@@ -740,5 +740,5 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
 }
 ##################################################
 #tic()
-result_test <- calcul_vol_bille(data_diam13, dhs = 0.15, nom_grade1 = "sciage long", long_grade1 = 4, diam_grade1 = 8, nom_grade2 = "sciage long", long_grade2 = , diam_grade2 = 8)
+#result_test <- calcul_vol_bille(data_diam13, dhs = 0.15, nom_grade1 = "sciage long", long_grade1 = 4, diam_grade1 = 8, nom_grade2 = "sciage long", long_grade2 = , diam_grade2 = 8)
 #toc()

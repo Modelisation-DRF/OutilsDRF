@@ -146,9 +146,16 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
   if (long_grade3 <= 0 && !is.na(long_grade3)) stop("La longueur du type 3 doit être une valeur positive > 0 ou NA")
   if (diam_grade3 < 0 && !is.na(diam_grade3)) stop("Le diamètre du type 3 doit être une valeur positive >= 0")
 
-  if(is.na(long_grade1) & is.na(diam_grade1)) stop("Les paramètres longueur et diamètre du type 1 ne peuvent pas être NA en même temps")
-  if(is.na(long_grade2) & is.na(diam_grade2)) stop("Les paramètres longueur et diamètre du type 2 ne peuvent pas être NA en même temps")
-  if(is.na(long_grade3) & is.na(diam_grade3)) stop("Les paramètres longueur et diamètre du type 3 ne peuvent pas être NA en même temps")
+
+  if(!is.na(nom_grade1) & is.na(long_grade1) & is.na(diam_grade1)) {
+    stop("Si nom_grade1 est défini, au moins un des paramètres longueur ou diamètre du type 1 doit être donné")
+  }
+  if(!is.na(nom_grade2) & is.na(long_grade2) & is.na(diam_grade2)) {
+    stop("Si nom_grade2 est défini, au moins un des paramètres longueur ou diamètre du type 2 doit être donné")
+  }
+  if(!is.na(nom_grade3) & is.na(long_grade3) & is.na(diam_grade3)) {
+    stop("Si nom_grade3 est défini, au moins un des paramètres longueur ou diamètre du type 3 doit être donné")
+  }
 
   if (!is.numeric(dhs) && dhs <= 0) stop("Le dhs doit être une valeur numérique positive")
 
@@ -732,5 +739,5 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
 }
 ##################################################
 #tic()
-#result_test <- calcul_vol_bille(data_diam13, dhs = 0.15, nom_grade1 = "sciage long", long_grade1 = NA, diam_grade1 = NA)
+#result_test <- calcul_vol_bille(data_diam13, dhs = 0.15, nom_grade1 = "sciage long", long_grade1 = 4, diam_grade1 = NA)
 #toc()

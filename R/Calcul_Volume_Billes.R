@@ -390,6 +390,7 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
       # Drapeau nécessaire pour ajuster les indices des cas spéciaux consécutifs
       special_case1_accessed <- FALSE
       special_case2_accessed <- FALSE
+      special_case3_accessed <- FALSE
 
       # Pré-calcul des diamètres suivants pour les grades de longueur fixe
       next_diam1 <- if(has_set1 || no_diam1) {
@@ -410,7 +411,7 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
 
       while(i <= n) {
         # Détermine la position actuelle à utiliser (ajustée si un cas spécial a été détecté)
-        current_pos <- if(special_case1_accessed || special_case2_accessed) i - 1 else i
+        current_pos <- if(special_case1_accessed || special_case2_accessed || special_case3_accessed) i - 1 else i
 
         # Ajoute la position aux positions de coupe
         positions <- c(positions, current_pos)
@@ -470,8 +471,8 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
           i <- j + 1
         }
         else if(no_log3 && diam_value3 < dp[i] && !is.na(dp[i])) {
+          special_case3_accessed <- TRUE
           grade_types <- c(grade_types, nom_grade3)
-
           drop_positions <- which(dp[(i+1):n] < diam_value3)
           if(length(drop_positions) > 0) {
             j <- i + drop_positions[1] - 1
@@ -739,5 +740,7 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
 }
 ##################################################
 #tic()
-#result_test <- calcul_vol_bille(data_diam13, dhs = 0.15, nom_grade1 = "sciage long", long_grade1 = 4, diam_grade1 = NA)
+#result_test <- calcul_vol_bille(data_diam13, dhs = 0.15, nom_grade1 = "sciage long", long_grade1 = 12, diam_grade1 = 12,
+                               # nom_grade2 = "sciage mid", long_grade2 = 8, diam_grade2 = 8,
+                               # nom_grade3 = "sciage court", long_grade3 = NA, diam_grade3 = 3)
 #toc()

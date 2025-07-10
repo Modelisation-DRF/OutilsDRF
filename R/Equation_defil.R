@@ -164,7 +164,6 @@ get_modele <- function(type_modele, essence) {
 #' @import data.table
 #' @export
 
-
 get_diam <- function(fic) {
   # Assure que l'objet est bien une data.table pour optimiser les opérations
   setDT(fic)
@@ -206,7 +205,7 @@ get_diam <- function(fic) {
       models[[paste0(e, "_treeOnly")]] <- get_modele("treeOnly", e)
     } else {
       # Pour PIB, seul le modèle "treeOnly" est utilisé
-      models[["PIB_treeOnly"]] <- get_modele("treeOnly", "PIB")
+      models[["PIB_treeOnly"]] <- get_modele("treeOnly", e)
     }
   }
 
@@ -287,17 +286,44 @@ get_diam <- function(fic) {
     curr_data <- data_filtre[essence == curr_essence]
     if(nrow(curr_data) == 0) next  # Passe à l'essence suivante si aucune donnée
 
-    # RÈGLE CLAIRE : Si l'une de ces quatre variables est NA, c'est un cas incomplet
-    incomplete_mask <- is.na(curr_data$veg_pot) | is.na(curr_data$sdom_bio) |
-      is.na(curr_data$cl_drai) | is.na(curr_data$ALTITUDE)
+    # Effectue les jointures avec les tables pré-construites
+    if(!is.null(join_tables[[curr_essence]])) {
+      # Jointure pour la végétation potentielle
+      if(!is.null(join_tables[[curr_essence]][["vp"]])) {
+        setkey(curr_data, veg_pot)  # Optimise la jointure
+        # Jointure avec la table de végétation potentielle (nomatch=0 ignore les non-correspondances)
+        curr_data <- curr_data[join_tables[[curr_essence]][["vp"]], nomatch = 0]
+      }
 
-    # Sépare immédiatement les cas incomplets (avec NA) des cas potentiellement complets
-    incomplete_cases <- curr_data[incomplete_mask]
-    complete_candidates <- curr_data[!incomplete_mask]
+      # Jointure pour le sous-domaine
+      if(!is.null(join_tables[[curr_essence]][["sd"]])) {
+        setkey(curr_data, sdom_bio)
+        curr_data <- curr_data[join_tables[[curr_essence]][["sd"]], nomatch = 0]
+      }
+
+      # Jointure pour le drainage
+      if(!is.null(join_tables[[curr_essence]][["dr"]])) {
+        setkey(curr_data, cl_drai)
+        curr_data <- curr_data[join_tables[[curr_essence]][["dr"]], nomatch = 0]
+      }
+    }
+
+    # Sépare les cas complets (toutes variables disponibles) des cas incomplets
+    complete_cases <- curr_data[complete.cases(curr_data)]
+    incomplete_cases <- curr_data[!complete.cases(curr_data)]
 
     result_parts <- list()
 
-    # Traite d'abord les cas incomplets avec le modèle treeOnly
+    # Traite les cas complets avec le modèle "standAndTree"
+    if(nrow(complete_cases) > 0) {
+      model_key <- paste0(curr_essence, "_standAndTree")
+      # Prédit le diamètre au carré en mm²
+      complete_cases[, pred_mm2 := predict(models[[model_key]], newdata = .SD, level = 0)]
+      # Applique la correction de biais pour le modèle complet
+      result_parts$complete <- correction_biais("complet", complete_cases, curr_essence)
+    }
+
+    # Traite les cas incomplets avec le modèle "treeOnly"
     if(nrow(incomplete_cases) > 0) {
       model_key <- paste0(curr_essence, "_treeOnly")
       # Prédit le diamètre au carré en mm²
@@ -306,53 +332,7 @@ get_diam <- function(fic) {
       result_parts$incomplete <- correction_biais("arbre", incomplete_cases, curr_essence)
     }
 
-    # Pour les candidats complets, effectue les jointures
-    if(nrow(complete_candidates) > 0 && !is.null(join_tables[[curr_essence]])) {
-      # Jointure pour la végétation potentielle
-      if(!is.null(join_tables[[curr_essence]][["vp"]])) {
-        setkey(complete_candidates, veg_pot)
-        complete_candidates <- complete_candidates[join_tables[[curr_essence]][["vp"]], nomatch = 0]
-      }
-
-      # Jointure pour le sous-domaine
-      if(!is.null(join_tables[[curr_essence]][["sd"]])) {
-        setkey(complete_candidates, sdom_bio)
-        complete_candidates <- complete_candidates[join_tables[[curr_essence]][["sd"]], nomatch = 0]
-      }
-
-      # Jointure pour le drainage
-      if(!is.null(join_tables[[curr_essence]][["dr"]])) {
-        setkey(complete_candidates, cl_drai)
-        complete_candidates <- complete_candidates[join_tables[[curr_essence]][["dr"]], nomatch = 0]
-      }
-
-      # Maintenant vérifie si les autres variables nécessaires sont présentes
-      # pour utiliser le modèle standAndTree
-      if(nrow(complete_candidates) > 0) {
-        # Un cas est vraiment complet s'il a aussi les variables de peuplement restantes
-        truly_complete_mask <- !is.na(complete_candidates$nbTi_ha) &
-          !is.na(complete_candidates$st_ha)
-
-        truly_complete <- complete_candidates[truly_complete_mask]
-        newly_incomplete <- complete_candidates[!truly_complete_mask]
-
-        # Traite les cas vraiment complets avec standAndTree
-        if(nrow(truly_complete) > 0) {
-          model_key <- paste0(curr_essence, "_standAndTree")
-          truly_complete[, pred_mm2 := predict(models[[model_key]], newdata = .SD, level = 0)]
-          result_parts$complete <- correction_biais("complet", truly_complete, curr_essence)
-        }
-
-        # Traite les cas qui sont devenus incomplets avec treeOnly
-        if(nrow(newly_incomplete) > 0) {
-          model_key <- paste0(curr_essence, "_treeOnly")
-          newly_incomplete[, pred_mm2 := predict(models[[model_key]], newdata = .SD, level = 0)]
-          result_parts$incomplete2 <- correction_biais("arbre", newly_incomplete, curr_essence)
-        }
-      }
-    }
-
-    # Combine les résultats pour cette essence
+    # Combine les résultats des cas complets et incomplets pour cette essence
     if(length(result_parts) > 0) {
       results_list[[curr_essence]] <- rbindlist(result_parts, fill = TRUE)
     }

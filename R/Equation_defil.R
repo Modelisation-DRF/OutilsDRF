@@ -286,8 +286,15 @@ get_diam <- function(fic) {
     curr_data <- data_filtre[essence == curr_essence]
     if(nrow(curr_data) == 0) next  # Passe à l'essence suivante si aucune donnée
 
-    # Effectue les jointures avec les tables pré-construites
-    if(!is.null(join_tables[[curr_essence]])) {
+    # On fait les jointures que si nous avons toutes ces variables
+    if(!is.null(join_tables[[curr_essence]]) &&
+       !any(is.na(curr_data$sdom_bio)) &&
+       !any(is.na(curr_data$cl_drai)) &&
+       !any(is.na(curr_data$veg_pot)) &&
+       !any(is.na(curr_data$ALTITUDE)) &&
+       !any(is.na(curr_data$nbTi_ha)) &&
+       !any(is.na(curr_data$st_ha))) {
+
       # Jointure pour la végétation potentielle
       if(!is.null(join_tables[[curr_essence]][["vp"]])) {
         setkey(curr_data, veg_pot)  # Optimise la jointure

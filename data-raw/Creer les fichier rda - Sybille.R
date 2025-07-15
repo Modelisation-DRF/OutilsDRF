@@ -545,9 +545,9 @@ data_diam13 <- data.frame(essence = c('BOP','BOP','BOP'),
                           DHP_Ae = c(120, 150, 300),
                           HT_REELLE_M = rep(5, 3),
                           HAUTEUR_M = c(13, 20, 28),
-                          nbTi_ha = NA,
-                          st_ha = NA,
-                          ALTITUDE = NA,
+                          nbTi_ha = 100,
+                          st_ha = 10,
+                          ALTITUDE = 200,
                           Annee = rep(2010, 3))
 
 data1 <- data.frame(essence = rep("EPB", 22),

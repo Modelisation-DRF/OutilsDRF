@@ -40,6 +40,8 @@
 #' @param seed_value Valeur de la graine pour la génération de nombres aléatoires.
 #'   Si NULL, aucune graine n'est définie. Par défaut NULL.
 #'
+#' @param modifier Valeur de modulateur de probabilité entre -80 et 160. Par défaut 0.
+#'
 #' @return data.table. Table contenant les données d'arbres avec leur probabilité de coupe
 #'   et, en mode stochastique, une décision de coupe (OUI/NON).
 #'
@@ -61,12 +63,12 @@
 #'
 #' # Mode stochastique avec 10 itérations
 #' resultats_sto <- prob_coupe(mes_arbres, trt_coupe = 8, mode_simul = "STO",
-#'                             seed_value = 123)
+#'                             seed_value = 123, modifier = -50)
 #' }
 #'
 #' @import data.table
 #' @export
-prob_coupe <- function(data_tree, trt_coupe, mode_simul="DET", seed_value=NULL) {
+prob_coupe <- function(data_tree, trt_coupe, mode_simul="DET", seed_value=NULL, modifier = 0) {
 
   #Conditions à respecter pour la fonction:
   if (trt_coupe < 0 || trt_coupe > 18) stop("Erreur: Le traitement de coupe doit être entre 0 et 18.")
@@ -74,11 +76,7 @@ prob_coupe <- function(data_tree, trt_coupe, mode_simul="DET", seed_value=NULL) 
   if (mode_simul != "DET" && mode_simul != "STO") stop("Erreur: Le mode de simulation doit être DET(déterministe) ou
                                                        STO(stochastique).")
 
-  # if (mode_simul == "STO" && nb_iter < 2) stop("Erreur: Lorsque le mode stochastique est choisi, le nombre d'itération doit
-  #                                              être de 2 minimum.")
-  #
-  # if (mode_simul == "DET" && nb_iter != 1) stop("Erreur: Lorsque le mode déterministe est choisi, le nombre d'itération doit
-  #                                              être de 1.")
+  if (modifier < -80 || modifier > 160) stop("Erreur: Le modifier doit être entre -80 et 160.")
 
   if(!is.null(seed_value)) {
     set.seed(seed_value)
@@ -118,8 +116,20 @@ prob_coupe <- function(data_tree, trt_coupe, mode_simul="DET", seed_value=NULL) 
   data_full_table[, XB := b0 + b1_s + (b2_s + b3_s * m) * d +
                     (b4_s + b5_s * m) * d^2 + b6_s * log(N + 1) + b7_s * BA]
 
-  # Calculer la probabilité de coupe
-  data_full_table[, prob_coupe := exp(XB) / (1 + exp(XB))]
+  modifier_factor = 1
+
+  modifier_factor = modifier_factor + modifier / 100
+  if(modifier_factor != 1){
+    # Calculer la probabilité de coupe avec le modulateur
+    data_full_table[, prob_coupe := modifier_factor * (exp(XB) / (1 + exp(XB)))]
+  }
+
+  else{
+    # Calculer la probabilité de coupe
+    data_full_table[, prob_coupe := exp(XB) / (1 + exp(XB))]
+  }
+
+  data_full_table[, prob_coupe := fifelse(prob_coupe > 1, 1, fifelse(prob_coupe < 0, 0, prob_coupe))]
 
   #Si mode stochastique, on transforme le paramètre pour la coupe à "OUI" ou "NON"
   if(mode_simul == "STO"){
@@ -136,7 +146,7 @@ prob_coupe <- function(data_tree, trt_coupe, mode_simul="DET", seed_value=NULL) 
   }
 
   if(mode_simul == "STO"){
-    # Sélectionner uniquement les colonnes désirées pour le mode déterministe
+    # Sélectionner uniquement les colonnes désirées pour le mode stochastique
     cols_to_keep <- c(nom_var, "prob_coupe", "COUPE")
   }
 
@@ -148,7 +158,7 @@ prob_coupe <- function(data_tree, trt_coupe, mode_simul="DET", seed_value=NULL) 
 
 ##############################################################
 
-#prob_coupe(data_tree1, 5, "DET")
+#prob_coupe(data_tree1, 5, "DET", 123, 100)
 
-#prob_coupe(data_tree2, 12, "STO", 123)
+#prob_coupe(data_tree2, 12, "STO", 123, -60)
 

@@ -161,5 +161,3 @@ prob_coupe <- function(data_tree, trt_coupe, mode_simul="DET", seed_value=NULL, 
 #prob_coupe(data_tree1, 5, "DET", 123, test_ess_df)
 
 #prob_coupe(data_tree2, 12, "STO", 123, -60)
-
-library()

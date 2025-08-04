@@ -187,13 +187,15 @@ save(list = ls(envir = temp_env), file = "R/sysdata.rda", envir = temp_env)
 rm(temp_env)
 
 data_tree1 <- data.frame(essence=rep(c("AUR", "BOP", "EPB", "CAR", "CHX"), 1),#
+                         ess_ind=rep(c("AUR", "BOP", "EPN", "CAR", "CHR"), 1),
                          id_pe = seq(1,5,1),#
                          no_arbre = rep(1,5),#
                          dhpcm = rep(35, 5),  ##
                          nbTi_ha = 2000, #/// N
                          st_ha = 15) #/// BA
 
-data_tree2 <- data.frame(essence= c("BOJ", "BOP", "EPN", "ERR", "PET", "PIB", "PIG", "SAB", "THO", "CHR", "ERS", "HEG"),#
+data_tree2 <- data.frame(essence = c("BOJ", "BOP", "EPN", "ERR", "PET", "PIB", "PIG", "SAB", "THO", "CHR", "ERS", "HEG"),
+                         ess_ind = c("AUR", "BOP", "EPN", "CAR", "CHR", NA, NA, NA, NA, NA, NA, NA),#
                          id_pe = c(1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2),
                          no_arbre = seq(1, 12, 1),#
                          dhpcm = c(12, 12, 12, 12, 24, 24, 24, 24, 24, 12, 12, 24),  ##

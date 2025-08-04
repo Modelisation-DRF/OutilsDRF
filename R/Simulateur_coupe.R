@@ -50,12 +50,11 @@ prob_coupe <- function(data_tree, trt_coupe, mode_simul="DET", seed_value=NULL, 
   # Validation du paramètre modifier
   if (!is.null(modifier)) {
     if (is.numeric(modifier) && length(modifier) == 1) {
-      # Modulation uniforme
       if (modifier < -80 || modifier > 160) stop("Erreur: Le modifier doit être entre -80 et 160.")
     } else if (is.data.frame(modifier)) {
       # Modulation par essence
-      if (!all(c("essence", "modifier") %in% names(modifier))) {
-        stop("Erreur: Le data.frame modifier doit contenir les colonnes 'essence' et 'modifier'.")
+      if (!all(c("ess_ind", "modifier") %in% names(modifier))) {
+        stop("Erreur: Le data.frame modifier doit contenir les colonnes 'ess_ind' et 'modifier'.")
       }
       if (any(modifier$modifier < -80 | modifier$modifier > 160)) {
         stop("Erreur: Toutes les valeurs de modifier doivent être entre -80 et 160.")
@@ -89,6 +88,8 @@ prob_coupe <- function(data_tree, trt_coupe, mode_simul="DET", seed_value=NULL, 
                            by = c("num_trt", "essence_coupe", "code_trt"),
                            all.x = TRUE)
 
+  print(data_full_table)
+
   # Calculer XB en utilisant l'équation
   data_full_table[, d := dhpcm - 23]
   data_full_table[, m := as.numeric(dhpcm > 23)]
@@ -116,7 +117,7 @@ prob_coupe <- function(data_tree, trt_coupe, mode_simul="DET", seed_value=NULL, 
 
       # Fusionner avec les modifiers par essence
       data_full_table <- merge(data_full_table, modifier,
-                               by = "essence", all.x = TRUE)
+                               by = "ess_ind", all.x = TRUE)
 
       # Appliquer la modulation seulement aux essences spécifiées
       data_full_table[!is.na(modifier),
@@ -153,11 +154,10 @@ prob_coupe <- function(data_tree, trt_coupe, mode_simul="DET", seed_value=NULL, 
 
 ##############################################################
 
-#test_ess_df <- mod_essence <- data.frame(
-#  essence = c("BOP", "EPB", "BOJ"),
-#  modifier = c(20, -50, 10)
+#test_ess_df <- data.frame(
+#  ess_ind = c("BOP", "CHR", "BOJ"),
+#  modifier = c(20, 10, 10)
 #)
-
-#prob_coupe(data_tree1, 5, "DET", 123, test_ess_df)
-
-#prob_coupe(data_tree2, 12, "STO", 123, -60)
+#prob_coupe(data_tree2, 1, "DET", 123, test_ess_df)
+#
+#prob_coupe(data_tree2, 1, "DET", 123, 0)

@@ -88,8 +88,6 @@ prob_coupe <- function(data_tree, trt_coupe, mode_simul="DET", seed_value=NULL, 
                            by = c("num_trt", "essence_coupe", "code_trt"),
                            all.x = TRUE)
 
-  print(data_full_table)
-
   # Calculer XB en utilisant l'équation
   data_full_table[, d := dhpcm - 23]
   data_full_table[, m := as.numeric(dhpcm > 23)]

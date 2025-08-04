@@ -147,14 +147,14 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
   if (diam_grade3 < 0 && !is.na(diam_grade3)) stop("Le diamètre du type 3 doit être une valeur positive >= 0")
 
 
-  if(!is.na(nom_grade1) & is.na(long_grade1) & is.na(diam_grade1)) {
-    stop("Si nom_grade1 est défini, au moins un des paramètres longueur ou diamètre du type 1 doit être donné")
+  if(!is.na(nom_grade1) & (is.na(long_grade1) | is.na(diam_grade1))) {
+    stop("Si nom_grade1 est défini, les paramètres longueur ET diamètre du type 1 doivent être donnés")
   }
-  if(!is.na(nom_grade2) & is.na(long_grade2) & is.na(diam_grade2)) {
-    stop("Si nom_grade2 est défini, au moins un des paramètres longueur ou diamètre du type 2 doit être donné")
+  if(!is.na(nom_grade2) & (is.na(long_grade2) | is.na(diam_grade2))) {
+    stop("Si nom_grade2 est défini, les paramètres longueur ET diamètre du type 2 doivent être donnés")
   }
-  if(!is.na(nom_grade3) & is.na(long_grade3) & is.na(diam_grade3)) {
-    stop("Si nom_grade3 est défini, au moins un des paramètres longueur ou diamètre du type 3 doit être donné")
+  if(!is.na(nom_grade3) & (is.na(long_grade3) | is.na(diam_grade3))) {
+    stop("Si nom_grade3 est défini, les paramètres longueur ET diamètre du type 3 doivent être donnés")
   }
 
   if (!is.numeric(dhs) && dhs <= 0) stop("Le dhs doit être une valeur numérique positive")

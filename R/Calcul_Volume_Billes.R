@@ -146,32 +146,31 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
   if (long_grade3 <= 0 && !is.na(long_grade3)) stop("La longueur du type 3 doit être une valeur positive > 0 ou NA")
   if (diam_grade3 < 0 && !is.na(diam_grade3)) stop("Le diamètre du type 3 doit être une valeur positive >= 0")
 
-
-  if(!is.na(nom_grade1) & is.na(diam_grade1)) {
+  if(!is.na(nom_grade1) & nom_grade1 != "" & is.na(diam_grade1)) {
     stop("Si nom_grade1 est défini, la longueur et le diamètre du type 1 doivent être donnés")
   }
   if(!is.na(diam_grade1) & (is.na(nom_grade1) | nom_grade1 == "")) {
-    stop("Si long_grade1 et diam_grade1 sont définis, le nom doit être donné")
+    stop("Si diam_grade1 est défini, le nom doit être donné")
   }
-  if(!is.null(long_grade1) & (is.na(nom_grade1) | nom_grade1 == "") & is.na(diam_grade1)) {
+  if(!is.null(long_grade1) & !is.na(long_grade1) & (is.na(nom_grade1) | nom_grade1 == "") & is.na(diam_grade1)) {
     stop("Si long_grade1 est défini, le nom et le diamètre doivent être donnés")
   }
-  if(!is.na(nom_grade2) & is.na(diam_grade2)) {
+  if(!is.na(nom_grade2) & nom_grade2 != "" & is.na(diam_grade2)) {
     stop("Si nom_grade2 est défini, la longueur et le diamètre du type 2 doivent être donnés")
   }
   if(!is.na(diam_grade2) & (is.na(nom_grade2) | nom_grade2 == "")) {
-    stop("Si long_grade2 et diam_grade2 sont définis, le nom doit être donné")
+    stop("Si diam_grade2 est défini, le nom doit être donné")
   }
-  if(!is.null(long_grade2) & (is.na(nom_grade2) | nom_grade2 == "") & is.na(diam_grade2)) {
+  if(!is.null(long_grade2) & !is.na(long_grade2) & (is.na(nom_grade2) | nom_grade2 == "") & is.na(diam_grade2)) {
     stop("Si long_grade2 est défini, le nom et le diamètre doivent être donnés")
   }
-  if(!is.na(nom_grade3) & is.na(diam_grade3)) {
-    stop("Si nom_grade3 est défini, la longueur et le diamètre du type 3 doivent être donné")
+  if(!is.na(nom_grade3) & nom_grade3 != "" & is.na(diam_grade3)) {
+    stop("Si nom_grade3 est défini, la longueur et le diamètre du type 3 doivent être donnés")
   }
   if(!is.na(diam_grade3) & (is.na(nom_grade3) | nom_grade3 == "")) {
-    stop("Si long_grade3 et diam_grade3 sont définis, le nom doit être donné")
+    stop("Si diam_grade3 est défini, le nom doit être donné")
   }
-  if(!is.null(long_grade3) & (is.na(nom_grade3) | nom_grade3 == "") & is.na(diam_grade3)) {
+  if(!is.null(long_grade3) & !is.na(long_grade3) & (is.na(nom_grade3) | nom_grade3 == "") & is.na(diam_grade3)) {
     stop("Si long_grade3 est défini, le nom et le diamètre doivent être donnés")
   }
 

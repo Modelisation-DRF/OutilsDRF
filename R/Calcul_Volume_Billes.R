@@ -328,7 +328,7 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
     if(has_annee) {
       data_treatment <- final_data[, .(
         id_pe = id_pe,
-        Annee = Annee,  # Add this line
+        Annee = Annee,
         no_arbre = no_arbre,
         HT_REELLE_M = HT_REELLE_M,
         DIAM_PREDICT = DIAM_PREDICT
@@ -652,12 +652,12 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
     } else {
       final_join <- unique(data_filtre[, .(group_id, DHP_Ae, HAUTEUR_M)])
     }
-    setkey(final_join, group_id)  # Set key for faster joins
+    setkey(final_join, group_id)
 
     #On fait un join avec les colonnes DHP_Ae et HAUTEUR_M pour la table finale
     if(has_annee) {
       cuts_data[final_join, `:=`(
-        Annee = i.Annee,  # Add this line
+        Annee = i.Annee,
         DHP_Ae = i.DHP_Ae,
         HAUTEUR_M = i.HAUTEUR_M
       ), on = "group_id"]
@@ -716,7 +716,7 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
         on = .(id_pe, Annee, no_arbre),
         .(
           id_pe = id_pe,
-          Annee = Annee,  # Add this line
+          Annee = Annee,
           no_arbre = no_arbre,
           dhpcm = DHP_Ae / ratio_cm_mm,
           ht = HAUTEUR_M,

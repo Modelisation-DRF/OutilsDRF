@@ -89,12 +89,11 @@
 #'     )
 #'
 #'     # Calcul des volumes de billes
-#'     resultats <- calcul_vol_bille(donnees_arbre, dhs = 0.2, nom_grade1 = "sciage court", long_grade1 = 8, diam_grade1 = 12, nom_grade2 = "pate",
+#'     resultats <- calcul_vol_bille(donnees_arbre, dhs = 0.2, nom_grade1 = "sciage court",
+#'     long_grade1 = 8, diam_grade1 = 12, nom_grade2 = "pate",
 #'       long_grade2 = NA, diam_grade2 = 8)
 #'   }
 #' @seealso get_diam(dans le fichier Equation_defil.R) pour le calcul des diamètres le long du tronc
-#'
-#' @import data.table
 #'
 #' @export
 
@@ -128,80 +127,80 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
   factor <- as.double(1 / 8 * 1000)
 
   # Vérification des valeures entrées par l'utilisateur
-  if (!is.character(nom_grade1) && !is.na(nom_grade1)) stop("Le nom du grade 1 doit être une chaîne de caractère")
-  if (!is.numeric(long_grade1) && !is.na(long_grade1)) stop("La longueur du type 1 doit être une valeur numérique")
-  if (!is.numeric(diam_grade1) && !is.na(diam_grade1)) stop("Le diamètre du type 1 doit être une valeur numérique")
-  if (long_grade1 <= 0 && !is.na(long_grade1)) stop("La longueur du type 1 doit être une valeur positive > 0 ou NA")
-  if (diam_grade1 < 0 && !is.na(diam_grade1)) stop("Le diamètre du type 1 doit être une valeur positive >= 0")
+  if (!is.character(nom_grade1) && !is.na(nom_grade1)) stop("Le nom du grade 1 doit etre une chaine de caractere")
+  if (!is.numeric(long_grade1) && !is.na(long_grade1)) stop("La longueur du type 1 doit etre une valeur numerique")
+  if (!is.numeric(diam_grade1) && !is.na(diam_grade1)) stop("Le diametre du type 1 doit etre une valeur numerique")
+  if (long_grade1 <= 0 && !is.na(long_grade1)) stop("La longueur du type 1 doit etre une valeur positive > 0 ou NA")
+  if (diam_grade1 < 0 && !is.na(diam_grade1)) stop("Le diametre du type 1 doit etre une valeur positive >= 0")
 
-  if (!is.character(nom_grade2) && !is.na(nom_grade2)) stop("Le nom du grade 2 doit être une chaîne de caractère")
-  if (!is.numeric(long_grade2) && !is.na(long_grade2)) stop("La longueur du type 2 doit être une valeur numérique")
-  if (!is.numeric(diam_grade2) && !is.na(diam_grade2)) stop("Le diamètre du type 2 doit être une valeur numérique")
-  if (long_grade2 <= 0 && !is.na(long_grade2)) stop("La longueur du type 2 doit être une valeur positive > 0 ou NA")
-  if (diam_grade2 < 0 && !is.na(diam_grade2)) stop("Le diamètre du type 2 doit être une valeur positive >= 0")
+  if (!is.character(nom_grade2) && !is.na(nom_grade2)) stop("Le nom du grade 2 doit etre une chaine de caractere")
+  if (!is.numeric(long_grade2) && !is.na(long_grade2)) stop("La longueur du type 2 doit etre une valeur numerique")
+  if (!is.numeric(diam_grade2) && !is.na(diam_grade2)) stop("Le diametre du type 2 doit etre une valeur numerique")
+  if (long_grade2 <= 0 && !is.na(long_grade2)) stop("La longueur du type 2 doit etre une valeur positive > 0 ou NA")
+  if (diam_grade2 < 0 && !is.na(diam_grade2)) stop("Le diametre du type 2 doit etre une valeur positive >= 0")
 
-  if (!is.character(nom_grade3) && !is.na(nom_grade3)) stop("Le nom du grade 3 doit être une chaîne de caractère")
-  if (!is.numeric(long_grade3) && !is.na(long_grade3)) stop("La longueur du type 3 doit être une valeur numérique")
-  if (!is.numeric(diam_grade3) && !is.na(diam_grade3)) stop("Le diamètre du type 3 doit être une valeur numérique")
-  if (long_grade3 <= 0 && !is.na(long_grade3)) stop("La longueur du type 3 doit être une valeur positive > 0 ou NA")
-  if (diam_grade3 < 0 && !is.na(diam_grade3)) stop("Le diamètre du type 3 doit être une valeur positive >= 0")
+  if (!is.character(nom_grade3) && !is.na(nom_grade3)) stop("Le nom du grade 3 doit etre une chaine de caractere")
+  if (!is.numeric(long_grade3) && !is.na(long_grade3)) stop("La longueur du type 3 doit etre une valeur numerique")
+  if (!is.numeric(diam_grade3) && !is.na(diam_grade3)) stop("Le diametre du type 3 doit etre une valeur numerique")
+  if (long_grade3 <= 0 && !is.na(long_grade3)) stop("La longueur du type 3 doit etre une valeur positive > 0 ou NA")
+  if (diam_grade3 < 0 && !is.na(diam_grade3)) stop("Le diametre du type 3 doit etre une valeur positive >= 0")
 
   if(!is.na(nom_grade1) & nom_grade1 != "" & is.na(diam_grade1)) {
-    stop("Si nom_grade1 est défini, la longueur et le diamètre du type 1 doivent être donnés")
+    stop("Si nom_grade1 est defini, la longueur et le diametre du type 1 doivent etre donnes")
   }
   if(!is.na(diam_grade1) & (is.na(nom_grade1) | nom_grade1 == "")) {
-    stop("Si diam_grade1 est défini, le nom doit être donné")
+    stop("Si diam_grade1 est defini, le nom doit etre donne")
   }
   if(!is.null(long_grade1) & !is.na(long_grade1) & (is.na(nom_grade1) | nom_grade1 == "") & is.na(diam_grade1)) {
-    stop("Si long_grade1 est défini, le nom et le diamètre doivent être donnés")
+    stop("Si long_grade1 est defini, le nom et le diametre doivent etre donnes")
   }
   if(!is.na(nom_grade2) & nom_grade2 != "" & is.na(diam_grade2)) {
-    stop("Si nom_grade2 est défini, la longueur et le diamètre du type 2 doivent être donnés")
+    stop("Si nom_grade2 est defini, la longueur et le diametre du type 2 doivent etre donnes")
   }
   if(!is.na(diam_grade2) & (is.na(nom_grade2) | nom_grade2 == "")) {
-    stop("Si diam_grade2 est défini, le nom doit être donné")
+    stop("Si diam_grade2 est defini, le nom doit etre donne")
   }
   if(!is.null(long_grade2) & !is.na(long_grade2) & (is.na(nom_grade2) | nom_grade2 == "") & is.na(diam_grade2)) {
-    stop("Si long_grade2 est défini, le nom et le diamètre doivent être donnés")
+    stop("Si long_grade2 est defini, le nom et le diametre doivent etre donnes")
   }
   if(!is.na(nom_grade3) & nom_grade3 != "" & is.na(diam_grade3)) {
-    stop("Si nom_grade3 est défini, la longueur et le diamètre du type 3 doivent être donnés")
+    stop("Si nom_grade3 est defini, la longueur et le diametre du type 3 doivent etre donnes")
   }
   if(!is.na(diam_grade3) & (is.na(nom_grade3) | nom_grade3 == "")) {
-    stop("Si diam_grade3 est défini, le nom doit être donné")
+    stop("Si diam_grade3 est defini, le nom doit etre donne")
   }
   if(!is.null(long_grade3) & !is.na(long_grade3) & (is.na(nom_grade3) | nom_grade3 == "") & is.na(diam_grade3)) {
-    stop("Si long_grade3 est défini, le nom et le diamètre doivent être donnés")
+    stop("Si long_grade3 est defini, le nom et le diametre doivent etre donnes")
   }
 
-  if (!is.numeric(dhs) && dhs <= 0) stop("Le dhs doit être une valeur numérique positive")
+  if (!is.numeric(dhs) && dhs <= 0) stop("Le dhs doit etre une valeur numerique positive")
 
   if (!is.na(long_grade1) && (long_grade1 %% 2 != 0)) {
-    stop("La longueur du grade 1 doit être un multiple de 2. La valeur actuelle donnée est: ", long_grade1)
+    stop("La longueur du grade 1 doit etre un multiple de 2. La valeur actuelle donnee est: ", long_grade1)
   }
 
   if (!is.na(long_grade2) && (long_grade2 %% 2 != 0)) {
-    stop("La longueur du grade 2 doit être un multiple de 2. La valeur actuelle donnée est: ", long_grade2)
+    stop("La longueur du grade 2 doit etre un multiple de 2. La valeur actuelle donnee est: ", long_grade2)
   }
 
   if (!is.na(long_grade3) && (long_grade3 %% 2 != 0)) {
-    stop("La longueur du grade 3 doit être un multiple de 2. La valeur actuelle donnée est: ", long_grade3)
+    stop("La longueur du grade 3 doit etre un multiple de 2. La valeur actuelle donnee est: ", long_grade3)
   }
 
   if (is.na(long_grade1) && (!is.na(long_grade2) || !is.na(long_grade3))) {
-    stop("Le cas où la longueur du grade 1 est indéfini et la longueur du grade 2 ou 3 est défini n'est pas valide.")
+    stop("Le cas ou la longueur du grade 1 est indefini et la longueur du grade 2 ou 3 est defini n'est pas valide.")
   }
 
   if (is.na(long_grade2) && !is.na(long_grade3)) {
-    stop(" Le cas où la longueur du grade 2 est indéfini et la longueur du grade 3 est défini n'est pas valide.")
+    stop(" Le cas ou la longueur du grade 2 est indefini et la longueur du grade 3 est defini n'est pas valide.")
   }
 
   if (is.na(diam_grade1) && (!is.na(diam_grade2) || !is.na(diam_grade3))) {
-    stop("Le cas où le diamètre du grade 1 est indéfini et le diamètre du grade 2 ou 3 est défini n'est pas valide.")
+    stop("Le cas ou le diametre du grade 1 est indefini et le diametre du grade 2 ou 3 est defini n'est pas valide.")
   }
 
   if (is.na(diam_grade2) && !is.na(diam_grade3)) {
-    stop("Le cas où le diamètre du grade 2 est indéfini et le diamètre du grade 3 est défini n'est pas valide.")
+    stop("Le cas ou le diametre du grade 2 est indefini et le diametre du grade 3 est defini n'est pas valide.")
   }
 
   # Remplacer 0 par une valeur minimale positive afin de ne pas dépasser la dernière ligne

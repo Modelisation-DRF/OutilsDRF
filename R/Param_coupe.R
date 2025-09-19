@@ -45,7 +45,6 @@
 #' Pour le mode déterministe, la fonction retourne une table de paramètres.
 #' Les variables sont
 #'
-#' @import data.table
 # #' @export
 #'
 #' @examples
@@ -62,7 +61,7 @@ param_coupe <- function(trt_coupe, mode_simul = "DET", nb_iter = 1, seed_value =
   # trt_coupe=10; mode_simul='STO'; nb_iter=10; seed_value=NULL;
 
   if (mode_simul=='STO'){
-    if (nb_iter < 1) {stop("Le nombre d'iterations doit etre plus grand ou égal à 1 en mode stochastique")}
+    if (nb_iter < 1) {stop("Le nombre d'iterations doit etre plus grand ou egal a 1 en mode stochastique")}
   }
 
   if (length(seed_value) > 0) {

@@ -52,7 +52,8 @@ For. Chron. 83: 754-765.
 parametre_vol <- param_vol(fic_arbres = fic_arbres_test)
 
 #' # Mode stochastique, plusieurs années et 10 itérations
-parametre_vol <- param_vol(fic_arbres = fic_artemis_sto, mode_simul = "STO", nb_iter = 10, nb_step = 5)
+parametre_vol <- param_vol(fic_arbres = fic_artemis_sto,
+mode_simul = "STO", nb_iter = 10, nb_step = 5)
 }
 
 }

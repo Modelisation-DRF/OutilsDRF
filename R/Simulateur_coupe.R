@@ -38,29 +38,28 @@
 #' resultats2 <- prob_coupe(mes_arbres, trt_coupe = 5, modifier = mod_essence)
 #' }
 #'
-#' @import data.table
 #' @export
 prob_coupe <- function(data_tree, trt_coupe, mode_simul="DET", seed_value=NULL, modifier = NULL) {
 
   #Conditions à respecter pour la fonction:
-  if (trt_coupe < 0 || trt_coupe > 18) stop("Erreur: Le traitement de coupe doit être entre 0 et 18.")
+  if (trt_coupe < 0 || trt_coupe > 18) stop("Erreur: Le traitement de coupe doit etre entre 0 et 18.")
 
-  if (mode_simul != "DET" && mode_simul != "STO") stop("Erreur: Le mode de simulation doit être DET(déterministe) ou STO(stochastique).")
+  if (mode_simul != "DET" && mode_simul != "STO") stop("Erreur: Le mode de simulation doit etre DET(deterministe) ou STO(stochastique).")
 
   # Validation du paramètre modifier
   if (!is.null(modifier)) {
     if (is.numeric(modifier) && length(modifier) == 1) {
-      if (modifier < -80 || modifier > 160) stop("Erreur: Le modifier doit être entre -80 et 160.")
+      if (modifier < -80 || modifier > 160) stop("Erreur: Le modifier doit etre entre -80 et 160.")
     } else if (is.data.frame(modifier)) {
       # Modulation par essence
       if (!all(c("ess_ind", "modifier") %in% names(modifier))) {
         stop("Erreur: Le data.frame modifier doit contenir les colonnes 'ess_ind' et 'modifier'.")
       }
       if (any(modifier$modifier < -80 | modifier$modifier > 160)) {
-        stop("Erreur: Toutes les valeurs de modifier doivent être entre -80 et 160.")
+        stop("Erreur: Toutes les valeurs de modifier doivent etre entre -80 et 160.")
       }
     } else {
-      stop("Erreur: Le paramètre modifier doit être soit un nombre, soit un data.frame, soit NULL.")
+      stop("Erreur: Le parametre modifier doit etre soit un nombre, soit un data.frame, soit NULL.")
     }
   }
 

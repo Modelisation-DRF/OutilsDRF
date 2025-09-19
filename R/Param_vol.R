@@ -42,7 +42,6 @@
 #'   \item random: une table avec 31 colonnes: iter (numéro de l'itération), id_pe (identifiant de la placette), step (numéro de la step), random_plot (effet aléatoire de placette, 0 si mode déterministe) et une colonne pour chacune des 26 essences du modèle de volume contenant l'erreur résiduelle associée à cette essence, resid=0 si mode déterministe. Une ligne par placette/itération/step. 0 si \code{mode_simul="DET"}.
 #' }
 # #' @export
-#' @import data.table
 #'
 #' @examples
 #' \dontrun{
@@ -50,7 +49,8 @@
 #' parametre_vol <- param_vol(fic_arbres = fic_arbres_test)
 #'
 #' #' # Mode stochastique, plusieurs années et 10 itérations
-#' parametre_vol <- param_vol(fic_arbres = fic_artemis_sto, mode_simul = "STO", nb_iter = 10, nb_step = 5)
+#' parametre_vol <- param_vol(fic_arbres = fic_artemis_sto,
+#' mode_simul = "STO", nb_iter = 10, nb_step = 5)
 #' }
 #'
 param_vol <- function(fic_arbres, mode_simul = "DET", nb_iter = 1, nb_step = 1, seed_value = NULL) {

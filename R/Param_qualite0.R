@@ -17,7 +17,6 @@
 #' des équations de qualité et les lignes sont les essences. Le premier contient les paramètres pour les dhp de 23 à 33 cm,
 #' le 2e pour les dhp de 33 à 39 cm et les 3e pour les dhp>39cm. En mode stochastique, les datframe contient une lignes par essence/iter
 #'
-#' @import data.table
 # #' @export
 #'
 #' @examples

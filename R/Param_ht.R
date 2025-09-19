@@ -48,7 +48,6 @@
 #'   \item random_ldhp2 effet aléatoire de placette pour l'essence/iter, 0 si mode déterministe
 #'   \item res_arbre: erreur_residuelle de l'arbre pour une iter/step, 0 si mode déterministe
 #' }
-#' @import data.table
 # #' @export
 #'
 #' @examples
@@ -57,10 +56,12 @@
 #' parametre_ht_dhp <- param_ht(fic_arbres = fic_arbres_test)
 #'
 #' # Mode stochastique, pour une seule année et 10 itérations
-#' parametre_ht_dhp <- param_ht(fic_arbres = fic_arbres_test, mode_simul = "STO", nb_iter = 10)
+#' parametre_ht_dhp <- param_ht(fic_arbres = fic_arbres_test,
+#' mode_simul = "STO", nb_iter = 10)
 #'
 #' # Mode stochastique, plusieurs années et plusieurs itérations
-#' parametre_ht_dhp <- param_ht(fic_arbres = fic_arbres_test, mode_simul = "STO", nb_iter = 10, nb_step = 5)
+#' parametre_ht_dhp <- param_ht(fic_arbres = fic_arbres_test,
+#' mode_simul = "STO", nb_iter = 10, nb_step = 5)
 #' }
 #'
 param_ht <- function(fic_arbres, mode_simul = "DET", nb_iter = 1, nb_step = 1, dt = 10, seed_value = NULL) {

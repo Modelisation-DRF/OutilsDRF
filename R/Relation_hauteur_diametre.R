@@ -68,7 +68,6 @@
 #'    }
 #'
 #' @return La table \code{fic_arbres} avec une colonne contenant la hauteur estimée en mètres (hauteur_pred).
-#' @import data.table
 #' @export
 #'
 #' @examples

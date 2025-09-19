@@ -119,7 +119,8 @@ La fonction dépend de variables globales:
     )
 
     # Calcul des volumes de billes
-    resultats <- calcul_vol_bille(donnees_arbre, dhs = 0.2, nom_grade1 = "sciage court", long_grade1 = 8, diam_grade1 = 12, nom_grade2 = "pate",
+    resultats <- calcul_vol_bille(donnees_arbre, dhs = 0.2, nom_grade1 = "sciage court",
+    long_grade1 = 8, diam_grade1 = 12, nom_grade2 = "pate",
       long_grade2 = NA, diam_grade2 = 8)
   }
 }

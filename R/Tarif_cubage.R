@@ -47,7 +47,6 @@
 #'    \item FALSE: les essences sans tarif de cubage n'auront pas de volume estimé
 #'    }
 #' @return La table \code{fic_arbres} avec une colonne contenant le volume marchand estimé en dm3 (vol_dm3).
-#' @import data.table
 #' @export
 #'
 #' @examples
@@ -65,7 +64,8 @@
 #' # Exemple 3: STOCHASTIQUE: plusieurs itérations et plusieurs step -------------------------------
 #' nb_iter <- length(unique(fic_artemis_sto$iter)) # 10
 #' nb_step <- length(unique(fic_artemis_sto$annee)) # 5
-#' ht <- relation_h_d(fic_arbres = fic_artemis_sto, mode_simul = "STO", nb_iter = nb_iter, nb_step = nb_step)
+#' ht <- relation_h_d(fic_arbres = fic_artemis_sto, mode_simul = "STO",
+#' nb_iter = nb_iter, nb_step = nb_step)
 #' vol <- cubage(fic_arbres = ht, mode_simul = "STO", nb_iter = nb_iter, nb_step = nb_step)
 #' }
 #'

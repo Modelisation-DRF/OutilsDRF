@@ -32,7 +32,6 @@
 #' Pour le mode déterministe, la fonction retourne un dataframe avec les colonnes id_pe, no_arbre et les 4 colonnes
 #' (prop_A, prop_B, prob_C, prop_B) contenant la proportion de chaque classe de qualité
 #'
-#' @import data.table
 # #' @export
 #'
 #' @examples

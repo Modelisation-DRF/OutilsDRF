@@ -1,7 +1,7 @@
 Package: OutilsDRF
 Type: Package
 Title: Un package contenant plusieurs outils de prédiction pour les simulateurs de croissance forestière de la DRF
-Version: 2.2.0
+Version: 2.2.1
 Authors@R: c(
     person("Isabelle", "Auger", email = "isabelle.auger@mrnf.gouv.qc.ca", role = c("aut", "cre")),
     person("Nadeau", "Tomy", role = c("ctb")),
@@ -20,17 +20,17 @@ RoxygenNote: 7.3.2
 Suggests: 
     knitr,
     rmarkdown,
+    devtools,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 Imports:
-    rockchalk
-Depends: 
-    tidyverse,
+    rockchalk,
     data.table,
+    magrittr,
     dplyr,
-    xlsx,
-    testthat,
-    devtools,
+    purrr,
     dtplyr,
+    tidyr
+Depends: 
     R (>= 3.5)

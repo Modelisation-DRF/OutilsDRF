@@ -1,12 +1,16 @@
+library(testthat)
+library(OutilsDRF)
+
 test_that("Attribution de qualite en mode deterministe donne les bons resultats - leger", {
 
   # test incluant des essences sans équation et des dhp<23
-  entree <- ex_qualite %>% rename(sdom_bio=sdom) # fichier interne sous data
+  entree <- ex_qualite %>% dplyr::rename(sdom_bio=sdom) # fichier interne sous data
   #summary(entree$dhpcm) # 16 à 41 cm, dont les <23 n'ont pas d'équation
   #table(entree$essence)         # BOJ BOP CHX ERR ERS FEN HEG PEU EPN, donc une essence sans équation
   #table(qualite0_param$essence) # BOJ BOP CHX ERR ERS FEN HEG PEU
 
-  expected <- as.data.frame(readRDS(test_path("fixtures/attrib_qualite", "resultatAttendu_attributionQualite_DET.rds"))) %>% rename(sdom_bio=sdom)
+  expected <- as.data.frame(readRDS(test_path("fixtures/attrib_qualite", "resultatAttendu_attributionQualite_DET.rds"))) %>%
+    dplyr::rename(sdom_bio=sdom)
   actual <- attrib_qualite(entree, "DET", seed_value = 0)
 
   expect_equal(actual, expected, ignore_attr = TRUE)
@@ -33,10 +37,10 @@ test_that("Attribution de qualite en mode deterministe donne les bons resultats 
 test_that("Attribution de qualite en mode deterministe donne les bons resultats - lourd avec ass ess", {
   actual <-
     as.data.frame(readRDS(test_path("fixtures/attrib_qualite", "entreeQualiteLourd_avec_ass_ess.rds"))) %>%
-    select(-sdom) %>%
+    dplyr::select(-sdom) %>%
     attrib_qualite("DET", seed_value = 0) %>%
     lazy_dt() %>%
-    arrange(id_pe, no_arbre) %>%
+    dplyr::arrange(id_pe, no_arbre) %>%
     as.data.frame()
 
   expected <- as.data.frame(readRDS(test_path("fixtures/attrib_qualite", "resultatQualiteLourd_avec_ass_ess.rds"))) %>%

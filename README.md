@@ -61,6 +61,7 @@ remotes::install_github("Modelisation-DRF/OutilsDRF")
 
 | Date |  Version  | Issues |      Détails     |
 |:-----|:---------:|:-------|:-----------------|
+| 2025-09-19 | 2.2.1 |  | Ménage dans Imports et Depends et création du fichier package.R |
 | 2025-05-13 | 2.2.0 |  | Finalisation billonnage et probabilité de coupe et ajout attribution de qualité |
 | 2025-01-29 | 2.1.0 |  | ajout parametre use_ass_ess dans cubage et relation_h_d et calcul var dendro maintenant optionnel dans relation_h_d |
 | 2025-01-08 | 2.0.0 |  | changement de nom package pour OutilsDRF et ajout équation de défilement et probablité de coupe |

@@ -27,7 +27,6 @@
 #'                                         essence = 'PIG')
 #' }
 #'
-#' @importFrom data.table setDT
 #' @export
 correction_biais <- function(type_modele, fic, essence) {
   # Récupérer les paramètres d'effets aléatoires pour le modèle et l'essence demandés
@@ -161,7 +160,6 @@ get_modele <- function(type_modele, essence) {
 #'     resultats <- get_diam(donnees_arbre)
 #'   }
 #'
-#' @import data.table
 #' @export
 
 get_diam <- function(fic) {

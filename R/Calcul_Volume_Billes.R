@@ -225,12 +225,12 @@ calcul_vol_bille <- function(fichier_billes, dhs = 0.15, nom_grade1 = NA, long_g
   diam_value3 <- diam_grade3 / ratio_cm_metre
 
   # Filtrage des données pour ne conserver que les essences d'arbres valides
-  data_filtre <- fichier_billes[essence %in% defil_liste_ess]
+  data_filtre <- fichier_billes[essence %in% OutilsDRF::defil_liste_ess]
   # S'assure que le résultat est toujours une data.table
   setDT(data_filtre)
 
   # On récupère les arbres qui ne sont pas dans les essences d'arbres valides
-  data_filtre_NA <- fichier_billes[!(essence %in% defil_liste_ess)]
+  data_filtre_NA <- fichier_billes[!(essence %in% OutilsDRF::defil_liste_ess)]
 
   # Au cas où on aurait un fichier qu'avec des essences d'arbres non-valides
   if(nrow(data_filtre_NA) > 0) {

@@ -46,7 +46,9 @@ prob_coupe <- function(data_tree, trt_coupe, mode_simul="DET", seed_value=NULL, 
 
   if (mode_simul != "DET" && mode_simul != "STO") stop("Erreur: Le mode de simulation doit etre DET(deterministe) ou STO(stochastique).")
 
+
   if (trt_coupe<19){   ####Ici on fait la coupe pour tous les traitement sauf la CPRS
+
 
    # Validation du paramètre modifier
   if (!is.null(modifier)) {
@@ -152,7 +154,9 @@ prob_coupe <- function(data_tree, trt_coupe, mode_simul="DET", seed_value=NULL, 
   }else{
 
     result<-data_tree
-    result$num_trt<-19  #Letraitement 19 est une CPRS il n'y a pas de paramètres, on fixe la probabilité de récolte à 1
+
+    result$num_trt<-19  #Le traitement 19 est une CPRS il n'y a pas de paramètres, on fixe la probabilité de récolte à 1
+
     result$prob_coupe<-1
   }
 

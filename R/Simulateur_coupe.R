@@ -42,11 +42,13 @@
 prob_coupe <- function(data_tree, trt_coupe, mode_simul="DET", seed_value=NULL, modifier = NULL) {
 
   #Conditions à respecter pour la fonction:
-  if (trt_coupe < 0 || trt_coupe > 18) stop("Erreur: Le traitement de coupe doit etre entre 0 et 18.")
+  if (trt_coupe < 0 || trt_coupe > 19) stop("Erreur: Le traitement de coupe doit etre entre 0 et 19.")
 
   if (mode_simul != "DET" && mode_simul != "STO") stop("Erreur: Le mode de simulation doit etre DET(deterministe) ou STO(stochastique).")
 
-  # Validation du paramètre modifier
+  if (trt_coupe<19){   ####Icie on fait la coupe pour tous les traitement sauf le CPRS
+
+   # Validation du paramètre modifier
   if (!is.null(modifier)) {
     if (is.numeric(modifier) && length(modifier) == 1) {
       if (modifier < -80 || modifier > 160) stop("Erreur: Le modifier doit etre entre -80 et 160.")
@@ -146,6 +148,14 @@ prob_coupe <- function(data_tree, trt_coupe, mode_simul="DET", seed_value=NULL, 
   }
 
   result <- data_full_table[, ..cols_to_keep]
+
+  }else{
+
+    result<-data_tree
+    result$num_trt<-19
+    result$prob_coupe<-1
+  }
+
   return(result)
 }
 

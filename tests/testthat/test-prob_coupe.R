@@ -699,6 +699,40 @@ test_that("prob_coupe retourne une data.table avec les bonnes valeurs pour le tr
   expect_equal(nrow(resultat), nrow(resultat_attendu))
 })
 
+test_that("prob_coupe retourne une data.table avec les bonnes valeurs pour le trt 19 (CPRS)", {
+  data_tree <- data.frame(essence= c("BOJ", "BOP", "EPN", "ERR", "PET", "PIB", "PIG", "SAB", "THO", "CHR", "ERS", "HEG"),#
+                          id_pe = c(1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2),
+                          no_arbre = seq(1, 12, 1),
+                          dhpcm = c(12, 12, 12, 12, 24, 24, 24, 24, 24, 12, 12, 24),
+                          nbTi_ha = c(225, 225, 225, 225, 225, 225, 225, 225, 225, 75, 75, 75),
+                          st_ha = c(6.785840132, 6.785840132, 6.785840132, 6.785840132, 6.785840132, 6.785840132, 6.785840132,
+                                    6.785840132, 6.785840132, 1.696460033, 1.696460033, 1.696460033),
+                          stringsAsFactors = FALSE)
+
+  resultat <- prob_coupe(data_tree, 19)
+  resultat_attendu <- read.csv(
+    test_path("fixtures", "prob_trt19.csv"),
+    sep = ";",
+    stringsAsFactors = FALSE
+  )
+
+  setDT(resultat_attendu)
+
+  cols_identification <- c("id_pe", "no_arbre", "essence", "dhpcm", "st_ha", "nbTi_ha", "num_trt", "prob_coupe")
+  for (col in cols_identification) {
+    if (col %in% names(resultat) && col %in% names(resultat_attendu)) {
+      if (col == "prob_coupe") {
+        # Utiliser une tolérance relative de 0.01%
+        expect_equal(as.numeric(resultat[[col]]), as.numeric(resultat_attendu[[col]]), tolerance = 0.0001)
+      } else {
+        # On convertit les colonnes en char pour les 2 tables, puisque le type ne dérange pas pour les tests(vecteur de NA dans R donne un vecteur logical...)
+        expect_equal(as.character(resultat[[col]]), as.character(resultat_attendu[[col]]))
+      }
+    }
+  }
+  expect_equal(nrow(resultat), nrow(resultat_attendu))
+})
+
 test_that("prob_coupe retourne une data.table avec les bonnes valeurs avec des essences sans eq et/ou sans association", {
   data_tree <- data.frame(essence= c("BOJ", "BOP", "PRP", "PRP", "PET", "ABC"),#
                           id_pe = rep(1,6),

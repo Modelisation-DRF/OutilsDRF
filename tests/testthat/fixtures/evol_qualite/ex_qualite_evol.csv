@@ -1,4 +1,4 @@
-id_pe;sdom;tmoy;ptot;sum_st_ha;coupe;no_arbre;dhpcm1;essence;qualite;sum_st_ha_gt;dhpcm
+id_pe;sdom;tmoy;ptot;sum_st_ha;coupe;no_arbre;dhpcm1;essence;qualite;st_ha_cumul_gt;dhpcm
 1;2EST;2.1;828;29;0;1;24;ERS;C;23;22.8
 1;2EST;2.1;828;29;0;2;33.5;BOJ;B;15;32.3
 1;2EST;2.1;828;29;0;3;40.2;CHX;A;2;39

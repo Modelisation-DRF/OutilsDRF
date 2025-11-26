@@ -12,70 +12,75 @@
 
 # un dossier par essence, 8 essences
 
-chemin <- 'data-raw/Parametre_qualite0/'
-liste_ess <- c('boj','bop','chx','err','ers','fen','heg','peu')
+chemin <- "data-raw/Parametre_qualite0/"
+liste_ess <- c("boj", "bop", "chx", "err", "ers", "fen", "heg", "peu")
 
 # Fichier des paramètres bi des équations
 liste_param <- list()
 liste_cov <- list()
 liste_sd <- list()
 for (i in 1:length(liste_ess)) {
-
   # nom des fichiers
-  fic = paste0('PredParameters', toupper(liste_ess[i]),'.csv')
-  covar = paste0('PredOmega', toupper(liste_ess[i]),'.csv')
-  sd = paste0('listeSdom', toupper(liste_ess[i]),'.csv')
+  fic <- paste0("PredParameters", toupper(liste_ess[i]), ".csv")
+  covar <- paste0("PredOmega", toupper(liste_ess[i]), ".csv")
+  sd <- paste0("listeSdom", toupper(liste_ess[i]), ".csv")
 
   # lecture fichier des bi
-  param <- read_delim(paste0(chemin,liste_ess[i],'/',fic), delim = ';')
+  param <- read_delim(paste0(chemin, liste_ess[i], "/", fic), delim = ";")
   param <- param %>% mutate(
     Variable = tolower(Variable),
-    Variable = ifelse(Variable=='prio_recol', 'priorecol', Variable), # mettre le même nom de variable partout
-    essence = toupper(liste_ess[i]))
+    Variable = ifelse(Variable == "prio_recol", "priorecol", Variable), # mettre le même nom de variable partout
+    essence = toupper(liste_ess[i])
+  )
   liste_param[[i]] <- param
 
   # lecture du fuchier des associations des sdom
-  sdom <- read_delim(paste0(chemin,liste_ess[i],'/',sd), delim = ';')
+  sdom <- read_delim(paste0(chemin, liste_ess[i], "/", sd), delim = ";")
   names(sdom) <- tolower(names(sdom))
   liste_sd[[i]] <- sdom %>% mutate(essence = toupper(liste_ess[i]))
 
   # lecture du fichier de la matrice covb
-  liste_cov[[i]] <- read_delim(paste0(chemin,liste_ess[i],'/',covar), delim = ';')
+  liste_cov[[i]] <- read_delim(paste0(chemin, liste_ess[i], "/", covar), delim = ";")
 }
 liste_param <- bind_rows(liste_param)
 liste_param <- liste_param %>%
   mutate(
     # renommber les intercept pour plus de clareté
-    Intercept = ifelse(Equation==1 & Intercept=='A', 'C',
-                       ifelse(Equation==2 & Intercept=='A', 'B',
-                              ifelse(Equation==2 & Intercept=='B', 'C',
-                                     Intercept))),
+    Intercept = ifelse(Equation == 1 & Intercept == "A", "C",
+      ifelse(Equation == 2 & Intercept == "A", "B",
+        ifelse(Equation == 2 & Intercept == "B", "C",
+          Intercept
+        )
+      )
+    ),
     # concaténer la variable et son niveau
-    var_i = ifelse(Variable %in% c('intercept','dhpcm*intercept'), paste(Variable, Intercept, sep = '_'),
-                        ifelse(Variable %in% c('priorecol','dhpcm*priorecol','sum_st_ha*priorecol'), paste(Variable, PrioRecolte, sep='_'),
-                               ifelse(Variable=='sdom', paste(Variable, Sdom, sep='_'),
-                                      Variable)))
-                        ) %>%
+    var_i = ifelse(Variable %in% c("intercept", "dhpcm*intercept"), paste(Variable, Intercept, sep = "_"),
+      ifelse(Variable %in% c("priorecol", "dhpcm*priorecol", "sum_st_ha*priorecol"), paste(Variable, PrioRecolte, sep = "_"),
+        ifelse(Variable == "sdom", paste(Variable, Sdom, sep = "_"),
+          Variable
+        )
+      )
+    )
+  ) %>%
   select(-vp) # jamais utilisé
 
 
 # il faut séparer les matrices des 3 équations car pas le meme nombre de colonnes dans chacune et les derniere non utilisées sont a 0
 # le nombre de colonnes a garder est le nombre de lignes
 # faire une liste de liste, soit une liste par essence, et pour chaque essence, une liste avec chacune des matrices des 3 equations
-liste_covb = list()
-liste_eq = list()
+liste_covb <- list()
+liste_eq <- list()
 for (i in 1:length(liste_ess)) {
   for (j in 1:3) {
-    cov_i = liste_cov[[i]] %>% filter(Equation==j)
-    cov_i = cov_i[,8:(8+nrow(cov_i)-1)]
-    liste_eq[[j]] = cov_i
+    cov_i <- liste_cov[[i]] %>% filter(Equation == j)
+    cov_i <- cov_i[, 8:(8 + nrow(cov_i) - 1)]
+    liste_eq[[j]] <- cov_i
   }
-  liste_covb[[i]] = liste_eq
-
+  liste_covb[[i]] <- liste_eq
 }
 
 # créer un seul dataframe à partir de la liste liste_sd
-liste_sd2 <- do.call(rbind, liste_sd) %>% rename(Equation=equation)
+liste_sd2 <- do.call(rbind, liste_sd) %>% rename(Equation = equation)
 
 # regarder si les associations de sdom change vraiment par equation
 # liste_sd1 = liste_sd[[3]]
@@ -119,19 +124,20 @@ liste_sd2 <- do.call(rbind, liste_sd) %>% rename(Equation=equation)
 # quelques sous-domaines, donc plusieurs placettes
 # tous les M-S-C-R
 
-plot <- data.frame(id_pe=c(1,2,3), sdom=c('2EST','5OUEST','4EST'), tmoy=c(2.1, 0.1, 1.2), ptot=c(828, 700, 1022), sum_st_ha=c(29, 22, 25), coupe=c(0,0,1))
+plot <- data.frame(id_pe = c(1, 2, 3), sdom = c("2EST", "5OUEST", "4EST"), tmoy = c(2.1, 0.1, 1.2), ptot = c(828, 700, 1022), sum_st_ha = c(29, 22, 25), coupe = c(0, 0, 1))
 
-arbre1 <- data.frame(id_pe=rep(1,3), no_arbre=seq(1,3,1), dhpcm=c(24.0, 33.5, 40.2), essence=c('ERS','BOJ','CHX'), priorecol=c('M','S','C'))
-arbre2 <- data.frame(id_pe=rep(2,4), no_arbre=seq(1,4,1), dhpcm=c(16.1, 26.0, 35.5, 41.3), essence=c('BOP', 'PEU', 'ERR', 'EPN'), priorecol=c('R','S','C', NA))
-arbre3 <- data.frame(id_pe=rep(3,4), no_arbre=seq(1,4,1), dhpcm=c(26.1, 27.0, 38.5, 39.2), essence=c('FEN', 'HEG', 'ERR', 'ERS'), priorecol=c('R','S','C', 'M'))
+arbre1 <- data.frame(id_pe = rep(1, 3), no_arbre = seq(1, 3, 1), dhpcm = c(24.0, 33.5, 40.2), essence = c("ERS", "BOJ", "CHX"), priorecol = c("M", "S", "C"))
+arbre2 <- data.frame(id_pe = rep(2, 4), no_arbre = seq(1, 4, 1), dhpcm = c(16.1, 26.0, 35.5, 41.3), essence = c("BOP", "PEU", "ERR", "EPN"), priorecol = c("R", "S", "C", NA))
+arbre3 <- data.frame(id_pe = rep(3, 4), no_arbre = seq(1, 4, 1), dhpcm = c(26.1, 27.0, 38.5, 39.2), essence = c("FEN", "HEG", "ERR", "ERS"), priorecol = c("R", "S", "C", "M"))
 
 arbres <- bind_rows(arbre1, arbre2, arbre3)
 
 ex_qualite <- left_join(plot, arbres)
 
-write_delim(ex_qualite, "P:\\F1272\\CPF\\_Simulateurs\\QualiteArbres\\AttributionQualite\\ex_qualite.csv", delim=';') # pour faire les calcul à la main
+#write_delim(ex_qualite, "P:\\F1272\\CPF\\_Simulateurs\\QualiteArbres\\AttributionQualite\\ex_qualite.csv", delim = ";") # pour faire les calcul à la main
 usethis::use_data(ex_qualite,
-                  internal=FALSE, overwrite = TRUE)
+  internal = FALSE, overwrite = TRUE
+)
 
 ####################################################################
 
@@ -141,15 +147,18 @@ usethis::use_data(ex_qualite,
 
 # renommer les objets
 qualite0_param_covb <- liste_covb
-qualite0_param <- liste_param %>% select(essence, Equation, var_i, Estimate) %>% rename(b_i = Estimate) %>% mutate(var_i = gsub("\\*", "_x_", var_i))
+qualite0_param <- liste_param %>%
+  select(essence, Equation, var_i, Estimate) %>%
+  rename(b_i = Estimate) %>%
+  mutate(var_i = gsub("\\*", "_x_", var_i))
 qualite0_ass_sdom <- liste_sd2
-qualite0_ess = toupper(c('boj','bop','chx','err','ers','fen','heg','peu'))
+qualite0_ess <- toupper(c("boj", "bop", "chx", "err", "ers", "fen", "heg", "peu"))
 
-write_delim(qualite0_param, "P:\\F1272\\CPF\\_Simulateurs\\QualiteArbres\\AttributionQualite\\qualite0_param.csv", delim=';') # pour faire les calcul à la main
+#write_delim(qualite0_param, "P:\\F1272\\CPF\\_Simulateurs\\QualiteArbres\\AttributionQualite\\qualite0_param.csv", delim = ";") # pour faire les calcul à la main
 # fichiers généras dans param_qualite0()
-#write_delim(bi_eq1, "P:\\F1272\\CPF\\_Simulateurs\\QualiteArbres\\AttributionQualite\\bi_eq1.csv", delim=';') # pour faire les calcul à la main
-#write_delim(bi_eq2, "P:\\F1272\\CPF\\_Simulateurs\\QualiteArbres\\AttributionQualite\\bi_eq2.csv", delim=';') # pour faire les calcul à la main
-#write_delim(bi_eq3, "P:\\F1272\\CPF\\_Simulateurs\\QualiteArbres\\AttributionQualite\\bi_eq3.csv", delim=';') # pour faire les calcul à la main
+# write_delim(bi_eq1, "P:\\F1272\\CPF\\_Simulateurs\\QualiteArbres\\AttributionQualite\\bi_eq1.csv", delim=';') # pour faire les calcul à la main
+# write_delim(bi_eq2, "P:\\F1272\\CPF\\_Simulateurs\\QualiteArbres\\AttributionQualite\\bi_eq2.csv", delim=';') # pour faire les calcul à la main
+# write_delim(bi_eq3, "P:\\F1272\\CPF\\_Simulateurs\\QualiteArbres\\AttributionQualite\\bi_eq3.csv", delim=';') # pour faire les calcul à la main
 
 ############################################
 
@@ -173,6 +182,6 @@ save(list = ls(envir = temp_env), file = "R/sysdata.rda", envir = temp_env)
 rm(temp_env)
 
 
-#load("R/sysdata.rda")
-#ls()
+# load("R/sysdata.rda")
+# ls()
 

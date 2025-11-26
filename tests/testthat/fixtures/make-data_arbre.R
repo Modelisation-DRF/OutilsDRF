@@ -365,15 +365,19 @@ saveRDS(param_sto_vol_gros, "tests/testthat/fixtures/param_sto_vol_gros.rds")
 
 #####################################################################
 # créer un fichier test pour équation de coupe en mode stochastique
-data_tree <- data.frame(essence= c("BOJ", "BOP", "EPN", "ERR", "PET", "PIB", "PIG", "SAB", "THO", "CHR", "ERS", "HEG"),#
-                        id_pe = c(1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2),
-                        no_arbre = seq(1, 12, 1),
-                        dhpcm = c(12, 12, 12, 12, 24, 24, 24, 24, 24, 12, 12, 24),
-                        nbTi_ha = c(225, 225, 225, 225, 225, 225, 225, 225, 225, 75, 75, 75),
-                        st_ha = c(6.785840132, 6.785840132, 6.785840132, 6.785840132, 6.785840132, 6.785840132, 6.785840132,
-                                  6.785840132, 6.785840132, 1.696460033, 1.696460033, 1.696460033),
-                        stringsAsFactors = FALSE)
+data_tree <- data.frame(
+  essence = c("BOJ", "BOP", "EPN", "ERR", "PET", "PIB", "PIG", "SAB", "THO", "CHR", "ERS", "HEG"), #
+  id_pe = c(1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2),
+  no_arbre = seq(1, 12, 1),
+  dhpcm = c(12, 12, 12, 12, 24, 24, 24, 24, 24, 12, 12, 24),
+  nbTi_ha = c(225, 225, 225, 225, 225, 225, 225, 225, 225, 75, 75, 75),
+  st_ha = c(
+    6.785840132, 6.785840132, 6.785840132, 6.785840132, 6.785840132, 6.785840132, 6.785840132,
+    6.785840132, 6.785840132, 1.696460033, 1.696460033, 1.696460033
+  ),
+  stringsAsFactors = FALSE
+)
 set.seed(NULL)
-resultat <- prob_coupe(data_tree=data_tree, trt_coupe=0, mode_simul="STO", seed_value=3)
+resultat <- prob_coupe(data_tree = data_tree, trt_coupe = 0, mode_simul = "STO", seed_value = 3)
 saveRDS(data_tree, test_path("fixtures", "data_tree_coupe.rds"))
 saveRDS(resultat, test_path("fixtures", "resultat_coupe_STO.rds"))

@@ -60,15 +60,16 @@
 #' resultats_det <- prob_coupe(mes_arbres, trt_coupe = 5)
 #'
 #' # Mode stochastique avec 10 itérations
-#' resultats_sto <- prob_coupe(mes_arbres, trt_coupe = 8, mode_simul = "STO",
-#'                             seed_value = 123)
+#' resultats_sto <- prob_coupe(mes_arbres,
+#'   trt_coupe = 8, mode_simul = "STO",
+#'   seed_value = 123
+#' )
 #' }
 #'
 #' @import data.table
 #' @export
-prob_coupe <- function(data_tree, trt_coupe, mode_simul="DET", seed_value=NULL) {
-
-  #Conditions à respecter pour la fonction:
+prob_coupe <- function(data_tree, trt_coupe, mode_simul = "DET", seed_value = NULL) {
+  # Conditions à respecter pour la fonction:
   if (trt_coupe < 0 || trt_coupe > 18) stop("Erreur: Le traitement de coupe doit être entre 0 et 18.")
 
   if (mode_simul != "DET" && mode_simul != "STO") stop("Erreur: Le mode de simulation doit être DET(déterministe) ou
@@ -80,7 +81,7 @@ prob_coupe <- function(data_tree, trt_coupe, mode_simul="DET", seed_value=NULL) 
   # if (mode_simul == "DET" && nb_iter != 1) stop("Erreur: Lorsque le mode déterministe est choisi, le nombre d'itération doit
   #                                              être de 1.")
 
-  if(!is.null(seed_value)) {
+  if (!is.null(seed_value)) {
     set.seed(seed_value)
   }
 
@@ -88,7 +89,7 @@ prob_coupe <- function(data_tree, trt_coupe, mode_simul="DET", seed_value=NULL) 
 
   # Générer les paramètres de l'équation
   setDT(data_tree)
-  data_param <- param_coupe(trt_coupe, mode_simul, nb_iter=1, seed_value = seed_value) # ici, toujours générer 1 seule itération, meme si mode stochastique, car on appliquera la coupe que sur une itérration à la fois, et un pas de simulation à la fois
+  data_param <- param_coupe(trt_coupe, mode_simul, nb_iter = 1, seed_value = seed_value) # ici, toujours générer 1 seule itération, meme si mode stochastique, car on appliquera la coupe que sur une itérration à la fois, et un pas de simulation à la fois
   setDT(data_param)
   setnames(data_param, "essence", "essence_coupe")
 
@@ -98,44 +99,47 @@ prob_coupe <- function(data_tree, trt_coupe, mode_simul="DET", seed_value=NULL) 
   # Première fusion avec les associations d'essences
   # On garde tous les arbres de la table x, et il y aura des NA dans essence_coupe si essence n'est pas dans y
   # Plus besoin de gérer les arbres qu'on perd
-  data_mid_table <- merge(temp_table, coupe_ass_ess, by = c("num_trt", "essence"),
-                          all.x = TRUE)
+  data_mid_table <- merge(temp_table, coupe_ass_ess,
+    by = c("num_trt", "essence"),
+    all.x = TRUE
+  )
 
   # Deuxième fusion avec les paramètres par itération
   # On garde les arbres de la table x, et ceux sans eq de coupe auront les paramètres à NA
   # Plus besoin de gérer les arbres qu'on perd
   data_full_table <- merge(data_mid_table, data_param,
-                           by = c("num_trt", "essence_coupe", "code_trt"),  #Ne pas mettre iter dans le by, car on le fera toujours sur une seul iter à la fois
-                           all.x = TRUE)
+    by = c("num_trt", "essence_coupe", "code_trt"), # Ne pas mettre iter dans le by, car on le fera toujours sur une seul iter à la fois
+    all.x = TRUE
+  )
 
   # Calculer XB en utilisant l'équation
-  data_full_table[, d := dhpcm - 23]       # d = dhp - 23
-  data_full_table[, m := as.numeric(dhpcm > 23)]  # m = 1 si dhp > 23, 0 sinon
-  data_full_table[, N := nbTi_ha]           # N = nombre d'arbres par ha
-  data_full_table[, BA := st_ha]            # BA = surface terrière (m²/ha)
+  data_full_table[, d := dhpcm - 23] # d = dhp - 23
+  data_full_table[, m := as.numeric(dhpcm > 23)] # m = 1 si dhp > 23, 0 sinon
+  data_full_table[, N := nbTi_ha] # N = nombre d'arbres par ha
+  data_full_table[, BA := st_ha] # BA = surface terrière (m²/ha)
 
   # Calculer XB en utilisant la formule
   data_full_table[, XB := b0 + b1_s + (b2_s + b3_s * m) * d +
-                    (b4_s + b5_s * m) * d^2 + b6_s * log(N + 1) + b7_s * BA]
+    (b4_s + b5_s * m) * d^2 + b6_s * log(N + 1) + b7_s * BA]
 
   # Calculer la probabilité de coupe
   data_full_table[, prob_coupe := exp(XB) / (1 + exp(XB))]
 
-  #Si mode stochastique, on transforme le paramètre pour la coupe à "OUI" ou "NON"
-  if(mode_simul == "STO"){
-    data_full_table[, nb_alea := runif(.N)]  # Générer un nombre aléatoire pour chaque ligne
-    data_full_table[, COUPE := ifelse(prob_coupe > nb_alea, "OUI", "NON")]  # Déterminer l'état de coupe
+  # Si mode stochastique, on transforme le paramètre pour la coupe à "OUI" ou "NON"
+  if (mode_simul == "STO") {
+    data_full_table[, nb_alea := runif(.N)] # Générer un nombre aléatoire pour chaque ligne
+    data_full_table[, COUPE := ifelse(prob_coupe > nb_alea, "OUI", "NON")] # Déterminer l'état de coupe
   }
 
   # Réarranger les données en ordre id_pe et no_arbre
   setorder(data_full_table, id_pe, no_arbre)
 
-  if(mode_simul == "DET"){
+  if (mode_simul == "DET") {
     # Sélectionner uniquement les colonnes désirées pour le mode déterministe
     cols_to_keep <- c(nom_var, "prob_coupe") # pour garder toutes les colonnes du fichier d'intrant, même celles dont on n'avait pas besoin
   }
 
-  if(mode_simul == "STO"){
+  if (mode_simul == "STO") {
     # Sélectionner uniquement les colonnes désirées pour le mode déterministe
     cols_to_keep <- c(nom_var, "prob_coupe", "COUPE")
   }
@@ -148,7 +152,6 @@ prob_coupe <- function(data_tree, trt_coupe, mode_simul="DET", seed_value=NULL) 
 
 ##############################################################
 
-#prob_coupe(data_tree1, 5, "DET")
+# prob_coupe(data_tree1, 5, "DET")
 
-#prob_coupe(data_tree2, 12, "STO", 123)
-
+# prob_coupe(data_tree2, 12, "STO", 123)

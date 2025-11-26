@@ -61,8 +61,10 @@ param_coupe <- function(trt_coupe, mode_simul = "DET", nb_iter = 1, seed_value =
   # trt_coupe=10; mode_simul='DET'; nb_iter=1; seed_value=NULL;
   # trt_coupe=10; mode_simul='STO'; nb_iter=10; seed_value=NULL;
 
-  if (mode_simul=='STO'){
-    if (nb_iter < 1) {stop("Le nombre d'iterations doit etre plus grand ou égal à 1 en mode stochastique")}
+  if (mode_simul == "STO") {
+    if (nb_iter < 1) {
+      stop("Le nombre d'iterations doit etre plus grand ou égal à 1 en mode stochastique")
+    }
   }
 
   if (length(seed_value) > 0) {
@@ -84,9 +86,9 @@ param_coupe <- function(trt_coupe, mode_simul = "DET", nb_iter = 1, seed_value =
 
   # Sélection des données pour le traitement spécifié
   param <- coupe_param_dt[num_trt == trt_coupe, .(code_trt, num_trt, essence, effect, estimate)]
-  covb <- coupe_param_covb[[trt_coupe+1]]
+  covb <- coupe_param_covb[[trt_coupe + 1]]
 
-  if (mode_simul == 'STO') {
+  if (mode_simul == "STO") {
     # le modèle de coupe n'a pas d'effet alétoire ni d'erreur résiduelle
     # la seule partie qui est stochastique est celle des effets fixes
     # les paramètres du modèle pour une itération seront utilisés pour tous les arbres, de toutes les placettes, pour toutes leurs steps
@@ -123,7 +125,7 @@ param_coupe <- function(trt_coupe, mode_simul = "DET", nb_iter = 1, seed_value =
 
     # Transformation des données du format large au format long
     param_cp_dt <- as.data.table(param_cp)
-    param_cp_dt[, iter := .I]  # Ajoute un numéro d'itération
+    param_cp_dt[, iter := .I] # Ajoute un numéro d'itération
 
     param_cp_long <- melt(
       param_cp_dt,
@@ -137,7 +139,7 @@ param_coupe <- function(trt_coupe, mode_simul = "DET", nb_iter = 1, seed_value =
     param_cp_tr2 <- merge(param_cp_long, param_a, by = "var")[, -"var"]
   }
 
-  if (mode_simul == 'DET') {
+  if (mode_simul == "DET") {
     # Mode déterministe - une seule itération
     param_cp_tr2 <- copy(param)[, iter := 1]
   }
@@ -174,7 +176,7 @@ param_coupe <- function(trt_coupe, mode_simul = "DET", nb_iter = 1, seed_value =
   effets_manquants <- setdiff(list_effets, effet_presents)
 
   for (var in effets_manquants) {
-    param_ess2[, (var) := NA_real_]  # Utiliser NA_real_ pour assurer le type double
+    param_ess2[, (var) := NA_real_] # Utiliser NA_real_ pour assurer le type double
   }
 
   # Copie des paramètres généraux dans les colonnes spécifiques à l'essence

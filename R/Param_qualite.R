@@ -31,7 +31,6 @@
 #' }
 #'
 param_qualite <- function(type_qualite, mode_simul = "DET", nb_iter = 1, seed_value = NULL) {
-
   if (length(seed_value) > 0) {
     set.seed(seed_value)
   }
@@ -46,22 +45,21 @@ param_qualite <- function(type_qualite, mode_simul = "DET", nb_iter = 1, seed_va
   parametre <- qualite0_param
   covariance <- qualite0_param_covb
   # Paramètre pour évolution de la qualité
-  if (type_qualite=='evol') {
-
+  if (type_qualite == "evol") {
     parametre <- qualite_evol_param
     covariance <- qualite_evol_param_covb
-
   }
 
   # Pour le mode stochastique
   if (mode_simul == "STO") {
-
     # faire une boucle sur essence
     bi_qual_8ess <- NULL
 
     for (i in 1:length(qualite0_ess)) { # qualite0_ess est un fichier interne
 
-      bi <- parametre %>% filter(essence == qualite0_ess[i]) %>% dplyr::select(-essence)
+      bi <- parametre %>%
+        filter(essence == qualite0_ess[i]) %>%
+        dplyr::select(-essence)
       covb <- covariance[[i]]
 
       # le modèle de qualité n'a pas d'effet aléatoire ni d'erreur résiduelle
@@ -72,8 +70,9 @@ param_qualite <- function(type_qualite, mode_simul = "DET", nb_iter = 1, seed_va
       # lecture des effets fixes pour chacune des 3 equations
       bi_qual_3eq <- NULL
       for (j in 1:3) {
-
-        bi2 <- bi %>% filter(Equation == j) %>% dplyr::select(b_i)
+        bi2 <- bi %>%
+          filter(Equation == j) %>%
+          dplyr::select(b_i)
         covb2 <- covb[[j]]
 
         # générer une série de bi, une par itération
@@ -82,7 +81,7 @@ param_qualite <- function(type_qualite, mode_simul = "DET", nb_iter = 1, seed_va
         mu <- as.matrix(bi2)
         l_mu <- length(mu)
         # seulement si le fichier des paramètres n'est pas vide (pour evolution de la qualité, CHX n'a pas d'eq 2 ni d'eq 3)
-        if (l_mu>0) {
+        if (l_mu > 0) {
           if (nb_iter < l_mu) {
             nb_iter_temp <- l_mu
           } else {

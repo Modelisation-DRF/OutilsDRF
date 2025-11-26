@@ -55,7 +55,7 @@ attrib_qualite <- function(fic_arbres, mode_simul = "DET", nb_iter = 1, seed_val
   # fic_arbres=ex_qualite; mode_simul="DET"; nb_iter = 2; seed_value = 0
 
   # ligne de code pour générer les bi, une liste de 3 éléments, un par équation, chacun un dataframe contenant les bi par essence
-  bi <- param_qualite(type_qualite='attrib', mode_simul = mode_simul, nb_iter = nb_iter)
+  bi <- param_qualite(type_qualite = "attrib", mode_simul = mode_simul, nb_iter = nb_iter)
 
   # Joindre les 3 dataframe BI en 1, pour pouvoir faire un join avec le fichier d'arbre et les calculs
   joinedBi <- list(bi[[1]], bi[[2]]) %>%

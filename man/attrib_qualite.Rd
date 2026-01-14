@@ -19,6 +19,7 @@ attrib_qualite(fic_arbres, mode_simul = "DET", nb_iter = 1, seed_value = NULL)
    \item tmoy: température annuelle moyenne sur la période 1980-2010 (Celcius) de la placette
    \item sum_st_ha: Surface terrière marchande de la placette (m2/ha)
    \item coupe: 0 si pas de coupe partielle dans la placette, 1 si présence de coupe partielle
+   \item iter: numéro de l'itération, seulement si mode stochastique, doit être numéroté de 1 à nb_iter
 }}
 
 \item{mode_simul}{Le mode de simulation (STO = stochastique, DET = déterministe), par défaut "DET".}
@@ -50,7 +51,7 @@ Les essences avec une équations sont  BOJ BOP CHX ERR ERS FEN HEG PEU
 data_qualite <- attrib_qualite(ex_qualite)
 
 # Mode stochastique, pour 10 itérations
-data_qualite <- attrib_qualite(ex_qualite, mode_simul = "STO", nb_iter = 10)
+data_qualite <- attrib_qualite(ex_qualite_sto, mode_simul = "STO", nb_iter = 5)
 }
 
 }

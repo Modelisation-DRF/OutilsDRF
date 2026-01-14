@@ -22,6 +22,7 @@
 #'    \item tmoy: température annuelle moyenne sur la période 1980-2010 (Celcius) de la placette
 #'    \item sum_st_ha: Surface terrière marchande de la placette (m2/ha)
 #'    \item coupe: 0 si pas de coupe partielle dans la placette, 1 si présence de coupe partielle
+#'    \item iter: numéro de l'itération, seulement si mode stochastique, doit être numéroté de 1 à nb_iter
 #' }
 #' @param mode_simul Le mode de simulation (STO = stochastique, DET = déterministe), par défaut "DET".
 #' @param nb_iter Le nombre d'itérations si le mode stochastique est utilisé. Ignoré si \code{mode_simul="DET"},
@@ -32,7 +33,8 @@
 #' Pour le mode déterministe, la fonction retourne un dataframe avec les colonnes id_pe, no_arbre et les 4 colonnes
 #' (prop_A, prop_B, prob_C, prop_B) contenant la proportion de chaque classe de qualité
 #'
-# #' @export
+#' @import data.table
+#' @export
 #'
 #' @examples
 #' \dontrun{
@@ -40,7 +42,7 @@
 #' data_qualite <- attrib_qualite(ex_qualite)
 #'
 #' # Mode stochastique, pour 10 itérations
-#' data_qualite <- attrib_qualite(ex_qualite, mode_simul = "STO", nb_iter = 10)
+#' data_qualite <- attrib_qualite(ex_qualite_sto, mode_simul = "STO", nb_iter = 5)
 #' }
 #'
 attrib_qualite <- function(fic_arbres, mode_simul = "DET", nb_iter = 1, seed_value = NULL) {
@@ -51,36 +53,18 @@ attrib_qualite <- function(fic_arbres, mode_simul = "DET", nb_iter = 1, seed_val
   # l'équation, la colonne sdom_bio est le lien avec le sdom_bio de fic_arbres, et la colonne sdom est le groupe
   # d'essences pour l'équation
 
-  # fic_arbres=ex_qualite; mode_simul="DET"; nb_iter = 2; seed_value = 0
+  # fic_arbres=ex_qualite; mode_simul="DET"; nb_iter = 1; seed_value = NULL
+  # fic_arbres=entree; mode_simul="STO"; nb_iter = 2; seed_value = 1234
 
   # ligne de code pour générer les bi, une liste de 3 éléments, un par équation, chacun un dataframe contenant les bi par essence
-  bi <- param_qualite0(mode_simul = mode_simul, nb_iter = nb_iter)
+  bi <- param_qualite(type_qualite = "attrib", mode_simul = mode_simul, nb_iter = nb_iter, seed_value = seed_value)
 
   # Joindre les 3 dataframe BI en 1, pour pouvoir faire un join avec le fichier d'arbre et les calculs
-  joinedBi <- list(bi[[1]], bi[[2]]) %>%
-    reduce(
-      full_join,
-      by = join_by(
-        essence, Equation, iter,
-        b_intercept_C, b_priorecol_C, b_priorecol_R, b_priorecol_S, b_dhpcm, b_sdom_1, b_sdom_2EST, b_sdom_2OUEST,
-        b_sdom_3EST, b_sdom_3OUEST, b_sdom_4EST, b_sdom_4OUEST, b_sdom_5EST, b_sum_st_ha, b_tmoy, b_coupe
-      )
-    )
-
-  joinedBi <- list(joinedBi, bi[[3]]) %>%
-    reduce(
-      full_join,
-      by = join_by(
-        essence, Equation, iter,
-        b_intercept_C, b_priorecol_C, b_priorecol_R, b_priorecol_S, b_dhpcm, b_sdom_1, b_sdom_2EST, b_sdom_2OUEST,
-        b_sdom_3EST, b_sdom_3OUEST, b_sdom_4EST, b_sdom_4OUEST, b_sdom_5EST, b_sum_st_ha, b_tmoy, b_dhpcm_x_priorecol_C,
-        b_dhpcm_x_priorecol_R, b_dhpcm_x_priorecol_S, b_intercept_B, b_sum_st_ha_x_priorecol_C, b_sum_st_ha_x_priorecol_R,
-        b_sum_st_ha_x_priorecol_S
-      )
-    ) %>%
+  joinedBi <- bind_rows(bi[[1]], bi[[2]], bi[[3]]) %>%
     replace(is.na(.), 0)
 
-  # Obtenir l'equation a utiliser pour chaque placette
+
+  # Obtenir l'equation a utiliser pour chaque arbre
   fic_arbres <- fic_arbres %>%
     lazy_dt() %>%
     mutate(Equation = ifelse(dhpcm > 23 & dhpcm <= 33, 1, ifelse(dhpcm > 33 & dhpcm <= 39, 2, ifelse(dhpcm > 39, 3, NA)))) %>%
@@ -92,263 +76,67 @@ attrib_qualite <- function(fic_arbres, mode_simul = "DET", nb_iter = 1, seed_val
     left_join(qualite0_ass_sdom, by = c("essence", "Equation", "sdom_bio"), keep = FALSE) %>%
     as.data.frame()
 
-  # Joindre chaque placette avec les valeurs BI selon l'essence et l'equation
+  # Joindre chaque arbre avec les valeurs BI selon l'essence et l'equation
+  by_var = c("essence", "Equation")
+  if (mode_simul=='STO') {by_var = c("iter", "essence", "Equation")}
   fic_arbres <- fic_arbres %>%
     lazy_dt() %>%
-    left_join(joinedBi, by = c("essence", "Equation"), keep = FALSE) %>%
+    left_join(joinedBi, by = by_var, keep = FALSE) %>%
     as.data.frame()
 
   # Equation 1: qualite C ou D
   # Equation 2: qualite B, C ou D
   # equation 3: qualite A, B, C ou D
-  # Calculer pour chaque placette, xb_C des equations 1, 2 et 3, xb_B des equations 2 et 3 et xb_A de l'equation 3
-  # Chaque equation comporte 2 sections, une constante entre chaque placette (b_dhpcm * dhpcm) et une dépendante des
-  # valeurs de la placette (l'equation, priorecol et sdom determinent quelle colonne utiliser)
+  # les paramètres de toutes les équations sont dans un seul fichier, avec des 0 si le paramètre ne s'applique pas à une équation en particulier
+  # on peut donc écrire une seule équation avec l'ensemble des variables possibles
+  # il restera à ajouter le bon intercept
   fic_arbres <- fic_arbres %>%
     lazy_dt() %>%
     mutate(
-      # xb_c equation 1
-      xb_C = ifelse(
-        Equation == 1,
-        # Section commune aux equations 1
+      # equation commune pour toutes les qualités et les 3 groupes des dhp
+      xb =
         b_sum_st_ha * sum_st_ha +
-          b_tmoy * tmoy +
-          b_coupe * coupe +
-          b_dhpcm * dhpcm +
-          b_dhpcm_x_sum_st_ha * dhpcm * sum_st_ha +
-          # Section propre à xb_C
-          #         b_intercept_C
-          b_intercept_C +
-          case_when(
-            priorecol == "S" ~ b_priorecol_S,
-            priorecol == "C" ~ b_priorecol_C,
-            priorecol == "R" ~ b_priorecol_R,
-            priorecol == "M" ~ 0
-          ) +
-          case_when(
-            sdom == "1" ~ b_sdom_1,
-            sdom == "2EST" ~ b_sdom_2EST,
-            sdom == "2OUEST" ~ b_sdom_2OUEST,
-            sdom == "3EST" ~ b_sdom_3EST,
-            sdom == "3OUEST" ~ b_sdom_3OUEST,
-            sdom == "4EST" ~ b_sdom_4EST,
-            sdom == "4OUEST" ~ b_sdom_4OUEST,
-            sdom == "5EST" ~ b_sdom_5EST,
-            sdom == "5OUEST" ~ b_sdom_5OUEST,
-            sdom == "6EST" ~ b_sdom_6EST
-          ) +
-          case_when(
-            priorecol == "S" ~ b_dhpcm_x_priorecol_S * dhpcm,
-            priorecol == "C" ~ b_dhpcm_x_priorecol_C * dhpcm,
-            priorecol == "R" ~ b_dhpcm_x_priorecol_R * dhpcm,
-            priorecol == "M" ~ 0
-          ),
-        # xb_c equation 2
-        ifelse(
-          Equation == 2,
-          # Section commune aux equations 2
-          b_tmoy * tmoy +
-            b_dhpcm * dhpcm + +
-              b_sum_st_ha * sum_st_ha +
-            b_coupe * coupe +
-            # Section propre à xb_C
-            #         b_intercept_C
-            b_intercept_C +
-            case_when(
-              priorecol == "S" ~ b_priorecol_S,
-              priorecol == "C" ~ b_priorecol_C,
-              priorecol == "R" ~ b_priorecol_R,
-              priorecol == "M" ~ 0
-            ) +
-            case_when(
-              sdom == "1" ~ b_sdom_1,
-              sdom == "2EST" ~ b_sdom_2EST,
-              sdom == "2OUEST" ~ b_sdom_2OUEST,
-              sdom == "3EST" ~ b_sdom_3EST,
-              sdom == "3OUEST" ~ b_sdom_3OUEST,
-              sdom == "4EST" ~ b_sdom_4EST,
-              sdom == "4OUEST" ~ b_sdom_4OUEST,
-              sdom == "5EST" ~ b_sdom_5EST,
-              sdom == "5OUEST" ~ b_sdom_5OUEST,
-              sdom == "6EST" ~ b_sdom_6EST
-            ) +
-            case_when(
-              priorecol == "S" ~ b_sum_st_ha_x_priorecol_S * sum_st_ha,
-              priorecol == "C" ~ b_sum_st_ha_x_priorecol_C * sum_st_ha,
-              priorecol == "R" ~ b_sum_st_ha_x_priorecol_R * sum_st_ha,
-              priorecol == "M" ~ 0
-            ),
-          # xb_c equation 3
-          ifelse(
-            Equation == 3,
-            # Section commune aux equations 3
-            b_tmoy * tmoy +
-              b_ptot * ptot +
-              b_dhpcm * dhpcm +
-              b_sum_st_ha * sum_st_ha +
-              # Section propre à xb_C
-              #         b_intercept_C
-              b_intercept_C +
-              case_when(
-                priorecol == "S" ~ b_priorecol_S,
-                priorecol == "C" ~ b_priorecol_C,
-                priorecol == "R" ~ b_priorecol_R,
-                priorecol == "M" ~ 0
-              ) +
-              case_when(
-                sdom == "1" ~ b_sdom_1,
-                sdom == "2EST" ~ b_sdom_2EST,
-                sdom == "2OUEST" ~ b_sdom_2OUEST,
-                sdom == "3EST" ~ b_sdom_3EST,
-                sdom == "3OUEST" ~ b_sdom_3OUEST,
-                sdom == "4EST" ~ b_sdom_4EST,
-                sdom == "4OUEST" ~ b_sdom_4OUEST,
-                sdom == "5EST" ~ b_sdom_5EST,
-                sdom == "5OUEST" ~ b_sdom_5OUEST,
-                sdom == "6EST" ~ b_sdom_6EST
-              ) +
-              b_dhpcm_x_intercept_C * dhpcm +
-              case_when(
-                priorecol == "S" ~ b_dhpcm_x_priorecol_S * dhpcm,
-                priorecol == "C" ~ b_dhpcm_x_priorecol_C * dhpcm,
-                priorecol == "R" ~ b_dhpcm_x_priorecol_R * dhpcm,
-                priorecol == "M" ~ 0
-              ) +
-              case_when(
-                priorecol == "S" ~ b_sum_st_ha_x_priorecol_S * sum_st_ha,
-                priorecol == "C" ~ b_sum_st_ha_x_priorecol_C * sum_st_ha,
-                priorecol == "R" ~ b_sum_st_ha_x_priorecol_R * sum_st_ha,
-                priorecol == "M" ~ 0
-              ),
-            NA
-          )
-        )
-      ),
-      xb_B =
-      # xb_b equation 2
-        ifelse(
-          Equation == 2,
-          # Section commune aux equations 2
-          b_tmoy * tmoy +
-            b_dhpcm * dhpcm +
-            b_sum_st_ha * sum_st_ha +
-            b_coupe * coupe +
-            # Section propre à xb_b
-            #         b_intercept_B
-            b_intercept_B +
-            case_when(
-              priorecol == "S" ~ b_priorecol_S,
-              priorecol == "C" ~ b_priorecol_C,
-              priorecol == "R" ~ b_priorecol_R,
-              priorecol == "M" ~ 0
-            ) +
-            case_when(
-              sdom == "1" ~ b_sdom_1,
-              sdom == "2EST" ~ b_sdom_2EST,
-              sdom == "2OUEST" ~ b_sdom_2OUEST,
-              sdom == "3EST" ~ b_sdom_3EST,
-              sdom == "3OUEST" ~ b_sdom_3OUEST,
-              sdom == "4EST" ~ b_sdom_4EST,
-              sdom == "4OUEST" ~ b_sdom_4OUEST,
-              sdom == "5EST" ~ b_sdom_5EST,
-              sdom == "5OUEST" ~ b_sdom_5OUEST,
-              sdom == "6EST" ~ b_sdom_6EST
-            ) +
-            case_when(
-              priorecol == "S" ~ b_sum_st_ha_x_priorecol_S * sum_st_ha,
-              priorecol == "C" ~ b_sum_st_ha_x_priorecol_C * sum_st_ha,
-              priorecol == "R" ~ b_sum_st_ha_x_priorecol_R * sum_st_ha,
-              priorecol == "M" ~ 0
-            ),
-          # xb_b equation 3
-          ifelse(
-            Equation == 3,
-            # Section commune aux equations 3
-            b_tmoy * tmoy +
-              b_ptot * ptot +
-              b_dhpcm * dhpcm +
-              b_sum_st_ha * sum_st_ha +
-              # Section propre à xb_b
-              #         b_intercept_B
-              b_intercept_B +
-              case_when(
-                priorecol == "S" ~ b_priorecol_S,
-                priorecol == "C" ~ b_priorecol_C,
-                priorecol == "R" ~ b_priorecol_R,
-                priorecol == "M" ~ 0
-              ) +
-              case_when(
-                sdom == "1" ~ b_sdom_1,
-                sdom == "2EST" ~ b_sdom_2EST,
-                sdom == "2OUEST" ~ b_sdom_2OUEST,
-                sdom == "3EST" ~ b_sdom_3EST,
-                sdom == "3OUEST" ~ b_sdom_3OUEST,
-                sdom == "4EST" ~ b_sdom_4EST,
-                sdom == "4OUEST" ~ b_sdom_4OUEST,
-                sdom == "5EST" ~ b_sdom_5EST,
-                sdom == "5OUEST" ~ b_sdom_5OUEST,
-                sdom == "6EST" ~ b_sdom_6EST
-              ) +
-              b_dhpcm_x_intercept_B * dhpcm +
-              case_when(
-                priorecol == "S" ~ b_dhpcm_x_priorecol_S * dhpcm,
-                priorecol == "C" ~ b_dhpcm_x_priorecol_C * dhpcm,
-                priorecol == "R" ~ b_dhpcm_x_priorecol_R * dhpcm,
-                priorecol == "M" ~ 0
-              ) +
-              case_when(
-                priorecol == "S" ~ b_sum_st_ha_x_priorecol_S * sum_st_ha,
-                priorecol == "C" ~ b_sum_st_ha_x_priorecol_C * sum_st_ha,
-                priorecol == "R" ~ b_sum_st_ha_x_priorecol_R * sum_st_ha,
-                priorecol == "M" ~ 0
-              ),
-            NA
-          )
-        ),
-      # xb_a equation 3
-      xb_A = ifelse(
-        Equation == 3,
-        # Section commune aux equations 3
         b_tmoy * tmoy +
-          b_ptot * ptot +
-          b_dhpcm * dhpcm +
-          b_sum_st_ha * sum_st_ha +
-          # Section propre à xb_a
-          #         b_intercept_A
-          b_intercept_A +
-          case_when(
-            priorecol == "S" ~ b_priorecol_S,
-            priorecol == "C" ~ b_priorecol_C,
-            priorecol == "R" ~ b_priorecol_R,
-            priorecol == "M" ~ 0
-          ) +
-          case_when(
-            sdom == "1" ~ b_sdom_1,
-            sdom == "2EST" ~ b_sdom_2EST,
-            sdom == "2OUEST" ~ b_sdom_2OUEST,
-            sdom == "3EST" ~ b_sdom_3EST,
-            sdom == "3OUEST" ~ b_sdom_3OUEST,
-            sdom == "4EST" ~ b_sdom_4EST,
-            sdom == "4OUEST" ~ b_sdom_4OUEST,
-            sdom == "5EST" ~ b_sdom_5EST,
-            sdom == "5OUEST" ~ b_sdom_5OUEST,
-            sdom == "6EST" ~ b_sdom_6EST
-          ) +
-          b_dhpcm_x_intercept_A * dhpcm +
-          case_when(
-            priorecol == "S" ~ b_dhpcm_x_priorecol_S * dhpcm,
-            priorecol == "C" ~ b_dhpcm_x_priorecol_C * dhpcm,
-            priorecol == "R" ~ b_dhpcm_x_priorecol_R * dhpcm,
-            priorecol == "M" ~ 0
-          ) +
-          case_when(
-            priorecol == "S" ~ b_sum_st_ha_x_priorecol_S * sum_st_ha,
-            priorecol == "C" ~ b_sum_st_ha_x_priorecol_C * sum_st_ha,
-            priorecol == "R" ~ b_sum_st_ha_x_priorecol_R * sum_st_ha,
-            priorecol == "M" ~ 0
-          ),
-        NA
-      )
+        b_coupe * coupe +
+        b_dhpcm * dhpcm +
+        b_dhpcm_x_sum_st_ha * dhpcm * sum_st_ha +
+        b_ptot * ptot +
+        case_when(
+          priorecol == "S" ~ b_priorecol_S,
+          priorecol == "C" ~ b_priorecol_C,
+          priorecol == "R" ~ b_priorecol_R,
+          priorecol == "M" ~ 0) +
+        case_when(
+          sdom == "1" ~ b_sdom_1,
+          sdom == "2EST" ~ b_sdom_2EST,
+          sdom == "2OUEST" ~ b_sdom_2OUEST,
+          sdom == "3EST" ~ b_sdom_3EST,
+          sdom == "3OUEST" ~ b_sdom_3OUEST,
+          sdom == "4EST" ~ b_sdom_4EST,
+          sdom == "4OUEST" ~ b_sdom_4OUEST,
+          sdom == "5EST" ~ b_sdom_5EST,
+          sdom == "5OUEST" ~ b_sdom_5OUEST,
+          sdom == "6EST" ~ b_sdom_6EST) +
+        case_when(
+          priorecol == "S" ~ b_dhpcm_x_priorecol_S * dhpcm,
+          priorecol == "C" ~ b_dhpcm_x_priorecol_C * dhpcm,
+          priorecol == "R" ~ b_dhpcm_x_priorecol_R * dhpcm,
+          priorecol == "M" ~ 0) +
+        case_when(
+          priorecol == "S" ~ b_sum_st_ha_x_priorecol_S * sum_st_ha,
+          priorecol == "C" ~ b_sum_st_ha_x_priorecol_C * sum_st_ha,
+          priorecol == "R" ~ b_sum_st_ha_x_priorecol_R * sum_st_ha,
+          priorecol == "M" ~ 0),
+
+      xb_C = xb + b_intercept_C + b_dhpcm_x_intercept_C * dhpcm,  # prob C est possible pour les 3 groupes de dhp (Equation 1 2 ou 3)
+      xb_B = ifelse(Equation %in% c(2,3), xb + b_intercept_B + b_dhpcm_x_intercept_B * dhpcm, NA),  # prob B est possible seulement pour eq 2 et 3
+      xb_A = ifelse(Equation==3, xb + b_intercept_A + b_dhpcm_x_intercept_A * dhpcm, NA),  # prob A est possible seulement pour eq 3
+
+      # Calculer la probabilite de chaque qualite possible pour chaque arbre
+      prob_C = 1 / (1 + exp(-xb_C)),
+      prob_B = 1 / (1 + exp(-xb_B)),
+      prob_A = 1 / (1 + exp(-xb_A))
+
     ) %>%
     as.data.frame()
 
@@ -374,9 +162,14 @@ attrib_qualite <- function(fic_arbres, mode_simul = "DET", nb_iter = 1, seed_val
         prop_A = ifelse(prob_A == 0, NA, prob_A)
       ) %>%
       # Select des colonnes finales à retourner
-      select(id_pe, sdom_bio, tmoy, ptot, sum_st_ha, coupe, no_arbre, dhpcm, essence, priorecol, prop_A, prop_B, prop_C, prop_D) %>%
+      dplyr::select(id_pe, sdom_bio, tmoy, ptot, sum_st_ha, coupe, no_arbre, dhpcm, essence, priorecol, prop_A, prop_B, prop_C, prop_D) %>%
       as.data.frame()
   } else {
+
+    if (length(seed_value) > 0) {
+      set.seed(seed_value)
+    }
+
     # Generer un nombre aleatoire entre 0 et 1 pour chaque placette
     fic_arbres <- fic_arbres %>%
       lazy_dt() %>%
@@ -400,7 +193,7 @@ attrib_qualite <- function(fic_arbres, mode_simul = "DET", nb_iter = 1, seed_val
           )
       ) %>%
       # Select des colonnes finales à retourner
-      select(id_pe, sdom_bio, tmoy, ptot, sum_st_ha, coupe, no_arbre, dhpcm, essence, priorecol, iter, qualite) %>%
+      dplyr::select(id_pe, sdom_bio, tmoy, ptot, sum_st_ha, coupe, no_arbre, dhpcm, essence, priorecol, iter, qualite) %>%
       as.data.frame()
   }
 

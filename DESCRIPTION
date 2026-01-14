@@ -1,7 +1,7 @@
 Package: OutilsDRF
 Type: Package
 Title: Un package contenant plusieurs outils de prédiction pour les simulateurs de croissance forestière de la DRF
-Version: 2.2.1
+Version: 2.3.1
 Authors@R: c(
     person("Isabelle", "Auger", email = "isabelle.auger@mrnf.gouv.qc.ca", role = c("aut", "cre")),
     person("Nadeau", "Tomy", role = c("ctb")),

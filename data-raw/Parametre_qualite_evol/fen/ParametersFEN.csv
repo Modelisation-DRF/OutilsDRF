@@ -1,0 +1,15 @@
+Equation;Estimate;Effect;ClasseIntercept;Qualite;vp;Transition;Sdom
+1;-1.2164;Intercept;A;;;;
+1;4.3713;Qualite;;C;;;
+2;-2.628;Intercept;A;;;;
+2;-0.0304;Intercept;B;;;;
+2;6.1289;Qualite;;B;;;
+2;2.8619;Qualite;;C;;;
+2;0.5952;Transition;;;;1;
+3;-5.4481;Intercept;A;;;;
+3;-3.8031;Intercept;B;;;;
+3;-1.766;Intercept;C;;;;
+3;2.2298;DDhpcm;;;;;
+3;7.2501;Qualite;;A;;;
+3;4.9839;Qualite;;B;;;
+3;2.6752;Qualite;;C;;;

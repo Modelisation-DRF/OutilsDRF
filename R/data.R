@@ -139,11 +139,3 @@
 #' @format ## `data_diam2`
 #' A data frame with 11 lignes et 10 colonnes:
 "data_diam2"
-
-#' Liste des essences avec une équation de défilement
-#'
-#' Liste des essences avec une équation de défilement
-#'
-#' @format ## `defil_liste_ess`
-#' Vecteur de 10 essences
-"defil_liste_ess"

@@ -9,7 +9,8 @@ param_vol(
   mode_simul = "DET",
   nb_iter = 1,
   nb_step = 1,
-  seed_value = NULL
+  seed_value = NULL,
+  type = "VMB"
 )
 }
 \arguments{
@@ -24,9 +25,11 @@ et \code{id_pe} (l'identifiant de la placette) et \code{essence} (le code d'esse
 \item{nb_step}{Le nombre d'années pour lesquelles on veut estimer le volume pour un même arbre (par défaut 1), ignoré si \code{mode_simul="DET"}.}
 
 \item{seed_value}{La valeur du seed pour la génération de nombres aléatoires. Généralement utilisé pour les tests de la fonction. Optionnel.}
+
+\item{type}{'VMB' pour les paramètres du tarif de Fortin et al. (diamètre au fin bout sur écorce) ou 'UTIL' pour les paramètres du tarif utilisable (diamètre au fin bout sous écorce), 'VMB' par défaut}
 }
 \value{
-La fonction retourne une liste de deux éléments: une table pour les effets fixes et une pour l'erreur résiduelle et l'effet aléaoire de placette
+La fonction retourne une liste de deux éléments: une table pour les effets fixes et une pour l'erreur résiduelle et l'effet aléatoire de placette
 
 \enumerate{
   \item effet_fixe : une table avec 5 colonnes: 3 pour les paramètres des effets fixes de l'équation (b1, b2, b3), iter (numéro de l'itération) et essence (essence du modèle de volume). Une ligne par essence/iter.

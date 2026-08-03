@@ -46,7 +46,9 @@
 #'    \item TRUE: Par défaut. les essences sans tarif de cubage seront associées à une des 26 essences avec le fichier d'association interne.
 #'    \item FALSE: les essences sans tarif de cubage n'auront pas de volume estimé
 #'    }
-#' @return La table \code{fic_arbres} avec une colonne contenant le volume marchand estimé en dm3 (vol_dm3).
+#' @param type 'VMB' pour les paramètres du tarif de Fortin et al. (diamètre au fin bout sur écorce) ou 'UTIL' pour les paramètres du tarif utilisable (diamètre au fin bout sous écorce), 'VMB' par défaut
+#'
+#' @return La table \code{fic_arbres} avec une colonne contenant le volume marchand avec ou sous écorce estimé en dm3 (vol_dm3).
 #' @export
 #'
 #' @examples
@@ -69,16 +71,22 @@
 #' vol <- cubage(fic_arbres = ht, mode_simul = "STO", nb_iter = nb_iter, nb_step = nb_step)
 #' }
 #'
-cubage <- function(fic_arbres, mode_simul = "DET", nb_iter = 1, nb_step = 1, seed_value = NULL, use_ass_ess = T) {
+cubage <- function(fic_arbres, mode_simul = "DET", nb_iter = 1, nb_step = 1, seed_value = NULL, use_ass_ess = T, type='VMB') {
   # en mode stochastique, les variables iter et step sont obligatoires
-  if (mode_simul == "STO") {
+  if (mode_simul == "STO"  & type=='UTIL') {
+    stop("Le mode stochastique ne peut pas etre utilise avec type=UTIL")
+  }
+
+
+   if (mode_simul == "STO") {
     if (length(setdiff(c("iter", "step"), names(fic_arbres))) > 0) {
       stop("les colonnes iter et step doivent etre dans fic_arbres avec mode_simul=STO")
     }
   }
 
+
   # générer les paramètres du tarif de cubage
-  parametre_vol <- param_vol(fic_arbres = fic_arbres, mode_simul = mode_simul, nb_iter = nb_iter, nb_step = nb_step, seed_value = seed_value)
+  parametre_vol <- param_vol(fic_arbres = fic_arbres, mode_simul = mode_simul, nb_iter = nb_iter, nb_step = nb_step, seed_value = seed_value, type=type)
 
   setDT(fic_arbres)
 
@@ -132,16 +140,48 @@ cubage <- function(fic_arbres, mode_simul = "DET", nb_iter = 1, nb_step = 1, see
   # cylindre = pi*dhp**2*hauteur_pred/40;
   # vol = -b1 x ht_dhp + (b2m + b3m*dres*dhp)*cylindre (mais le négatif est déjà appliqué au b1)
 
+  if (type == 'VMB') {
   arbre_vol2[, `:=`(
-    cylindre = (pi * dhpcm * dhpcm * hauteur_pred) / 40,
+    #cylindre = (pi * dhpcm * dhpcm * hauteur_pred) / 40,
     vol_dm3 = b1 * (hauteur_pred / dhpcm) + (b2 + b3 * as.integer(essence %in% c("EPB", "EPN", "EPR", "MEL", "PIB", "PIG", "PIR", "PRU", "SAB", "THO")) * dhpcm) * ((pi * dhpcm * dhpcm * hauteur_pred) / 40) + random_plot + resid
   )]
 
-  # Mettre un minimum de 4 à `vol_dm3`
-  arbre_vol2[vol_dm3 < 4, vol_dm3 := 4]
+    # Supprimer les colonnes inutiles
+    arbre_vol2[, c("essence", "b1", "b2", "b3", "random_plot", "resid") := NULL]
 
-  # Supprimer les colonnes inutiles
-  arbre_vol2[, c("cylindre", "essence", "b1", "b2", "b3", "random_plot", "resid") := NULL]
+    # Mettre un minimum de 4 à `vol_dm3`
+    arbre_vol2[vol_dm3 < 4, vol_dm3 := 4]
+  }
+
+  if (type == 'UTIL') {
+
+    arbre_vol2[
+      , ratio_ht_dhp := hauteur_pred/dhpcm
+    ][
+      , dhp_se := (aperronT2 + (dhpcm * bperronT2 * 10)) / 10 # dhp sans écore en cm
+    ][
+      , def_theo_se := -pi * dhp_se^2 / (4 * (hauteur_pred - 1.3))
+    ][
+      , hm_theo_se := hauteur_pred + (pi * 9^2 / (4 * def_theo_se))
+    ][
+      , est_vol_se := ((hm_theo_se - 0.15) / 20) *
+        ((pi * dhp_se^2 / 4) - (def_theo_se * 1.15) + (pi * 9^2 / 4)) # # estimation d’un volume sans écorce basée sur une estimation de la longueur marchande en supposant un défilement proportionnel à la surface de la découpe
+    ]
+
+    # pour ne pas avoir de volume négatif
+    arbre_vol2[est_vol_se < 0, est_vol_se := 0]
+
+    arbre_vol2[
+      , vol_dm3 := (b1 * ratio_ht_dhp +
+                          b2 * est_vol_se +
+                          b3 * dhpcm * est_vol_se +
+                  + random_plot + resid) # dm3/tige
+    ]
+
+    # Supprimer les colonnes inutiles
+    arbre_vol2[, c("essence", "b1", "b2", "b3", "random_plot", "resid", "aperronT2", "bperronT2", "ratio_ht_dhp", "dhp_se", "def_theo_se", "hm_theo_se", "est_vol_se") := NULL]
+  }
+
 
   # Renommer `essence_orig` en `essence`
   setnames(arbre_vol2, "essence_orig", "essence")

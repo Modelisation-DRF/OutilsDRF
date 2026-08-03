@@ -10,7 +10,8 @@ cubage(
   nb_iter = 1,
   nb_step = 1,
   seed_value = NULL,
-  use_ass_ess = T
+  use_ass_ess = T,
+  type = "VMB"
 )
 }
 \arguments{
@@ -38,9 +39,11 @@ cubage(
    \item TRUE: Par défaut. les essences sans tarif de cubage seront associées à une des 26 essences avec le fichier d'association interne.
    \item FALSE: les essences sans tarif de cubage n'auront pas de volume estimé
    }}
+
+\item{type}{'VMB' pour les paramètres du tarif de Fortin et al. (diamètre au fin bout sur écorce) ou 'UTIL' pour les paramètres du tarif utilisable (diamètre au fin bout sous écorce), 'VMB' par défaut}
 }
 \value{
-La table \code{fic_arbres} avec une colonne contenant le volume marchand estimé en dm3 (vol_dm3).
+La table \code{fic_arbres} avec une colonne contenant le volume marchand avec ou sous écorce estimé en dm3 (vol_dm3).
 }
 \description{
 Estime le volume marchand sans écorce de chacun des arbres avec l'équation de Fortin et al. (2007). La fonction permet l'estimation pour une liste d'arbres regroupés en placette.

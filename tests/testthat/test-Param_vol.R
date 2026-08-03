@@ -128,6 +128,32 @@ test_that("param_vol() avec mode stochastique retourne le bon nombre de lignes d
 })
 
 
+
+test_that("param_vol() avec mode déterministe retourne les bons paramètres pour le tarif utilisable", {
+  data_arbre <- readRDS(test_path("fixtures", "data_arbre_vol.rds"))
+
+  # parametre_vol_attendu <- readRDS(test_path("fixtures", "param_vol_attendu.rds"))
+  # parametre_vol_attendu <- parametre_vol_attendu[[1]]$effet_fixe %>% dplyr::select(-iter, -essence_volume)
+  parametre_vol_attendu <- tarif_param_fixe_util %>%
+    separate_wider_delim(col = beta_ess, names = c("parm", "essence"), delim = "_", too_few = "align_start") %>%
+    filter(!is.na(essence)) %>%
+    group_by(essence) %>%
+    pivot_wider(names_from = parm, values_from = Estimate) %>%
+    ungroup() %>%
+    dplyr::select(-essence)
+
+  parametre_vol <- param_vol(fic_arbres = data_arbre, mode_simul = "DET", type='UTIL')
+  parametre_vol <- parametre_vol$effet_fixe %>% dplyr::select(-essence, -random_plot, -resid)
+  expect_equal(parametre_vol, parametre_vol_attendu)
+})
+
+# pour le volume utilisable, la DIF a un fichier d'association d'essences: il y a 8 essences qui n'ont pas la même association que notre fichier tarif_ass_ess :
+# CAR, CEO, ERA, ERG, ERP, JUV PEH, PID
+
+
+
+
+
 #
 # test_that("param_vol() avec mode stochastique (seed=20) vitesse execution", {
 #

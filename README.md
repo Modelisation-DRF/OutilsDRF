@@ -10,7 +10,8 @@ Courriel: isabelle.auger@mrnf.gouv.qc.ca
 ## Introduction
 Le package contient plusieurs outils de prédiction:
 Relations hauteur-diamètre pour estimer la hauteur totale en mètre d'un arbre
-Tarif de cubage pour estimer le volume marchand brut en dm3 d'un arbre
+Tarif de cubage pour estimer le volume marchand brut en dm3 d'un arbre (avec un diamètre au fin bout sur écorce de 9 cm)
+Tarif de cubage utilisable pour estimer le volume marchand utilisable en dm3 d'un arbre (avec un diamètre au fin bout sous écorce de 9 cm)
 Simulateur de coupe pour estimer la probabilité d'un arbre d'être coupé lors d'un traitement de récolte
 Billonnage à partir d'équations de défilement pour estimer le volume des billes dans un arbre
 Équations pour estimer la probabilité d'un arbre d'être coupé suite à un traitement sylvicole donné
@@ -61,6 +62,7 @@ remotes::install_github("Modelisation-DRF/OutilsDRF")
 
 | Date |  Version  | Issues |      Détails     |
 |:-----|:---------:|:-------|:-----------------|
+| 2026-07-30 | 2.3.2 |  | Ajout du tarif de cubage utilisable de la DIF |
 | 2026-01-14 | 2.3.1 |  | Ajout fonctions qualité des arbres |
 | 2025-09-19 | 2.2.1 |  | Ménage dans Imports et Depends et création du fichier package.R |
 | 2025-05-13 | 2.2.0 |  | Finalisation billonnage et probabilité de coupe et ajout attribution de qualité |

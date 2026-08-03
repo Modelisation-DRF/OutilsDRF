@@ -377,3 +377,14 @@ set.seed(NULL)
 resultat <- prob_coupe(data_tree=data_tree, trt_coupe=0, mode_simul="STO", seed_value=3)
 saveRDS(data_tree, test_path("fixtures", "data_tree_coupe.rds"))
 saveRDS(resultat, test_path("fixtures", "resultat_coupe_STO.rds"))
+
+
+
+
+
+#####################################################################
+# fichier attendu pour le tarif de volume utilisable de la dif
+data_vmu <- read_excel("Z:/Projets/IsabelleAuger/PackagesR_divers/tiges_vol_ut5.xlsx"))
+names(data_vmu) <- tolower(names(data_vmu))
+data_vmu <- data_vmu %>% dplyr::select(id_pe, no_arbre, essence, dhp_cm, ht_complet, vmu_dm3) %>% rename(hauteur_pred = ht_complet, dhpcm = dhp_cm, vol_dm3 = vmu_dm3)
+saveRDS(data_vmu, test_path("fixtures/volume_utilisable", "data_vmu_attendu.rds"))

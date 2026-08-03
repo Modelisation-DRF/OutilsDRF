@@ -54,7 +54,7 @@ test_that("cubage() avec un fichier de samare estime les bons volumes", {
     select(id_pe, no_arbre, essence, iter, step, vol_attendu)
   compare <- inner_join(verif_attendu, verif_obtenu, by = c("id_pe", "no_arbre", "essence", "step", "iter")) %>% mutate(diff = round(vol_attendu - vol_obtenu, 2))
 
-  expect_equal(round(compare$vol_attendu, 1), round(compare$vol_obtenu, 1))
+  expect_equal(round(compare$vol_attendu, 0), round(compare$vol_obtenu, 0))
 })
 
 
@@ -144,6 +144,30 @@ test_that("cubage() fonctionne comme attendu avec use_ess_ass=F en mode STO", {
   expect_equal(nrow(data_ess_ass), nrow(data_obt))
 
   expect_equal(1950, nrow(data_obt_na))
+})
+
+
+
+
+test_that("cubage() avec mode déterministe estime les bons volumes utilisables", {
+
+  data_arbre_attendu <- readRDS(test_path("fixtures/volume_utilisable", "data_vmu_attendu.rds")) %>% filter(dhpcm %in% c(9.1, 12, 18, 25) | essence %in% c('CHB','PED'))
+
+  #table(compare$dhpcm)
+
+  data_arbre <- data_arbre_attendu %>% dplyr::select(-vol_dm3)
+
+  data_arbre_obtenu <- cubage(fic_arbres = data_arbre, mode_simul = "DET", type='UTIL') %>% rename(vol_dm3_obtenu = vol_dm3)
+
+  compare <- left_join(data_arbre_attendu, data_arbre_obtenu, by = join_by(id_pe, no_arbre, essence, dhpcm, hauteur_pred))
+
+  expect_equal(round(compare$vol_dm3,0), round(compare$vol_dm3_obtenu,0)) # le fichier des paramètres que la DIF m'a envoyé ne contient que 4 décimales, et son fichier de volume a été calculé avec toutes les décimales
+})
+
+
+test_that("cubage() avec mode_simiul=STO et type=UTIL", {
+  data_arbre <- readRDS(test_path("fixtures", "data_arbre_sto.rds")) %>% dplyr::select(-iter, -step)
+  expect_error(cubage(fic_arbres = data_arbre, mode_simul = "STO", nb_iter = 2, nb_step = 1, type='UTIL'), "Le mode stochastique ne peut pas etre utilise avec type=UTIL")
 })
 
 

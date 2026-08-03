@@ -1,7 +1,7 @@
 Package: OutilsDRF
 Type: Package
 Title: Un package contenant plusieurs outils de prédiction pour les simulateurs de croissance forestière de la DRF
-Version: 2.3.1
+Version: 2.3.2
 Authors@R: c(
     person("Isabelle", "Auger", email = "isabelle.auger@mrnf.gouv.qc.ca", role = c("aut", "cre")),
     person("Nadeau", "Tomy", role = c("ctb")),
@@ -16,7 +16,7 @@ Description: Le package contient plusieurs outils de prédiction:
 License: LGPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Suggests: 
     knitr,
     rmarkdown,

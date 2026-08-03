@@ -34,8 +34,9 @@
 #' @param nb_iter Le nombre d'itérations si le mode stochastique est utilisé, doit être > 1. Ignoré si \code{mode_simul="DET"}.
 #' @param nb_step Le nombre d'années pour lesquelles on veut estimer le volume pour un même arbre (par défaut 1), ignoré si \code{mode_simul="DET"}.
 #' @param seed_value La valeur du seed pour la génération de nombres aléatoires. Généralement utilisé pour les tests de la fonction. Optionnel.
+#' @param type 'VMB' pour les paramètres du tarif de Fortin et al. (diamètre au fin bout sur écorce) ou 'UTIL' pour les paramètres du tarif utilisable (diamètre au fin bout sous écorce), 'VMB' par défaut
 #'
-#' @return La fonction retourne une liste de deux éléments: une table pour les effets fixes et une pour l'erreur résiduelle et l'effet aléaoire de placette
+#' @return La fonction retourne une liste de deux éléments: une table pour les effets fixes et une pour l'erreur résiduelle et l'effet aléatoire de placette
 #'
 #' \enumerate{
 #'   \item effet_fixe : une table avec 5 colonnes: 3 pour les paramètres des effets fixes de l'équation (b1, b2, b3), iter (numéro de l'itération) et essence (essence du modèle de volume). Une ligne par essence/iter.
@@ -53,12 +54,26 @@
 #' mode_simul = "STO", nb_iter = 10, nb_step = 5)
 #' }
 #'
-param_vol <- function(fic_arbres, mode_simul = "DET", nb_iter = 1, nb_step = 1, seed_value = NULL) {
+param_vol <- function(fic_arbres, mode_simul = "DET", nb_iter = 1, nb_step = 1, seed_value = NULL, type='VMB') {
   if (mode_simul == "STO") {
     if (nb_iter == 1) {
       stop("Le nombre d'iterations doit etre plus grand que 1 en mode stochastique")
     }
   }
+
+
+  # fichier des paramètres du tarif de cubage VMB de Fortin et al., diamètre au fin bout de 9 cm sur écorce
+  param_fixe <- tarif_param_fixe
+  param_cov <- tarif_param_cov
+  param_random <- tarif_param_random
+
+  # Paramètres du tarif de cubage utilisable de la DIF, diamètre au fin bout de 9 cm sous écorce
+  if (type=='UTIL') {
+    param_fixe <- tarif_param_fixe_util
+    #param_cov <- tarif_param_cov_util
+    param_random <- tarif_param_random_util
+  }
+
 
   # ne garder que les variables nécessaires si stochastique
   setDT(fic_arbres)
@@ -92,7 +107,7 @@ param_vol <- function(fic_arbres, mode_simul = "DET", nb_iter = 1, nb_step = 1, 
     liste_place <- unique(liste_arbre$id_pe)
 
     # Transposition des paramètres pour avoir une seule ligne
-    param_tarif_tr <- tarif_param_fixe %>% pivot_wider(names_from = beta_ess, values_from = Estimate)
+    param_tarif_tr <- param_fixe %>% pivot_wider(names_from = beta_ess, values_from = Estimate)
 
     # générer les effets fixes avec la matrice de covariances des effets fixes (tarif_param_cov.rda)
     # pour que mvrnorm() fonctionne avec empirical=T, il faut au moins autant de n que la longueur du vecteur mu à simuler
@@ -103,7 +118,7 @@ param_vol <- function(fic_arbres, mode_simul = "DET", nb_iter = 1, nb_step = 1, 
     } else {
       nb_iter_temp <- nb_iter
     }
-    param_vol <- as.data.frame(matrix(rockchalk::mvrnorm(n = nb_iter_temp, mu = mu, Sigma = as.matrix(tarif_param_cov), empirical = T),
+    param_vol <- as.data.frame(matrix(rockchalk::mvrnorm(n = nb_iter_temp, mu = mu, Sigma = as.matrix(param_cov), empirical = T),
       nrow = nb_iter_temp
     ))[1:nb_iter, ]
     names(param_vol) <- names(param_tarif_tr)
@@ -141,7 +156,7 @@ param_vol <- function(fic_arbres, mode_simul = "DET", nb_iter = 1, nb_step = 1, 
     # générer un effet aléatoire de placette pour chaque placette/iter
     # random_plot = data.frame('random_plot'=rnorm(nb_iter*length(liste_place), mean=0, sd = sqrt(as.matrix(tarif_param_random[1,4]))))
     # sig = diag(tarif_param_random[1,4], nrow=nb_step)
-    sig <- tarif_param_random[1, 4]
+    sig <- param_random[1, 4]
     mu <- 0
     rand <- as.data.frame(matrix(rockchalk::mvrnorm(nb_iter_temp * length(liste_place), mu = mu, Sigma = sig, empirical = T), nrow = nb_iter_temp * length(liste_place)))
     rand <- as.data.frame(rand[1:(nb_iter * length(liste_place)), ])
@@ -149,7 +164,7 @@ param_vol <- function(fic_arbres, mode_simul = "DET", nb_iter = 1, nb_step = 1, 
     rand <- bind_cols(data_plot, rand)
 
     # générer les erreurs résiduelles qui sont fonction de l'essence pour chaque arbre
-    sigma2_ess <- tarif_param_random[7:32, c(3, 4)] %>%
+    sigma2_ess <- param_random[7:32, c(3, 4)] %>%
       mutate(ess = substr(Group, 9, 11)) %>%
       dplyr::select(ess, -Group, Estimate)
 
@@ -187,19 +202,22 @@ param_vol <- function(fic_arbres, mode_simul = "DET", nb_iter = 1, nb_step = 1, 
     )]
     # param0 contient l'essence associé amodèle de tarif, et non l'essence originale
   } else { # si déterministe
-    param_vol_tr <- tarif_param_fixe %>%
+    param_vol_tr <- param_fixe %>%
       separate_wider_delim(col = beta_ess, names = c("parm", "essence"), delim = "_", too_few = "align_start") %>%
       filter(!is.na(essence)) %>%
       group_by(essence) %>%
       pivot_wider(names_from = parm, values_from = Estimate) %>%
       mutate(
-        b1 = tarif_param_fixe[tarif_param_fixe$beta_ess == "b1", 2],
+        # b1 = param_fixe[param_fixe$beta_ess == "b1", 2],
         # iter=1,
         random_plot = 0,
         resid = 0
       ) %>%
       ungroup()
-
+    if (type == "VMB") {
+      param_vol_tr <- param_vol_tr %>%
+        mutate(b1 = param_fixe$Estimate[param_fixe$beta_ess == "b1"])
+    }
     param0 <- NULL
   }
 

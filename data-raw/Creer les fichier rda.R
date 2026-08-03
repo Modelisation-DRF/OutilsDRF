@@ -143,17 +143,89 @@ regeco_ass_sdom <- read_delim("data-raw/Ass_regeco_sdombio.csv", delim = ";")
 regeco_ass_sdom <- regeco_ass_sdom %>% mutate(dom_bio = as.character(dom_bio))
 
 # tous les fichier à mettre dans le rda
-usethis::use_data(ht_ass_ess, ht_liste_ess, ht_ass_pert, ht_ass_mil, ht_ass_sd, ht_ass_vp, ht_param_fixe, ht_param_cov, ht_param_random,
-  tarif_param_fixe, tarif_param_cov, tarif_param_random, tarif_ass_ess,
-  regeco_ass_sdom,
-  internal = TRUE, overwrite = TRUE
-)
+# usethis::use_data(ht_ass_ess, ht_liste_ess, ht_ass_pert, ht_ass_mil, ht_ass_sd, ht_ass_vp, ht_param_fixe, ht_param_cov, ht_param_random,
+#   tarif_param_fixe, tarif_param_cov, tarif_param_random, tarif_ass_ess,
+#   regeco_ass_sdom,
+#   internal = TRUE, overwrite = TRUE
+# )
+#
+# usethis::use_data(ht_ass_ess,
+#   tarif_ass_ess,
+#   internal = FALSE, overwrite = TRUE
+# )
 
-usethis::use_data(ht_ass_ess,
-  tarif_ass_ess,
-  internal = FALSE, overwrite = TRUE
-)
 
+#### TARIF DE CUBAGE UTILISABLE DE LA DIF ######
 
+# fichier des paramètres pour l'épaisseur d'ecorce
+# ce fichier contient déjà des assocoation d'essences, et des essences avec leur propore paramètre d'épaisseur d'écorce, mais qui n'ont pas de tarif de cubage
+# je vais faire le joint entre le tarif utilisable et l'epaisseur d'écroce seulement pour les essences du tarif
+tarif_param_ecorce_util <- read_excel("data-raw/Parametre_vol_utilisable/Perron/Groupe_ESS_ecorce.xls") %>%
+  dplyr::select(ess, a_perronT2, b_perronT2) %>%
+  rename(Essence=ess, aperronT2=a_perronT2, bperronT2=b_perronT2)
 
+# fichier des paramètres effets fixes du tarif de cubage pour la fonction param_vol()
+tarif_param_fixe_util <- read_excel("data-raw/Parametre_vol_utilisable/beta_volume_utilisable.xlsx") %>%
+  dplyr::select(-sigma2)
+
+tarif_param_fixe_util <- left_join(tarif_param_fixe_util, tarif_param_ecorce_util, by='Essence')
+
+tarif_param_fixe_util <- tarif_param_fixe_util %>%
+  group_by(Essence) %>%
+  pivot_longer(cols = c("b1","b2","b3","aperronT2","bperronT2"), names_to = "beta", values_to = "Estimate") %>%
+  mutate(beta_ess = paste(beta, Essence, sep = "_")) %>%
+  ungroup() %>%
+  dplyr::select(beta_ess, Estimate) %>%
+  arrange(beta_ess)
+
+# tarif_param_cov_util <- read.sas7bdat("data-raw/Parametre_vol/beta_covb.sas7bdat") %>%
+#   dplyr::select(contains("Col"))
+
+# effets aléaoires
+tarif_param_random_util <- read_excel("data-raw/Parametre_vol_utilisable/covparms_utilisable.xlsx") %>%
+  mutate(Group=NA) %>%
+  dplyr::select(CovParm, Subject, Group, Estimate)
+
+# erreurs residuelles
+tarif_sigma2_util <- read_excel("data-raw/Parametre_vol_utilisable/beta_volume_utilisable.xlsx") %>%
+  mutate(CovParm = 'Residual',
+         Group = paste('ESSENCE',Essence),
+         Estimate = sigma2) %>%
+  dplyr::select(CovParm, Group, Estimate)
+
+# combiner random et residuel
+tarif_param_random_util <- bind_rows(tarif_param_random_util,tarif_sigma2_util)
 # tar('TarifQC.tar.gz', compression = 'gzip', tar="tar")
+
+
+##################################################
+
+# Code pour ajouter les nouveaux objets à ceux déjà dans le fichier sysdata.rda
+
+# Créer un environnement temporaire
+temp_env <- new.env()
+# Charger le fichier sysdata.rda dans cet environnement
+load("R/sysdata.rda", envir = temp_env)
+# Vérifier les objets actuellement dans sysdata.rda
+ls(envir = temp_env)
+
+# Ajouter les nouveaux objets à l'environnement temporaire
+# list2env(obj_list, "R/sysdata.rda", envir = temp_env)
+
+# Ajouter les objets dynamiquement dans l'environnement
+#obj_name <- c('tarif_param_fixe_util','tarif_param_random_util')
+obj_name <- c('tarif_param_fixe_util')
+for (name in obj_name) {
+  assign(name, get(name), envir = temp_env)
+}
+
+ls(temp_env)
+
+# Sauvegarder tous les objets présents dans l'environnement temporaire dans le fichier sysdata.rda
+save(list = ls(envir = temp_env), file = "R/sysdata.rda", envir = temp_env)
+
+# supprimer l'environnement temporaire
+#rm(temp_env)
+
+
+##################################################
